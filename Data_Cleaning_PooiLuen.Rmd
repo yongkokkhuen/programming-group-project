@@ -85,6 +85,9 @@ head(combined_data_tibble,5)
 ```{r}
 # SOS weird output 
 head(str_trim(combined_data_tibble),5)
+
+#Jasmine: str_trim cannot apply to dataframe directly, you need to apply the function to each columns using "apply"
+apply(combined_data_tibble, 2, stri_trim_both, pattern = '[^"\\$]')
 ```
 
 ## 3. prepare trim function to discard unwanted characters
@@ -97,6 +100,10 @@ list_item_number <- 12:22
 n <- min(list_item_number)
 while (n < max(list_item_number)){
   selected_row <- combined_data_tibble[[list_item_number+1]]
+  
+  #Jasmine: you are looping through columns 12 - 22, so you should use n instead of list_item_number (a list from 12 - 22)
+  selected_row <- combined_data_tibble[[n+1]]
+  
   output <- stri_trim_both(selected_row, pattern = '[^"\\$]')
   print(output)
   
