@@ -3,16 +3,51 @@
 library(dplyr)
 library(tidyverse)
 
-Student_Mat<- read.csv("/Users/jamie/Documents/GitHub/programming-group-project/data/student-mat.csv", sep = ";", quote = "")
+Student_Mat<- read.csv("../data/student-mat.csv", sep = ";", quote = "")
 Student_Mat<- mutate(Student_Mat, subject='mat' )
 
-Student_Por<- read.csv("/Users/jamie/Documents/GitHub/programming-group-project/data/student-por.csv", sep = ";", quote = "")
+Student_Por<- read.csv("../data/student-por.csv", sep = ";", quote = "")
 Student_Por<- mutate(Student_Por, subject='por' )
 
 Student_Data<- rbind(Student_Mat, Student_Por)
 
 #Export combined file for other group members
-write.csv(Student_Data, "/Users/jamie/Documents/GitHub/programming-group-project/data/student-data.csv")
+write.csv(Student_Data, "../data/student-data.csv")
+
+#Remove backslash in attribute 'school'
+Student_Data$school<-gsub('[/"]', '', Student_Data$school)
+
+#Transform attribute 'sex' into: 'M'=1, 'F'=0
+Student_Data$sex<-ifelse(Student_Data$sex=="\"M\"", 1, 0)
+Student_Data$sex<-as.integer(Student_Data$sex)
+
+#Transform attribute 'address' into: 'U'=1, 'R'=0
+Student_Data$address<-ifelse(Student_Data$address=="\"U\"", 1, 0)
+Student_Data$address<-as.integer(Student_Data$address)
+
+#Transform attribute 'famsize' into: factor with levels('LE3',¡¯GT3')
+Student_Data$famsize<-gsub('[/"]', '', Student_Data$famsize)
+Student_Data$famsize<-factor(Student_Data$famsize,levels=c("LE3","GT3"))
+
+#Transform attribute 'Pstatus' into: 'T'=1, 'A'=0
+Student_Data$Pstatus<-ifelse(Student_Data$Pstatus=="\"T\"", 1, 0)
+Student_Data$Pstatus<-as.integer(Student_Data$Pstatus)
+
+#Transform attribute 'Mjob' into: factor without level
+Student_Data$Mjob<-gsub('[/"]', '', Student_Data$Mjob)
+Student_Data$Mjob<-factor(Student_Data$Mjob)
+
+#Transform attribute 'Fjob' into: factor without level
+Student_Data$Fjob<-gsub('[/"]', '', Student_Data$Fjob)
+Student_Data$Fjob<-factor(Student_Data$Fjob)
+
+#Transform attribute 'reason' into: factor without level
+Student_Data$reason<-gsub('[/"]', '', Student_Data$reason)
+Student_Data$reason<-factor(Student_Data$reason)
+
+#Transform attribute 'guardian' into: factor without level
+Student_Data$guardian<-gsub('[/"]', '', Student_Data$guardian)
+Student_Data$guardian<-factor(Student_Data$guardian)
 
 #Transform attribute 'schoolsup' into: 'yes'=1, 'no'=0
 Student_Data$schoolsup<-ifelse(Student_Data$schoolsup=="\"yes\"", 1, 0)
