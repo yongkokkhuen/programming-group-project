@@ -1,0 +1,63 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Load packages
+```{r}
+library(dplyr)
+```
+
+Read datasets 'student_mat' and 'student_por'
+```{r}
+student_mat <- read.csv('/Users/jamie/Documents/GitHub/programming-group-project/data/student-mat.csv', header = TRUE, sep = ";")
+student_por <- read.csv('/Users/jamie/Documents/GitHub/programming-group-project/data/student-por.csv', header = TRUE, sep = ";")
+```
+
+Add column 'subjects' and populate with 'mat' and 'por', then combine
+```{r}
+student_mat <- mutate(student_mat, subject='mat' )
+student_por <- mutate(student_por, subject='por' )
+
+student_dat <- rbind(student_mat, student_por)
+str(student_dat)
+```
+
+Check for missing data
+```{r}
+table(is.na(student_dat))
+```
+
+Changing data type 'chr' to 'factor'
+```{r}
+student_dat$school <-as.factor(student_dat$school)
+student_dat$sex<-as.factor(student_dat$sex)
+student_dat$address<-as.factor(student_dat$address)
+student_dat$famsize<-as.factor(student_dat$famsize)
+student_dat$Pstatus<-as.factor(student_dat$Pstatus)
+student_dat$Mjob<-as.factor(student_dat$Mjob)
+student_dat$Fjob<-as.factor(student_dat$Fjob)
+student_dat$reason<-as.factor(student_dat$reason)
+student_dat$guardian<-as.factor(student_dat$guardian)
+student_dat$schoolsup<-as.factor(student_dat$schoolsup)
+student_dat$famsup<-as.factor(student_dat$famsup)
+student_dat$paid<-as.factor(student_dat$paid)
+student_dat$activities<-as.factor(student_dat$activities)
+student_dat$nursery<-as.factor(student_dat$nursery)
+student_dat$higher<-as.factor(student_dat$higher)
+student_dat$internet<-as.factor(student_dat$internet)
+student_dat$romantic<-as.factor(student_dat$romantic)
+student_dat$subject<-as.factor(student_dat$subject)
+```
+
+Display summary of clean data
+```{r}
+summary(student_dat)
+```
+
+Write clean data csv file
+```{r}
+write.csv(student_dat, "/Users/jamie/Documents/GitHub/programming-group-project/data/student-data_2.csv")
+```
+
+
