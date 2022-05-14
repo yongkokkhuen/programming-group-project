@@ -10,110 +10,95 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Part 1. Data Cleaning
-
 ```{r}
 ## library 
 library(dplyr)
 library(tidyverse)
-library(stringr)  # to trim dirty character 
+#library(stringr) # to trim dirty character
+library(stringi) # to trim dirty character 
 ```
 
-## import data
-
-### use sep = "," to seperate data into multiple column
-
+# Task 1: Preparation
+## 1. Import raw dataset that come with respective subject label for further action.
 ```{r}
-combined_data <- read.csv("/Users/Fanny/Documents/R/um-assignment/gp_code_repository/data/student-data.csv",
-                          header = TRUE, 
-                          sep = ",", 
-                          quote = "", 
-                          as.is = TRUE,
-                          na.strings = "NULL",
-                          stringsAsFactors = FALSE)
+student_mat <- read.csv("../data/student-mat.csv",
+                        sep = ";", 
+                        stringsAsFactors = TRUE)
 
+student_mat <- mutate(student_mat, subject = 'mat')
+
+
+student_por <- read.csv("../data/student-por.csv",
+                        sep = ";", 
+                        stringsAsFactors = TRUE)
+
+student_por <- mutate(student_por, subject = 'por')
 ```
 
-##  Select top 5 data list 
+## 2. Create a merged dataset for further action
 ```{r}
-head(combined_data,5)
+combined_data<- rbind(student_mat, student_por, stringsAsFactors = TRUE)
 ```
 
-## Print out data summary 
-```{r}
-summary(combined_data)
-```
-
-# determine data type of loaded data
-
+## 3. Determine the data type of loaded data 
 ```{r}
 typeof(combined_data)
 class(combined_data)
 ```
 
-# convert as tibble, mini version of data frame
+# Task 2: Refine row data format for each column
+## 1. Display the first 5 rows of data from newly created data frame 
 ```{r}
-combined_data_tibble <- as.tibble(combined_data)
-head(combined_data_tibble,5)
+head(combined_data,5)
 ```
 
-# refine column name
-## 1. print out list of column name
+## 2a. Trim unwanted space and character for all rows in data frame, then display the first 5 row of the trimmed output
 ```{r}
-names(combined_data_tibble)
+#head(apply(combined_data, 2, stri_trim_both, pattern = '[^"\\ $]'),5)
 ```
-
-## 2. Detect data type of column name
+## 2b. Prepare trim function to discard unwanted characters based on column number 
 ```{r}
-typeof(names(combined_data_tibble))
-```
+## i remain this because the trim function above seems applied to all columns
+column_number <- 12:22
 
-## 3. Trim unwanted header value, replace them as table name, view updated table
-```{r}
-trimmed_col_name <- stri_trim_both(names(combined_data_tibble),
-                                   pattern="[^(*.X.)$,]")
-names(combined_data_tibble) <- trimmed_col_name
-view(combined_data_tibble)
-```
-
-# refine row data format for each column
-## 1. print out first 5 row of data
-```{r}
-head(combined_data_tibble,5)
-```
-
-## 2. trim unwanted value by row name
-```{r}
-# SOS weird output 
-head(str_trim(combined_data_tibble),5)
-
-#Jasmine: str_trim cannot apply to dataframe directly, you need to apply the function to each columns using "apply"
-apply(combined_data_tibble, 2, stri_trim_both, pattern = '[^"\\$]')
-```
-
-## 3. prepare trim function to discard unwanted characters
-```{r}
-# SOS seeing error 
-# i am handling column 12 - 22
-list_item_number <- 12:22
-
-
-n <- min(list_item_number)
-while (n < max(list_item_number)){
-  selected_row <- combined_data_tibble[[list_item_number+1]]
-  
-  #Jasmine: you are looping through columns 12 - 22, so you should use n instead of list_item_number (a list from 12 - 22)
-  selected_row <- combined_data_tibble[[n+1]]
-  
-  output <- stri_trim_both(selected_row, pattern = '[^"\\$]')
+n <- min(column_number)
+while (n < max(n)){
+  selected_row <- column_number[[n+1]]
+  output <- stri_trim_both(selected_row, pattern = '[^"\\ $]')
   print(output)
   
   n <- n+1
   
-  if (n == max(list_item_number)){
-    selected_row <- combined_data_tibble[[list_item_number+1]]
-    output <- stri_trim_both(selected_row, pattern = '[^"\\$"]')
+  if (n == max(n)){
+    selected_row <- column_number[[n+1]]
+    output <- stri_trim_both(selected_row, pattern = '[^"\\ $"]')
     print(output)
     break
   }
 }
+```
+
+## 3. View the trimmed data using Data Viewer in R to cross check trimming output 
+```{r}
+view(combined_data)
+```
+
+
+## 4. Check on trimmed column again.
+```{r}
+head(combined_data,5)
+```
+# Part 2: Exploratory Data Analysis (EDA)
+## 1. Print out data summary 
+```{r}
+summary(combined_data)
+```
+
+```{r}
+str(combined_data)
+```
+
+```{r}
+## for self double check
+## write.csv(combined_data, "../preprocessing/combined_data.csv", row.names = FALSE)
 ```
