@@ -1,0 +1,200 @@
+---
+title: "Research On How To Use caret Package"
+output: html_notebook
+---
+
+We would like to research on how to use `caret` to standardize our modeling process when working with different ML algorithms.
+
+### References
+
+Some learning resources, examples and troubleshooting guides:
+
+- [The caret Package](https://topepo.github.io/caret/)
+- [A Short Introduction to the caret Package](https://cran.r-project.org/web/packages/caret/vignettes/caret.html)
+- [Caret Package – A Practical Guide to Machine Learning in R](https://www.machinelearningplus.com/machine-learning/caret-package/)
+- [Machine Learning with caret in R](https://www.datacamp.com/courses/machine-learning-with-caret-in-r)
+- [Error using library(caret) in RStudio](https://stackoverflow.com/questions/48416124/error-using-librarycaret-in-rstudio)
+- [Predictive modelling of Iris Species with Caret](https://subhayo.wordpress.com/2019/06/12/predictive-modelling-with-caret-classification-of-iris-species/)
+
+### Installation
+
+Uncomment and run the installation code below in console. This will take a while.
+
+```{r}
+# install.packages("caret", dependencies = c("Depends", "Suggests"))
+```
+
+If encounter errors when loading `caret`, install these packages as well (or refer to the error messages). Otherwise, we can skip this step.
+
+```{r}
+# install.packages("gower")
+# install.packages("hardhat")
+# install.packages("parallelly")
+```
+
+Load the `caret` package.
+
+```{r}
+library(caret)
+```
+
+### Classification
+
+We use `iris` dataset to illustrate a classification example.
+
+#### Read Dataset
+
+```{r}
+df_iris <- iris
+head(df_iris)
+```
+
+#### Check Structure
+
+```{r}
+str(df_iris)
+```
+
+Target column is already represented in factor.
+
+#### Check Summary
+
+```{r}
+summary(df_iris)
+```
+
+We will skip data cleaning and EDA.
+
+#### Perform Train-Test Split
+
+We use `createDataPartition` function to create balanced splits.
+
+```{r}
+set.seed(42)
+
+train_index <- createDataPartition(
+  df_iris$Species,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set <- df_iris[train_index, ]
+test_set <- df_iris[-train_index, ]
+```
+
+```{r}
+nrow(train_set)
+```
+
+```{r}
+nrow(test_set)
+```
+
+#### Modeling
+
+We specify our resampling type using `trainControl` function - repeated 10-fold CV.
+
+```{r}
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+First, we fit our data with decision tree algorithm. We do not need hyperparameter tuning in this case. We use the `train` function to specify our arguments. Note that we also include the preprocessing step to standardize the data.
+
+```{r}
+set.seed(42)
+
+dt_fit <- train(
+  Species ~ .,
+  data = train_set,
+  method = "rpart",
+  trControl = fit_control,
+  preProcess = c("center", "scale")
+)
+
+dt_fit
+```
+
+We make predictions using our decision tree model.
+
+```{r}
+dt_pred <- predict(dt_fit, test_set)
+```
+
+We evaluate our decision tree model using the `confusionMatrix` function.
+
+```{r}
+confusionMatrix(dt_pred, test_set$Species)
+```
+
+Next, we try to fit a random forest model with hyperparameter tuning. We create a tuning parameter grid.
+
+```{r}
+rf_grid <- expand.grid(
+  mtry = 2:4,
+  splitrule = "gini",
+  min.node.size = 1
+)
+```
+
+We use the `train` function to specify our arguments. This time with our tuning parameter grid.
+
+```{r}
+set.seed(42)
+
+rf_fit <- train(
+  Species ~ .,
+  data = train_set,
+  method = "ranger",
+  trControl = fit_control,
+  preProcess = c("center", "scale"),
+  tuneGrid = rf_grid
+)
+
+rf_fit
+```
+
+We make predictions using our random forest model.
+
+```{r}
+rf_pred <- predict(rf_fit, test_set)
+```
+
+We evaluate our random forest model using the `confusionMatrix` function.
+
+```{r}
+confusionMatrix(rf_pred, test_set$Species)
+```
+
+Alternatively, we can use `tuneLength` parameter.
+
+```{r}
+set.seed(42)
+
+rf2_fit <- train(
+  Species ~ .,
+  data = train_set,
+  method = "ranger",
+  trControl = fit_control,
+  preProcess = c("center", "scale"),
+  tuneLength = 3
+)
+
+rf2_fit
+```
+
+We make predictions using our second random forest model.
+
+```{r}
+rf2_pred <- predict(rf2_fit, test_set)
+```
+
+We evaluate our second random forest model using the `confusionMatrix` function.
+
+```{r}
+confusionMatrix(rf2_pred, test_set$Species)
+```
