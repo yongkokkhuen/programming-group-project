@@ -1,0 +1,76 @@
+---
+title: "Data cleaning - Student Portuguese"
+output: html_notebook
+---
+
+Load packages
+```{r}
+library(dplyr)
+```
+
+Read dataset 'student_por'
+```{r}
+student_por <- read.csv('/Users/jamie/Documents/GitHub/programming-group-project/data/student-por.csv', header = TRUE, sep = ";")
+str(student_por)
+```
+
+Check for missing data
+```{r}
+table(is.na(student_por))
+```
+
+Change data type 'chr' to 'factor'
+```{r}
+student_por$school <-as.factor(student_por$school)
+student_por$sex<-as.factor(student_por$sex)
+student_por$address<-as.factor(student_por$address)
+student_por$famsize<-as.factor(student_por$famsize)
+student_por$Pstatus<-as.factor(student_por$Pstatus)
+student_por$Mjob<-as.factor(student_por$Mjob)
+student_por$Fjob<-as.factor(student_por$Fjob)
+student_por$reason<-as.factor(student_por$reason)
+student_por$guardian<-as.factor(student_por$guardian)
+student_por$schoolsup<-as.factor(student_por$schoolsup)
+student_por$famsup<-as.factor(student_por$famsup)
+student_por$paid<-as.factor(student_por$paid)
+student_por$activities<-as.factor(student_por$activities)
+student_por$nursery<-as.factor(student_por$nursery)
+student_por$higher<-as.factor(student_por$higher)
+student_por$internet<-as.factor(student_por$internet)
+student_por$romantic<-as.factor(student_por$romantic)
+student_por$Medu<-as.factor(student_por$Medu)
+student_por$Fedu<-as.factor(student_por$Fedu)
+student_por$traveltime<-as.factor(student_por$traveltime)
+student_por$studytime<-as.factor(student_por$studytime)
+student_por$famrel<-as.factor(student_por$famrel)
+student_por$freetime<-as.factor(student_por$freetime)
+student_por$goout<-as.factor(student_por$goout)
+student_por$Dalc<-as.factor(student_por$Dalc)
+student_por$Walc<-as.factor(student_por$Walc)
+student_por$health<-as.factor(student_por$health)
+```
+
+
+Add column 'status' containing 'fail: G3<=10' or 'pass: G3>10'
+```{r}
+student_por<- mutate(student_por, result= ifelse(student_por$G3>11,"pass","fail"))
+student_por$result <- as.factor(student_por$result)
+```
+
+
+Display dataset with updated data types
+```{r}
+str(student_por)
+```
+
+
+Display summary of clean data
+```{r}
+summary(student_por)
+```
+
+Write clean data csv file
+```{r}
+write.csv(student_por, "/Users/jamie/Documents/GitHub/programming-group-project/data/student-por_v3.csv")
+```
+

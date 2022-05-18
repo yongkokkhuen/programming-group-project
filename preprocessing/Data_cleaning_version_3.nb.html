@@ -11,7 +11,7 @@
 
 
 
-<title>R Notebook</title>
+<title>Data cleaning - Student Portuguese</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1760,7 +1760,7 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">R Notebook</h1>
+<h1 class="title toc-ignore">Data cleaning - Student Portuguese</h1>
 
 </div>
 
@@ -1772,42 +1772,17 @@ pre code {
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmBgYCJ9 -->
 <pre class="r"><code>library(dplyr)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZHBseXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
-<pre><code>
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Read datasets ‘student_mat’ and ‘student_por’</p>
+<p>Read dataset ‘student_por’</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9tYXQgPC0gcmVhZC5jc3YoJy9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LW1hdC5jc3YnLCBoZWFkZXIgPSBUUlVFLCBzZXAgPSBcIjtcIilcbnN0dWRlbnRfcG9yIDwtIHJlYWQuY3N2KCcvVXNlcnMvamFtaWUvRG9jdW1lbnRzL0dpdEh1Yi9wcm9ncmFtbWluZy1ncm91cC1wcm9qZWN0L2RhdGEvc3R1ZGVudC1wb3IuY3N2JywgaGVhZGVyID0gVFJVRSwgc2VwID0gXCI7XCIpXG5gYGAifQ== -->
-<pre class="r"><code>student_mat &lt;- read.csv(&#39;/Users/jamie/Documents/GitHub/programming-group-project/data/student-mat.csv&#39;, header = TRUE, sep = &quot;;&quot;)
-student_por &lt;- read.csv(&#39;/Users/jamie/Documents/GitHub/programming-group-project/data/student-por.csv&#39;, header = TRUE, sep = &quot;;&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9wb3IgPC0gcmVhZC5jc3YoJy9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LXBvci5jc3YnLCBoZWFkZXIgPSBUUlVFLCBzZXAgPSBcIjtcIilcbnN0cihzdHVkZW50X3BvcilcbmBgYCJ9 -->
+<pre class="r"><code>student_por &lt;- read.csv(&#39;/Users/jamie/Documents/GitHub/programming-group-project/data/student-por.csv&#39;, header = TRUE, sep = &quot;;&quot;)
+str(student_por)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Add column ‘subjects’ and populate with ‘mat’ and ‘por’, then
-combine</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9tYXQgPC0gbXV0YXRlKHN0dWRlbnRfbWF0LCBzdWJqZWN0PSdtYXQnIClcbnN0dWRlbnRfcG9yIDwtIG11dGF0ZShzdHVkZW50X3Bvciwgc3ViamVjdD0ncG9yJyApXG5cbnN0dWRlbnRfZGF0IDwtIHJiaW5kKHN0dWRlbnRfbWF0LCBzdHVkZW50X3BvcilcbnN0cihzdHVkZW50X2RhdClcbmBgYCJ9 -->
-<pre class="r"><code>student_mat &lt;- mutate(student_mat, subject=&#39;mat&#39; )
-student_por &lt;- mutate(student_por, subject=&#39;por&#39; )
-
-student_dat &lt;- rbind(student_mat, student_por)
-str(student_dat)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0MTA0NCBvYnMuIG9mICAzNCB2YXJpYWJsZXM6XG4gJCBzY2hvb2wgICAgOiBjaHIgIFwiR1BcIiBcIkdQXCIgXCJHUFwiIFwiR1BcIiAuLi5cbiAkIHNleCAgICAgICA6IGNociAgXCJGXCIgXCJGXCIgXCJGXCIgXCJGXCIgLi4uXG4gJCBhZ2UgICAgICAgOiBpbnQgIDE4IDE3IDE1IDE1IDE2IDE2IDE2IDE3IDE1IDE1IC4uLlxuICQgYWRkcmVzcyAgIDogY2hyICBcIlVcIiBcIlVcIiBcIlVcIiBcIlVcIiAuLi5cbiAkIGZhbXNpemUgICA6IGNociAgXCJHVDNcIiBcIkdUM1wiIFwiTEUzXCIgXCJHVDNcIiAuLi5cbiAkIFBzdGF0dXMgICA6IGNociAgXCJBXCIgXCJUXCIgXCJUXCIgXCJUXCIgLi4uXG4gJCBNZWR1ICAgICAgOiBpbnQgIDQgMSAxIDQgMyA0IDIgNCAzIDMgLi4uXG4gJCBGZWR1ICAgICAgOiBpbnQgIDQgMSAxIDIgMyAzIDIgNCAyIDQgLi4uXG4gJCBNam9iICAgICAgOiBjaHIgIFwiYXRfaG9tZVwiIFwiYXRfaG9tZVwiIFwiYXRfaG9tZVwiIFwiaGVhbHRoXCIgLi4uXG4gJCBGam9iICAgICAgOiBjaHIgIFwidGVhY2hlclwiIFwib3RoZXJcIiBcIm90aGVyXCIgXCJzZXJ2aWNlc1wiIC4uLlxuICQgcmVhc29uICAgIDogY2hyICBcImNvdXJzZVwiIFwiY291cnNlXCIgXCJvdGhlclwiIFwiaG9tZVwiIC4uLlxuICQgZ3VhcmRpYW4gIDogY2hyICBcIm1vdGhlclwiIFwiZmF0aGVyXCIgXCJtb3RoZXJcIiBcIm1vdGhlclwiIC4uLlxuICQgdHJhdmVsdGltZTogaW50ICAyIDEgMSAxIDEgMSAxIDIgMSAxIC4uLlxuICQgc3R1ZHl0aW1lIDogaW50ICAyIDIgMiAzIDIgMiAyIDIgMiAyIC4uLlxuICQgZmFpbHVyZXMgIDogaW50ICAwIDAgMyAwIDAgMCAwIDAgMCAwIC4uLlxuICQgc2Nob29sc3VwIDogY2hyICBcInllc1wiIFwibm9cIiBcInllc1wiIFwibm9cIiAuLi5cbiAkIGZhbXN1cCAgICA6IGNociAgXCJub1wiIFwieWVzXCIgXCJub1wiIFwieWVzXCIgLi4uXG4gJCBwYWlkICAgICAgOiBjaHIgIFwibm9cIiBcIm5vXCIgXCJ5ZXNcIiBcInllc1wiIC4uLlxuICQgYWN0aXZpdGllczogY2hyICBcIm5vXCIgXCJub1wiIFwibm9cIiBcInllc1wiIC4uLlxuICQgbnVyc2VyeSAgIDogY2hyICBcInllc1wiIFwibm9cIiBcInllc1wiIFwieWVzXCIgLi4uXG4gJCBoaWdoZXIgICAgOiBjaHIgIFwieWVzXCIgXCJ5ZXNcIiBcInllc1wiIFwieWVzXCIgLi4uXG4gJCBpbnRlcm5ldCAgOiBjaHIgIFwibm9cIiBcInllc1wiIFwieWVzXCIgXCJ5ZXNcIiAuLi5cbiAkIHJvbWFudGljICA6IGNociAgXCJub1wiIFwibm9cIiBcIm5vXCIgXCJ5ZXNcIiAuLi5cbiAkIGZhbXJlbCAgICA6IGludCAgNCA1IDQgMyA0IDUgNCA0IDQgNSAuLi5cbiAkIGZyZWV0aW1lICA6IGludCAgMyAzIDMgMiAzIDQgNCAxIDIgNSAuLi5cbiAkIGdvb3V0ICAgICA6IGludCAgNCAzIDIgMiAyIDIgNCA0IDIgMSAuLi5cbiAkIERhbGMgICAgICA6IGludCAgMSAxIDIgMSAxIDEgMSAxIDEgMSAuLi5cbiAkIFdhbGMgICAgICA6IGludCAgMSAxIDMgMSAyIDIgMSAxIDEgMSAuLi5cbiAkIGhlYWx0aCAgICA6IGludCAgMyAzIDMgNSA1IDUgMyAxIDEgNSAuLi5cbiAkIGFic2VuY2VzICA6IGludCAgNiA0IDEwIDIgNCAxMCAwIDYgMCAwIC4uLlxuICQgRzEgICAgICAgIDogaW50ICA1IDUgNyAxNSA2IDE1IDEyIDYgMTYgMTQgLi4uXG4gJCBHMiAgICAgICAgOiBpbnQgIDYgNSA4IDE0IDEwIDE1IDEyIDUgMTggMTUgLi4uXG4gJCBHMyAgICAgICAgOiBpbnQgIDYgNiAxMCAxNSAxMCAxNSAxMSA2IDE5IDE1IC4uLlxuICQgc3ViamVjdCAgIDogY2hyICBcIm1hdFwiIFwibWF0XCIgXCJtYXRcIiBcIm1hdFwiIC4uLlxuIn0= -->
-<pre><code>&#39;data.frame&#39;:   1044 obs. of  34 variables:
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0NjQ5IG9icy4gb2YgIDMzIHZhcmlhYmxlczpcbiAkIHNjaG9vbCAgICA6IGNociAgXCJHUFwiIFwiR1BcIiBcIkdQXCIgXCJHUFwiIC4uLlxuICQgc2V4ICAgICAgIDogY2hyICBcIkZcIiBcIkZcIiBcIkZcIiBcIkZcIiAuLi5cbiAkIGFnZSAgICAgICA6IGludCAgMTggMTcgMTUgMTUgMTYgMTYgMTYgMTcgMTUgMTUgLi4uXG4gJCBhZGRyZXNzICAgOiBjaHIgIFwiVVwiIFwiVVwiIFwiVVwiIFwiVVwiIC4uLlxuICQgZmFtc2l6ZSAgIDogY2hyICBcIkdUM1wiIFwiR1QzXCIgXCJMRTNcIiBcIkdUM1wiIC4uLlxuICQgUHN0YXR1cyAgIDogY2hyICBcIkFcIiBcIlRcIiBcIlRcIiBcIlRcIiAuLi5cbiAkIE1lZHUgICAgICA6IGludCAgNCAxIDEgNCAzIDQgMiA0IDMgMyAuLi5cbiAkIEZlZHUgICAgICA6IGludCAgNCAxIDEgMiAzIDMgMiA0IDIgNCAuLi5cbiAkIE1qb2IgICAgICA6IGNociAgXCJhdF9ob21lXCIgXCJhdF9ob21lXCIgXCJhdF9ob21lXCIgXCJoZWFsdGhcIiAuLi5cbiAkIEZqb2IgICAgICA6IGNociAgXCJ0ZWFjaGVyXCIgXCJvdGhlclwiIFwib3RoZXJcIiBcInNlcnZpY2VzXCIgLi4uXG4gJCByZWFzb24gICAgOiBjaHIgIFwiY291cnNlXCIgXCJjb3Vyc2VcIiBcIm90aGVyXCIgXCJob21lXCIgLi4uXG4gJCBndWFyZGlhbiAgOiBjaHIgIFwibW90aGVyXCIgXCJmYXRoZXJcIiBcIm1vdGhlclwiIFwibW90aGVyXCIgLi4uXG4gJCB0cmF2ZWx0aW1lOiBpbnQgIDIgMSAxIDEgMSAxIDEgMiAxIDEgLi4uXG4gJCBzdHVkeXRpbWUgOiBpbnQgIDIgMiAyIDMgMiAyIDIgMiAyIDIgLi4uXG4gJCBmYWlsdXJlcyAgOiBpbnQgIDAgMCAwIDAgMCAwIDAgMCAwIDAgLi4uXG4gJCBzY2hvb2xzdXAgOiBjaHIgIFwieWVzXCIgXCJub1wiIFwieWVzXCIgXCJub1wiIC4uLlxuICQgZmFtc3VwICAgIDogY2hyICBcIm5vXCIgXCJ5ZXNcIiBcIm5vXCIgXCJ5ZXNcIiAuLi5cbiAkIHBhaWQgICAgICA6IGNociAgXCJub1wiIFwibm9cIiBcIm5vXCIgXCJub1wiIC4uLlxuICQgYWN0aXZpdGllczogY2hyICBcIm5vXCIgXCJub1wiIFwibm9cIiBcInllc1wiIC4uLlxuICQgbnVyc2VyeSAgIDogY2hyICBcInllc1wiIFwibm9cIiBcInllc1wiIFwieWVzXCIgLi4uXG4gJCBoaWdoZXIgICAgOiBjaHIgIFwieWVzXCIgXCJ5ZXNcIiBcInllc1wiIFwieWVzXCIgLi4uXG4gJCBpbnRlcm5ldCAgOiBjaHIgIFwibm9cIiBcInllc1wiIFwieWVzXCIgXCJ5ZXNcIiAuLi5cbiAkIHJvbWFudGljICA6IGNociAgXCJub1wiIFwibm9cIiBcIm5vXCIgXCJ5ZXNcIiAuLi5cbiAkIGZhbXJlbCAgICA6IGludCAgNCA1IDQgMyA0IDUgNCA0IDQgNSAuLi5cbiAkIGZyZWV0aW1lICA6IGludCAgMyAzIDMgMiAzIDQgNCAxIDIgNSAuLi5cbiAkIGdvb3V0ICAgICA6IGludCAgNCAzIDIgMiAyIDIgNCA0IDIgMSAuLi5cbiAkIERhbGMgICAgICA6IGludCAgMSAxIDIgMSAxIDEgMSAxIDEgMSAuLi5cbiAkIFdhbGMgICAgICA6IGludCAgMSAxIDMgMSAyIDIgMSAxIDEgMSAuLi5cbiAkIGhlYWx0aCAgICA6IGludCAgMyAzIDMgNSA1IDUgMyAxIDEgNSAuLi5cbiAkIGFic2VuY2VzICA6IGludCAgNCAyIDYgMCAwIDYgMCAyIDAgMCAuLi5cbiAkIEcxICAgICAgICA6IGludCAgMCA5IDEyIDE0IDExIDEyIDEzIDEwIDE1IDEyIC4uLlxuICQgRzIgICAgICAgIDogaW50ICAxMSAxMSAxMyAxNCAxMyAxMiAxMiAxMyAxNiAxMiAuLi5cbiAkIEczICAgICAgICA6IGludCAgMTEgMTEgMTIgMTQgMTMgMTMgMTMgMTMgMTcgMTMgLi4uXG4ifQ== -->
+<pre><code>&#39;data.frame&#39;:   649 obs. of  33 variables:
  $ school    : chr  &quot;GP&quot; &quot;GP&quot; &quot;GP&quot; &quot;GP&quot; ...
  $ sex       : chr  &quot;F&quot; &quot;F&quot; &quot;F&quot; &quot;F&quot; ...
  $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
@@ -1822,10 +1797,10 @@ str(student_dat)</code></pre>
  $ guardian  : chr  &quot;mother&quot; &quot;father&quot; &quot;mother&quot; &quot;mother&quot; ...
  $ traveltime: int  2 1 1 1 1 1 1 2 1 1 ...
  $ studytime : int  2 2 2 3 2 2 2 2 2 2 ...
- $ failures  : int  0 0 3 0 0 0 0 0 0 0 ...
+ $ failures  : int  0 0 0 0 0 0 0 0 0 0 ...
  $ schoolsup : chr  &quot;yes&quot; &quot;no&quot; &quot;yes&quot; &quot;no&quot; ...
  $ famsup    : chr  &quot;no&quot; &quot;yes&quot; &quot;no&quot; &quot;yes&quot; ...
- $ paid      : chr  &quot;no&quot; &quot;no&quot; &quot;yes&quot; &quot;yes&quot; ...
+ $ paid      : chr  &quot;no&quot; &quot;no&quot; &quot;no&quot; &quot;no&quot; ...
  $ activities: chr  &quot;no&quot; &quot;no&quot; &quot;no&quot; &quot;yes&quot; ...
  $ nursery   : chr  &quot;yes&quot; &quot;no&quot; &quot;yes&quot; &quot;yes&quot; ...
  $ higher    : chr  &quot;yes&quot; &quot;yes&quot; &quot;yes&quot; &quot;yes&quot; ...
@@ -1837,108 +1812,164 @@ str(student_dat)</code></pre>
  $ Dalc      : int  1 1 2 1 1 1 1 1 1 1 ...
  $ Walc      : int  1 1 3 1 2 2 1 1 1 1 ...
  $ health    : int  3 3 3 5 5 5 3 1 1 5 ...
- $ absences  : int  6 4 10 2 4 10 0 6 0 0 ...
- $ G1        : int  5 5 7 15 6 15 12 6 16 14 ...
- $ G2        : int  6 5 8 14 10 15 12 5 18 15 ...
- $ G3        : int  6 6 10 15 10 15 11 6 19 15 ...
- $ subject   : chr  &quot;mat&quot; &quot;mat&quot; &quot;mat&quot; &quot;mat&quot; ...</code></pre>
+ $ absences  : int  4 2 6 0 0 6 0 2 0 0 ...
+ $ G1        : int  0 9 12 14 11 12 13 10 15 12 ...
+ $ G2        : int  11 11 13 14 13 12 12 13 16 12 ...
+ $ G3        : int  11 11 12 14 13 13 13 13 17 13 ...</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Check for missing data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUoaXMubmEoc3R1ZGVudF9kYXQpKVxuYGBgIn0= -->
-<pre class="r"><code>table(is.na(student_dat))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUoaXMubmEoc3R1ZGVudF9wb3IpKVxuYGBgIn0= -->
+<pre class="r"><code>table(is.na(student_por))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5GQUxTRSBcbjM1NDk2IFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5GQUxTRSBcbjIxNDE3IFxuIn0= -->
 <pre><code>
 FALSE 
-35496 </code></pre>
+21417 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Changing data type ‘chr’ to ‘factor’</p>
+<p>Change data type ‘chr’ to ‘factor’</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9kYXQkc2Nob29sIDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JHNjaG9vbClcbnN0dWRlbnRfZGF0JHNleDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JHNleClcbnN0dWRlbnRfZGF0JGFkZHJlc3M8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRhZGRyZXNzKVxuc3R1ZGVudF9kYXQkZmFtc2l6ZTwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JGZhbXNpemUpXG5zdHVkZW50X2RhdCRQc3RhdHVzPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkUHN0YXR1cylcbnN0dWRlbnRfZGF0JE1qb2I8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRNam9iKVxuc3R1ZGVudF9kYXQkRmpvYjwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JEZqb2IpXG5zdHVkZW50X2RhdCRyZWFzb248LWFzLmZhY3RvcihzdHVkZW50X2RhdCRyZWFzb24pXG5zdHVkZW50X2RhdCRndWFyZGlhbjwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JGd1YXJkaWFuKVxuc3R1ZGVudF9kYXQkc2Nob29sc3VwPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkc2Nob29sc3VwKVxuc3R1ZGVudF9kYXQkZmFtc3VwPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkZmFtc3VwKVxuc3R1ZGVudF9kYXQkcGFpZDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JHBhaWQpXG5zdHVkZW50X2RhdCRhY3Rpdml0aWVzPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkYWN0aXZpdGllcylcbnN0dWRlbnRfZGF0JG51cnNlcnk8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRudXJzZXJ5KVxuc3R1ZGVudF9kYXQkaGlnaGVyPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkaGlnaGVyKVxuc3R1ZGVudF9kYXQkaW50ZXJuZXQ8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRpbnRlcm5ldClcbnN0dWRlbnRfZGF0JHJvbWFudGljPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkcm9tYW50aWMpXG5zdHVkZW50X2RhdCRzdWJqZWN0PC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkc3ViamVjdClcbmBgYCJ9 -->
-<pre class="r"><code>student_dat$school &lt;-as.factor(student_dat$school)
-student_dat$sex&lt;-as.factor(student_dat$sex)
-student_dat$address&lt;-as.factor(student_dat$address)
-student_dat$famsize&lt;-as.factor(student_dat$famsize)
-student_dat$Pstatus&lt;-as.factor(student_dat$Pstatus)
-student_dat$Mjob&lt;-as.factor(student_dat$Mjob)
-student_dat$Fjob&lt;-as.factor(student_dat$Fjob)
-student_dat$reason&lt;-as.factor(student_dat$reason)
-student_dat$guardian&lt;-as.factor(student_dat$guardian)
-student_dat$schoolsup&lt;-as.factor(student_dat$schoolsup)
-student_dat$famsup&lt;-as.factor(student_dat$famsup)
-student_dat$paid&lt;-as.factor(student_dat$paid)
-student_dat$activities&lt;-as.factor(student_dat$activities)
-student_dat$nursery&lt;-as.factor(student_dat$nursery)
-student_dat$higher&lt;-as.factor(student_dat$higher)
-student_dat$internet&lt;-as.factor(student_dat$internet)
-student_dat$romantic&lt;-as.factor(student_dat$romantic)
-student_dat$subject&lt;-as.factor(student_dat$subject)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9wb3Ikc2Nob29sIDwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHNjaG9vbClcbnN0dWRlbnRfcG9yJHNleDwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHNleClcbnN0dWRlbnRfcG9yJGFkZHJlc3M8LWFzLmZhY3RvcihzdHVkZW50X3BvciRhZGRyZXNzKVxuc3R1ZGVudF9wb3IkZmFtc2l6ZTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJGZhbXNpemUpXG5zdHVkZW50X3BvciRQc3RhdHVzPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkUHN0YXR1cylcbnN0dWRlbnRfcG9yJE1qb2I8LWFzLmZhY3RvcihzdHVkZW50X3BvciRNam9iKVxuc3R1ZGVudF9wb3IkRmpvYjwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJEZqb2IpXG5zdHVkZW50X3BvciRyZWFzb248LWFzLmZhY3RvcihzdHVkZW50X3BvciRyZWFzb24pXG5zdHVkZW50X3BvciRndWFyZGlhbjwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJGd1YXJkaWFuKVxuc3R1ZGVudF9wb3Ikc2Nob29sc3VwPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3Ikc2Nob29sc3VwKVxuc3R1ZGVudF9wb3IkZmFtc3VwPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkZmFtc3VwKVxuc3R1ZGVudF9wb3IkcGFpZDwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHBhaWQpXG5zdHVkZW50X3BvciRhY3Rpdml0aWVzPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkYWN0aXZpdGllcylcbnN0dWRlbnRfcG9yJG51cnNlcnk8LWFzLmZhY3RvcihzdHVkZW50X3BvciRudXJzZXJ5KVxuc3R1ZGVudF9wb3IkaGlnaGVyPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkaGlnaGVyKVxuc3R1ZGVudF9wb3IkaW50ZXJuZXQ8LWFzLmZhY3RvcihzdHVkZW50X3BvciRpbnRlcm5ldClcbnN0dWRlbnRfcG9yJHJvbWFudGljPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3Ikcm9tYW50aWMpXG5zdHVkZW50X3BvciRNZWR1PC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkTWVkdSlcbnN0dWRlbnRfcG9yJEZlZHU8LWFzLmZhY3RvcihzdHVkZW50X3BvciRGZWR1KVxuc3R1ZGVudF9wb3IkdHJhdmVsdGltZTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHRyYXZlbHRpbWUpXG5zdHVkZW50X3BvciRzdHVkeXRpbWU8LWFzLmZhY3RvcihzdHVkZW50X3BvciRzdHVkeXRpbWUpXG5zdHVkZW50X3BvciRmYW1yZWw8LWFzLmZhY3RvcihzdHVkZW50X3BvciRmYW1yZWwpXG5zdHVkZW50X3BvciRmcmVldGltZTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJGZyZWV0aW1lKVxuc3R1ZGVudF9wb3IkZ29vdXQ8LWFzLmZhY3RvcihzdHVkZW50X3BvciRnb291dClcbnN0dWRlbnRfcG9yJERhbGM8LWFzLmZhY3RvcihzdHVkZW50X3BvciREYWxjKVxuc3R1ZGVudF9wb3IkV2FsYzwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJFdhbGMpXG5zdHVkZW50X3BvciRoZWFsdGg8LWFzLmZhY3RvcihzdHVkZW50X3BvciRoZWFsdGgpXG5gYGAifQ== -->
+<pre class="r"><code>student_por$school &lt;-as.factor(student_por$school)
+student_por$sex&lt;-as.factor(student_por$sex)
+student_por$address&lt;-as.factor(student_por$address)
+student_por$famsize&lt;-as.factor(student_por$famsize)
+student_por$Pstatus&lt;-as.factor(student_por$Pstatus)
+student_por$Mjob&lt;-as.factor(student_por$Mjob)
+student_por$Fjob&lt;-as.factor(student_por$Fjob)
+student_por$reason&lt;-as.factor(student_por$reason)
+student_por$guardian&lt;-as.factor(student_por$guardian)
+student_por$schoolsup&lt;-as.factor(student_por$schoolsup)
+student_por$famsup&lt;-as.factor(student_por$famsup)
+student_por$paid&lt;-as.factor(student_por$paid)
+student_por$activities&lt;-as.factor(student_por$activities)
+student_por$nursery&lt;-as.factor(student_por$nursery)
+student_por$higher&lt;-as.factor(student_por$higher)
+student_por$internet&lt;-as.factor(student_por$internet)
+student_por$romantic&lt;-as.factor(student_por$romantic)
+student_por$Medu&lt;-as.factor(student_por$Medu)
+student_por$Fedu&lt;-as.factor(student_por$Fedu)
+student_por$traveltime&lt;-as.factor(student_por$traveltime)
+student_por$studytime&lt;-as.factor(student_por$studytime)
+student_por$famrel&lt;-as.factor(student_por$famrel)
+student_por$freetime&lt;-as.factor(student_por$freetime)
+student_por$goout&lt;-as.factor(student_por$goout)
+student_por$Dalc&lt;-as.factor(student_por$Dalc)
+student_por$Walc&lt;-as.factor(student_por$Walc)
+student_por$health&lt;-as.factor(student_por$health)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Add column ‘status’ containing ‘fail: G3&lt;=10’ or ‘pass:
+G3&gt;10’</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3R1ZGVudF9wb3I8LSBtdXRhdGUoc3R1ZGVudF9wb3IsIHJlc3VsdD0gaWZlbHNlKHN0dWRlbnRfcG9yJEczPjExLFwicGFzc1wiLFwiZmFpbFwiKSlcbnN0dWRlbnRfcG9yJHJlc3VsdCA8LSBhcy5mYWN0b3Ioc3R1ZGVudF9wb3IkcmVzdWx0KVxuYGBgIn0= -->
+<pre class="r"><code>student_por&lt;- mutate(student_por, result= ifelse(student_por$G3&gt;11,&quot;pass&quot;,&quot;fail&quot;))
+student_por$result &lt;- as.factor(student_por$result)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Display dataset with updated data types</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKHN0dWRlbnRfcG9yKVxuYGBgIn0= -->
+<pre class="r"><code>str(student_por)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiJ2RhdGEuZnJhbWUnOlx0NjQ5IG9icy4gb2YgIDM0IHZhcmlhYmxlczpcbiAkIHNjaG9vbCAgICA6IEZhY3RvciB3LyAyIGxldmVscyBcIkdQXCIsXCJNU1wiOiAxIDEgMSAxIDEgMSAxIDEgMSAxIC4uLlxuICQgc2V4ICAgICAgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwiRlwiLFwiTVwiOiAxIDEgMSAxIDEgMiAyIDEgMiAyIC4uLlxuICQgYWdlICAgICAgIDogaW50ICAxOCAxNyAxNSAxNSAxNiAxNiAxNiAxNyAxNSAxNSAuLi5cbiAkIGFkZHJlc3MgICA6IEZhY3RvciB3LyAyIGxldmVscyBcIlJcIixcIlVcIjogMiAyIDIgMiAyIDIgMiAyIDIgMiAuLi5cbiAkIGZhbXNpemUgICA6IEZhY3RvciB3LyAyIGxldmVscyBcIkdUM1wiLFwiTEUzXCI6IDEgMSAyIDEgMSAyIDIgMSAyIDEgLi4uXG4gJCBQc3RhdHVzICAgOiBGYWN0b3Igdy8gMiBsZXZlbHMgXCJBXCIsXCJUXCI6IDEgMiAyIDIgMiAyIDIgMSAxIDIgLi4uXG4gJCBNZWR1ICAgICAgOiBGYWN0b3Igdy8gNSBsZXZlbHMgXCIwXCIsXCIxXCIsXCIyXCIsXCIzXCIsLi46IDUgMiAyIDUgNCA1IDMgNSA0IDQgLi4uXG4gJCBGZWR1ICAgICAgOiBGYWN0b3Igdy8gNSBsZXZlbHMgXCIwXCIsXCIxXCIsXCIyXCIsXCIzXCIsLi46IDUgMiAyIDMgNCA0IDMgNSAzIDUgLi4uXG4gJCBNam9iICAgICAgOiBGYWN0b3Igdy8gNSBsZXZlbHMgXCJhdF9ob21lXCIsXCJoZWFsdGhcIiwuLjogMSAxIDEgMiAzIDQgMyAzIDQgMyAuLi5cbiAkIEZqb2IgICAgICA6IEZhY3RvciB3LyA1IGxldmVscyBcImF0X2hvbWVcIixcImhlYWx0aFwiLC4uOiA1IDMgMyA0IDMgMyAzIDUgMyAzIC4uLlxuICQgcmVhc29uICAgIDogRmFjdG9yIHcvIDQgbGV2ZWxzIFwiY291cnNlXCIsXCJob21lXCIsLi46IDEgMSAzIDIgMiA0IDIgMiAyIDIgLi4uXG4gJCBndWFyZGlhbiAgOiBGYWN0b3Igdy8gMyBsZXZlbHMgXCJmYXRoZXJcIixcIm1vdGhlclwiLC4uOiAyIDEgMiAyIDEgMiAyIDIgMiAyIC4uLlxuICQgdHJhdmVsdGltZTogRmFjdG9yIHcvIDQgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiOiAyIDEgMSAxIDEgMSAxIDIgMSAxIC4uLlxuICQgc3R1ZHl0aW1lIDogRmFjdG9yIHcvIDQgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiOiAyIDIgMiAzIDIgMiAyIDIgMiAyIC4uLlxuICQgZmFpbHVyZXMgIDogaW50ICAwIDAgMCAwIDAgMCAwIDAgMCAwIC4uLlxuICQgc2Nob29sc3VwIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAyIDEgMiAxIDEgMSAxIDIgMSAxIC4uLlxuICQgZmFtc3VwICAgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAxIDIgMSAyIDIgMiAxIDIgMiAyIC4uLlxuICQgcGFpZCAgICAgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAxIDEgMSAxIDEgMSAxIDEgMSAxIC4uLlxuICQgYWN0aXZpdGllczogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAxIDEgMSAyIDEgMiAxIDEgMSAyIC4uLlxuICQgbnVyc2VyeSAgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAyIDEgMiAyIDIgMiAyIDIgMiAyIC4uLlxuICQgaGlnaGVyICAgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAyIDIgMiAyIDIgMiAyIDIgMiAyIC4uLlxuICQgaW50ZXJuZXQgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAxIDIgMiAyIDEgMiAyIDEgMiAyIC4uLlxuICQgcm9tYW50aWMgIDogRmFjdG9yIHcvIDIgbGV2ZWxzIFwibm9cIixcInllc1wiOiAxIDEgMSAyIDEgMSAxIDEgMSAxIC4uLlxuICQgZmFtcmVsICAgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiA0IDUgNCAzIDQgNSA0IDQgNCA1IC4uLlxuICQgZnJlZXRpbWUgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiAzIDMgMyAyIDMgNCA0IDEgMiA1IC4uLlxuICQgZ29vdXQgICAgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiA0IDMgMiAyIDIgMiA0IDQgMiAxIC4uLlxuICQgRGFsYyAgICAgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiAxIDEgMiAxIDEgMSAxIDEgMSAxIC4uLlxuICQgV2FsYyAgICAgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiAxIDEgMyAxIDIgMiAxIDEgMSAxIC4uLlxuICQgaGVhbHRoICAgIDogRmFjdG9yIHcvIDUgbGV2ZWxzIFwiMVwiLFwiMlwiLFwiM1wiLFwiNFwiLC4uOiAzIDMgMyA1IDUgNSAzIDEgMSA1IC4uLlxuICQgYWJzZW5jZXMgIDogaW50ICA0IDIgNiAwIDAgNiAwIDIgMCAwIC4uLlxuICQgRzEgICAgICAgIDogaW50ICAwIDkgMTIgMTQgMTEgMTIgMTMgMTAgMTUgMTIgLi4uXG4gJCBHMiAgICAgICAgOiBpbnQgIDExIDExIDEzIDE0IDEzIDEyIDEyIDEzIDE2IDEyIC4uLlxuICQgRzMgICAgICAgIDogaW50ICAxMSAxMSAxMiAxNCAxMyAxMyAxMyAxMyAxNyAxMyAuLi5cbiAkIHJlc3VsdCAgICA6IEZhY3RvciB3LyAyIGxldmVscyBcImZhaWxcIixcInBhc3NcIjogMSAxIDIgMiAyIDIgMiAyIDIgMiAuLi5cbiJ9 -->
+<pre><code>&#39;data.frame&#39;:   649 obs. of  34 variables:
+ $ school    : Factor w/ 2 levels &quot;GP&quot;,&quot;MS&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+ $ sex       : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 2 2 1 2 2 ...
+ $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
+ $ address   : Factor w/ 2 levels &quot;R&quot;,&quot;U&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+ $ famsize   : Factor w/ 2 levels &quot;GT3&quot;,&quot;LE3&quot;: 1 1 2 1 1 2 2 1 2 1 ...
+ $ Pstatus   : Factor w/ 2 levels &quot;A&quot;,&quot;T&quot;: 1 2 2 2 2 2 2 1 1 2 ...
+ $ Medu      : Factor w/ 5 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 5 2 2 5 4 5 3 5 4 4 ...
+ $ Fedu      : Factor w/ 5 levels &quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,..: 5 2 2 3 4 4 3 5 3 5 ...
+ $ Mjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 1 1 1 2 3 4 3 3 4 3 ...
+ $ Fjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 5 3 3 4 3 3 3 5 3 3 ...
+ $ reason    : Factor w/ 4 levels &quot;course&quot;,&quot;home&quot;,..: 1 1 3 2 2 4 2 2 2 2 ...
+ $ guardian  : Factor w/ 3 levels &quot;father&quot;,&quot;mother&quot;,..: 2 1 2 2 1 2 2 2 2 2 ...
+ $ traveltime: Factor w/ 4 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;: 2 1 1 1 1 1 1 2 1 1 ...
+ $ studytime : Factor w/ 4 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;: 2 2 2 3 2 2 2 2 2 2 ...
+ $ failures  : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ schoolsup : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 1 1 1 1 2 1 1 ...
+ $ famsup    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 1 2 2 2 1 2 2 2 ...
+ $ paid      : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+ $ activities: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 2 1 1 1 2 ...
+ $ nursery   : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 2 2 2 2 2 2 2 ...
+ $ higher    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+ $ internet  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 2 2 1 2 2 1 2 2 ...
+ $ romantic  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 1 1 1 1 1 ...
+ $ famrel    : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 4 5 4 3 4 5 4 4 4 5 ...
+ $ freetime  : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 3 3 3 2 3 4 4 1 2 5 ...
+ $ goout     : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 4 3 2 2 2 2 4 4 2 1 ...
+ $ Dalc      : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 1 2 1 1 1 1 1 1 1 ...
+ $ Walc      : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 1 3 1 2 2 1 1 1 1 ...
+ $ health    : Factor w/ 5 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 3 3 3 5 5 5 3 1 1 5 ...
+ $ absences  : int  4 2 6 0 0 6 0 2 0 0 ...
+ $ G1        : int  0 9 12 14 11 12 13 10 15 12 ...
+ $ G2        : int  11 11 13 14 13 12 12 13 16 12 ...
+ $ G3        : int  11 11 12 14 13 13 13 13 17 13 ...
+ $ result    : Factor w/ 2 levels &quot;fail&quot;,&quot;pass&quot;: 1 1 2 2 2 2 2 2 2 2 ...</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Display summary of clean data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShzdHVkZW50X2RhdClcbmBgYCJ9 -->
-<pre class="r"><code>summary(student_dat)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShzdHVkZW50X3BvcilcbmBgYCJ9 -->
+<pre class="r"><code>summary(student_por)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIHNjaG9vbCAgIHNleCAgICAgICAgICBhZ2UgICAgICAgIGFkZHJlc3MgZmFtc2l6ZSAgIFBzdGF0dXMgICAgICBNZWR1ICAgICAgICAgICAgRmVkdSAgICAgICAgICAgICBNam9iICAgIFxuIEdQOjc3MiAgIEY6NTkxICAgTWluLiAgIDoxNS4wMCAgIFI6Mjg1ICAgR1QzOjczOCAgIEE6MTIxICAgTWluLiAgIDowLjAwMCAgIE1pbi4gICA6MC4wMDAgICBhdF9ob21lIDoxOTQgIFxuIE1TOjI3MiAgIE06NDUzICAgMXN0IFF1LjoxNi4wMCAgIFU6NzU5ICAgTEUzOjMwNiAgIFQ6OTIzICAgMXN0IFF1LjoyLjAwMCAgIDFzdCBRdS46MS4wMDAgICBoZWFsdGggIDogODIgIFxuICAgICAgICAgICAgICAgICAgTWVkaWFuIDoxNy4wMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVkaWFuIDozLjAwMCAgIE1lZGlhbiA6Mi4wMDAgICBvdGhlciAgIDozOTkgIFxuICAgICAgICAgICAgICAgICAgTWVhbiAgIDoxNi43MyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDoyLjYwMyAgIE1lYW4gICA6Mi4zODggICBzZXJ2aWNlczoyMzkgIFxuICAgICAgICAgICAgICAgICAgM3JkIFF1LjoxOC4wMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgM3JkIFF1Ljo0LjAwMCAgIDNyZCBRdS46My4wMDAgICB0ZWFjaGVyIDoxMzAgIFxuICAgICAgICAgICAgICAgICAgTWF4LiAgIDoyMi4wMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDo0LjAwMCAgIE1heC4gICA6NC4wMDAgICAgICAgICAgICAgICAgIFxuICAgICAgIEZqb2IgICAgICAgICAgICByZWFzb24gICAgICBndWFyZGlhbiAgICAgdHJhdmVsdGltZSAgICAgIHN0dWR5dGltZSAgICAgICBmYWlsdXJlcyAgICAgIHNjaG9vbHN1cFxuIGF0X2hvbWUgOiA2MiAgIGNvdXJzZSAgICA6NDMwICAgZmF0aGVyOjI0MyAgIE1pbi4gICA6MS4wMDAgICBNaW4uICAgOjEuMDAgICBNaW4uICAgOjAuMDAwMCAgIG5vIDo5MjUgIFxuIGhlYWx0aCAgOiA0MSAgIGhvbWUgICAgICA6MjU4ICAgbW90aGVyOjcyOCAgIDFzdCBRdS46MS4wMDAgICAxc3QgUXUuOjEuMDAgICAxc3QgUXUuOjAuMDAwMCAgIHllczoxMTkgIFxuIG90aGVyICAgOjU4NCAgIG90aGVyICAgICA6MTA4ICAgb3RoZXIgOiA3MyAgIE1lZGlhbiA6MS4wMDAgICBNZWRpYW4gOjIuMDAgICBNZWRpYW4gOjAuMDAwMCAgICAgICAgICAgIFxuIHNlcnZpY2VzOjI5MiAgIHJlcHV0YXRpb246MjQ4ICAgICAgICAgICAgICAgIE1lYW4gICA6MS41MjMgICBNZWFuICAgOjEuOTcgICBNZWFuICAgOjAuMjY0NCAgICAgICAgICAgIFxuIHRlYWNoZXIgOiA2NSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNyZCBRdS46Mi4wMDAgICAzcmQgUXUuOjIuMDAgICAzcmQgUXUuOjAuMDAwMCAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE1heC4gICA6NC4wMDAgICBNYXguICAgOjQuMDAgICBNYXguICAgOjMuMDAwMCAgICAgICAgICAgIFxuIGZhbXN1cCAgICAgcGFpZCAgICAgYWN0aXZpdGllcyBudXJzZXJ5ICAgaGlnaGVyICAgIGludGVybmV0ICByb21hbnRpYyAgICAgIGZhbXJlbCAgICAgICAgIGZyZWV0aW1lICAgIFxuIG5vIDo0MDQgICBubyA6ODI0ICAgbm8gOjUyOCAgICBubyA6MjA5ICAgbm8gOiA4OSAgIG5vIDoyMTcgICBubyA6NjczICAgTWluLiAgIDoxLjAwMCAgIE1pbi4gICA6MS4wMDAgIFxuIHllczo2NDAgICB5ZXM6MjIwICAgeWVzOjUxNiAgICB5ZXM6ODM1ICAgeWVzOjk1NSAgIHllczo4MjcgICB5ZXM6MzcxICAgMXN0IFF1Ljo0LjAwMCAgIDFzdCBRdS46My4wMDAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVkaWFuIDo0LjAwMCAgIE1lZGlhbiA6My4wMDAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDozLjkzNiAgIE1lYW4gICA6My4yMDEgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgM3JkIFF1Ljo1LjAwMCAgIDNyZCBRdS46NC4wMDAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDo1LjAwMCAgIE1heC4gICA6NS4wMDAgIFxuICAgICBnb291dCAgICAgICAgICAgIERhbGMgICAgICAgICAgICBXYWxjICAgICAgICAgICBoZWFsdGggICAgICAgICBhYnNlbmNlcyAgICAgICAgICAgIEcxICAgICAgIFxuIE1pbi4gICA6MS4wMDAgICBNaW4uICAgOjEuMDAwICAgTWluLiAgIDoxLjAwMCAgIE1pbi4gICA6MS4wMDAgICBNaW4uICAgOiAwLjAwMCAgIE1pbi4gICA6IDAuMDAgIFxuIDFzdCBRdS46Mi4wMDAgICAxc3QgUXUuOjEuMDAwICAgMXN0IFF1LjoxLjAwMCAgIDFzdCBRdS46My4wMDAgICAxc3QgUXUuOiAwLjAwMCAgIDFzdCBRdS46IDkuMDAgIFxuIE1lZGlhbiA6My4wMDAgICBNZWRpYW4gOjEuMDAwICAgTWVkaWFuIDoyLjAwMCAgIE1lZGlhbiA6NC4wMDAgICBNZWRpYW4gOiAyLjAwMCAgIE1lZGlhbiA6MTEuMDAgIFxuIE1lYW4gICA6My4xNTYgICBNZWFuICAgOjEuNDk0ICAgTWVhbiAgIDoyLjI4NCAgIE1lYW4gICA6My41NDMgICBNZWFuICAgOiA0LjQzNSAgIE1lYW4gICA6MTEuMjEgIFxuIDNyZCBRdS46NC4wMDAgICAzcmQgUXUuOjIuMDAwICAgM3JkIFF1LjozLjAwMCAgIDNyZCBRdS46NS4wMDAgICAzcmQgUXUuOiA2LjAwMCAgIDNyZCBRdS46MTMuMDAgIFxuIE1heC4gICA6NS4wMDAgICBNYXguICAgOjUuMDAwICAgTWF4LiAgIDo1LjAwMCAgIE1heC4gICA6NS4wMDAgICBNYXguICAgOjc1LjAwMCAgIE1heC4gICA6MTkuMDAgIFxuICAgICAgIEcyICAgICAgICAgICAgICBHMyAgICAgICAgc3ViamVjdCAgXG4gTWluLiAgIDogMC4wMCAgIE1pbi4gICA6IDAuMDAgICBtYXQ6Mzk1ICBcbiAxc3QgUXUuOiA5LjAwICAgMXN0IFF1LjoxMC4wMCAgIHBvcjo2NDkgIFxuIE1lZGlhbiA6MTEuMDAgICBNZWRpYW4gOjExLjAwICAgICAgICAgICAgXG4gTWVhbiAgIDoxMS4yNSAgIE1lYW4gICA6MTEuMzQgICAgICAgICAgICBcbiAzcmQgUXUuOjEzLjAwICAgM3JkIFF1LjoxNC4wMCAgICAgICAgICAgIFxuIE1heC4gICA6MTkuMDAgICBNYXguICAgOjIwLjAwICAgICAgICAgICAgXG4ifQ== -->
-<pre><code> school   sex          age        address famsize   Pstatus      Medu            Fedu             Mjob    
- GP:772   F:591   Min.   :15.00   R:285   GT3:738   A:121   Min.   :0.000   Min.   :0.000   at_home :194  
- MS:272   M:453   1st Qu.:16.00   U:759   LE3:306   T:923   1st Qu.:2.000   1st Qu.:1.000   health  : 82  
-                  Median :17.00                             Median :3.000   Median :2.000   other   :399  
-                  Mean   :16.73                             Mean   :2.603   Mean   :2.388   services:239  
-                  3rd Qu.:18.00                             3rd Qu.:4.000   3rd Qu.:3.000   teacher :130  
-                  Max.   :22.00                             Max.   :4.000   Max.   :4.000                 
-       Fjob            reason      guardian     traveltime      studytime       failures      schoolsup
- at_home : 62   course    :430   father:243   Min.   :1.000   Min.   :1.00   Min.   :0.0000   no :925  
- health  : 41   home      :258   mother:728   1st Qu.:1.000   1st Qu.:1.00   1st Qu.:0.0000   yes:119  
- other   :584   other     :108   other : 73   Median :1.000   Median :2.00   Median :0.0000            
- services:292   reputation:248                Mean   :1.523   Mean   :1.97   Mean   :0.2644            
- teacher : 65                                 3rd Qu.:2.000   3rd Qu.:2.00   3rd Qu.:0.0000            
-                                              Max.   :4.000   Max.   :4.00   Max.   :3.0000            
- famsup     paid     activities nursery   higher    internet  romantic      famrel         freetime    
- no :404   no :824   no :528    no :209   no : 89   no :217   no :673   Min.   :1.000   Min.   :1.000  
- yes:640   yes:220   yes:516    yes:835   yes:955   yes:827   yes:371   1st Qu.:4.000   1st Qu.:3.000  
-                                                                        Median :4.000   Median :3.000  
-                                                                        Mean   :3.936   Mean   :3.201  
-                                                                        3rd Qu.:5.000   3rd Qu.:4.000  
-                                                                        Max.   :5.000   Max.   :5.000  
-     goout            Dalc            Walc           health         absences            G1       
- Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   :1.000   Min.   : 0.000   Min.   : 0.00  
- 1st Qu.:2.000   1st Qu.:1.000   1st Qu.:1.000   1st Qu.:3.000   1st Qu.: 0.000   1st Qu.: 9.00  
- Median :3.000   Median :1.000   Median :2.000   Median :4.000   Median : 2.000   Median :11.00  
- Mean   :3.156   Mean   :1.494   Mean   :2.284   Mean   :3.543   Mean   : 4.435   Mean   :11.21  
- 3rd Qu.:4.000   3rd Qu.:2.000   3rd Qu.:3.000   3rd Qu.:5.000   3rd Qu.: 6.000   3rd Qu.:13.00  
- Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :5.000   Max.   :75.000   Max.   :19.00  
-       G2              G3        subject  
- Min.   : 0.00   Min.   : 0.00   mat:395  
- 1st Qu.: 9.00   1st Qu.:10.00   por:649  
- Median :11.00   Median :11.00            
- Mean   :11.25   Mean   :11.34            
- 3rd Qu.:13.00   3rd Qu.:14.00            
- Max.   :19.00   Max.   :20.00            </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIHNjaG9vbCAgIHNleCAgICAgICAgICBhZ2UgICAgICAgIGFkZHJlc3MgZmFtc2l6ZSAgIFBzdGF0dXMgTWVkdSAgICBGZWR1ICAgICAgICAgIE1qb2IgICAgICAgICAgIEZqb2IgICAgXG4gR1A6NDIzICAgRjozODMgICBNaW4uICAgOjE1LjAwICAgUjoxOTcgICBHVDM6NDU3ICAgQTogODAgICAwOiAgNiAgIDA6ICA3ICAgYXRfaG9tZSA6MTM1ICAgYXRfaG9tZSA6IDQyICBcbiBNUzoyMjYgICBNOjI2NiAgIDFzdCBRdS46MTYuMDAgICBVOjQ1MiAgIExFMzoxOTIgICBUOjU2OSAgIDE6MTQzICAgMToxNzQgICBoZWFsdGggIDogNDggICBoZWFsdGggIDogMjMgIFxuICAgICAgICAgICAgICAgICAgTWVkaWFuIDoxNy4wMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjoxODYgICAyOjIwOSAgIG90aGVyICAgOjI1OCAgIG90aGVyICAgOjM2NyAgXG4gICAgICAgICAgICAgICAgICBNZWFuICAgOjE2Ljc0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAzOjEzOSAgIDM6MTMxICAgc2VydmljZXM6MTM2ICAgc2VydmljZXM6MTgxICBcbiAgICAgICAgICAgICAgICAgIDNyZCBRdS46MTguMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDQ6MTc1ICAgNDoxMjggICB0ZWFjaGVyIDogNzIgICB0ZWFjaGVyIDogMzYgIFxuICAgICAgICAgICAgICAgICAgTWF4LiAgIDoyMi4wMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgICAgIHJlYXNvbiAgICAgIGd1YXJkaWFuICAgdHJhdmVsdGltZSBzdHVkeXRpbWUgICAgZmFpbHVyZXMgICAgICBzY2hvb2xzdXAgZmFtc3VwICAgICBwYWlkICAgICBhY3Rpdml0aWVzXG4gY291cnNlICAgIDoyODUgICBmYXRoZXI6MTUzICAgMTozNjYgICAgICAxOjIxMiAgICAgTWluLiAgIDowLjAwMDAgICBubyA6NTgxICAgbm8gOjI1MSAgIG5vIDo2MTAgICBubyA6MzM0ICAgXG4gaG9tZSAgICAgIDoxNDkgICBtb3RoZXI6NDU1ICAgMjoyMTMgICAgICAyOjMwNSAgICAgMXN0IFF1LjowLjAwMDAgICB5ZXM6IDY4ICAgeWVzOjM5OCAgIHllczogMzkgICB5ZXM6MzE1ICAgXG4gb3RoZXIgICAgIDogNzIgICBvdGhlciA6IDQxICAgMzogNTQgICAgICAzOiA5NyAgICAgTWVkaWFuIDowLjAwMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gcmVwdXRhdGlvbjoxNDMgICAgICAgICAgICAgICAgNDogMTYgICAgICA0OiAzNSAgICAgTWVhbiAgIDowLjIyMTkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgM3JkIFF1LjowLjAwMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDozLjAwMDAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gbnVyc2VyeSAgIGhpZ2hlciAgICBpbnRlcm5ldCAgcm9tYW50aWMgIGZhbXJlbCAgZnJlZXRpbWUgZ29vdXQgICBEYWxjICAgIFdhbGMgICAgaGVhbHRoICAgICBhYnNlbmNlcyAgICAgXG4gbm8gOjEyOCAgIG5vIDogNjkgICBubyA6MTUxICAgbm8gOjQxMCAgIDE6IDIyICAgMTogNDUgICAgMTogNDggICAxOjQ1MSAgIDE6MjQ3ICAgMTogOTAgICBNaW4uICAgOiAwLjAwMCAgXG4geWVzOjUyMSAgIHllczo1ODAgICB5ZXM6NDk4ICAgeWVzOjIzOSAgIDI6IDI5ICAgMjoxMDcgICAgMjoxNDUgICAyOjEyMSAgIDI6MTUwICAgMjogNzggICAxc3QgUXUuOiAwLjAwMCAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDM6MTAxICAgMzoyNTEgICAgMzoyMDUgICAzOiA0MyAgIDM6MTIwICAgMzoxMjQgICBNZWRpYW4gOiAyLjAwMCAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDQ6MzE3ICAgNDoxNzggICAgNDoxNDEgICA0OiAxNyAgIDQ6IDg3ICAgNDoxMDggICBNZWFuICAgOiAzLjY1OSAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDU6MTgwICAgNTogNjggICAgNToxMTAgICA1OiAxNyAgIDU6IDQ1ICAgNToyNDkgICAzcmQgUXUuOiA2LjAwMCAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNYXguICAgOjMyLjAwMCAgXG4gICAgICAgRzEgICAgICAgICAgICAgRzIgICAgICAgICAgICAgIEczICAgICAgICAgcmVzdWx0ICAgXG4gTWluLiAgIDogMC4wICAgTWluLiAgIDogMC4wMCAgIE1pbi4gICA6IDAuMDAgICBmYWlsOjMwMSAgXG4gMXN0IFF1LjoxMC4wICAgMXN0IFF1LjoxMC4wMCAgIDFzdCBRdS46MTAuMDAgICBwYXNzOjM0OCAgXG4gTWVkaWFuIDoxMS4wICAgTWVkaWFuIDoxMS4wMCAgIE1lZGlhbiA6MTIuMDAgICAgICAgICAgICAgXG4gTWVhbiAgIDoxMS40ICAgTWVhbiAgIDoxMS41NyAgIE1lYW4gICA6MTEuOTEgICAgICAgICAgICAgXG4gM3JkIFF1LjoxMy4wICAgM3JkIFF1LjoxMy4wMCAgIDNyZCBRdS46MTQuMDAgICAgICAgICAgICAgXG4gTWF4LiAgIDoxOS4wICAgTWF4LiAgIDoxOS4wMCAgIE1heC4gICA6MTkuMDAgICAgICAgICAgICAgXG4ifQ== -->
+<pre><code> school   sex          age        address famsize   Pstatus Medu    Fedu          Mjob           Fjob    
+ GP:423   F:383   Min.   :15.00   R:197   GT3:457   A: 80   0:  6   0:  7   at_home :135   at_home : 42  
+ MS:226   M:266   1st Qu.:16.00   U:452   LE3:192   T:569   1:143   1:174   health  : 48   health  : 23  
+                  Median :17.00                             2:186   2:209   other   :258   other   :367  
+                  Mean   :16.74                             3:139   3:131   services:136   services:181  
+                  3rd Qu.:18.00                             4:175   4:128   teacher : 72   teacher : 36  
+                  Max.   :22.00                                                                          
+        reason      guardian   traveltime studytime    failures      schoolsup famsup     paid     activities
+ course    :285   father:153   1:366      1:212     Min.   :0.0000   no :581   no :251   no :610   no :334   
+ home      :149   mother:455   2:213      2:305     1st Qu.:0.0000   yes: 68   yes:398   yes: 39   yes:315   
+ other     : 72   other : 41   3: 54      3: 97     Median :0.0000                                           
+ reputation:143                4: 16      4: 35     Mean   :0.2219                                           
+                                                    3rd Qu.:0.0000                                           
+                                                    Max.   :3.0000                                           
+ nursery   higher    internet  romantic  famrel  freetime goout   Dalc    Walc    health     absences     
+ no :128   no : 69   no :151   no :410   1: 22   1: 45    1: 48   1:451   1:247   1: 90   Min.   : 0.000  
+ yes:521   yes:580   yes:498   yes:239   2: 29   2:107    2:145   2:121   2:150   2: 78   1st Qu.: 0.000  
+                                         3:101   3:251    3:205   3: 43   3:120   3:124   Median : 2.000  
+                                         4:317   4:178    4:141   4: 17   4: 87   4:108   Mean   : 3.659  
+                                         5:180   5: 68    5:110   5: 17   5: 45   5:249   3rd Qu.: 6.000  
+                                                                                          Max.   :32.000  
+       G1             G2              G3         result   
+ Min.   : 0.0   Min.   : 0.00   Min.   : 0.00   fail:301  
+ 1st Qu.:10.0   1st Qu.:10.00   1st Qu.:10.00   pass:348  
+ Median :11.0   Median :11.00   Median :12.00             
+ Mean   :11.4   Mean   :11.57   Mean   :11.91             
+ 3rd Qu.:13.0   3rd Qu.:13.00   3rd Qu.:14.00             
+ Max.   :19.0   Max.   :19.00   Max.   :19.00             </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Write clean data csv file</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGUuY3N2KHN0dWRlbnRfZGF0LCBcIi9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LWRhdGFfMi5jc3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>write.csv(student_dat, &quot;/Users/jamie/Documents/GitHub/programming-group-project/data/student-data_2.csv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGUuY3N2KHN0dWRlbnRfcG9yLCBcIi9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LXBvcl92My5jc3ZcIilcbmBgYCJ9 -->
+<pre class="r"><code>write.csv(student_por, &quot;/Users/jamie/Documents/GitHub/programming-group-project/data/student-por_v3.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKTG9hZCBwYWNrYWdlcwpgYGB7cn0KbGlicmFyeShkcGx5cikKYGBgCgpSZWFkIGRhdGFzZXRzICdzdHVkZW50X21hdCcgYW5kICdzdHVkZW50X3BvcicKYGBge3J9CnN0dWRlbnRfbWF0IDwtIHJlYWQuY3N2KCcvVXNlcnMvamFtaWUvRG9jdW1lbnRzL0dpdEh1Yi9wcm9ncmFtbWluZy1ncm91cC1wcm9qZWN0L2RhdGEvc3R1ZGVudC1tYXQuY3N2JywgaGVhZGVyID0gVFJVRSwgc2VwID0gIjsiKQpzdHVkZW50X3BvciA8LSByZWFkLmNzdignL1VzZXJzL2phbWllL0RvY3VtZW50cy9HaXRIdWIvcHJvZ3JhbW1pbmctZ3JvdXAtcHJvamVjdC9kYXRhL3N0dWRlbnQtcG9yLmNzdicsIGhlYWRlciA9IFRSVUUsIHNlcCA9ICI7IikKYGBgCgpBZGQgY29sdW1uICdzdWJqZWN0cycgYW5kIHBvcHVsYXRlIHdpdGggJ21hdCcgYW5kICdwb3InLCB0aGVuIGNvbWJpbmUKYGBge3J9CnN0dWRlbnRfbWF0IDwtIG11dGF0ZShzdHVkZW50X21hdCwgc3ViamVjdD0nbWF0JyApCnN0dWRlbnRfcG9yIDwtIG11dGF0ZShzdHVkZW50X3Bvciwgc3ViamVjdD0ncG9yJyApCgpzdHVkZW50X2RhdCA8LSByYmluZChzdHVkZW50X21hdCwgc3R1ZGVudF9wb3IpCnN0cihzdHVkZW50X2RhdCkKYGBgCgpDaGVjayBmb3IgbWlzc2luZyBkYXRhCmBgYHtyfQp0YWJsZShpcy5uYShzdHVkZW50X2RhdCkpCmBgYAoKQ2hhbmdpbmcgZGF0YSB0eXBlICdjaHInIHRvICdmYWN0b3InCmBgYHtyfQpzdHVkZW50X2RhdCRzY2hvb2wgPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkc2Nob29sKQpzdHVkZW50X2RhdCRzZXg8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRzZXgpCnN0dWRlbnRfZGF0JGFkZHJlc3M8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRhZGRyZXNzKQpzdHVkZW50X2RhdCRmYW1zaXplPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkZmFtc2l6ZSkKc3R1ZGVudF9kYXQkUHN0YXR1czwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JFBzdGF0dXMpCnN0dWRlbnRfZGF0JE1qb2I8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRNam9iKQpzdHVkZW50X2RhdCRGam9iPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkRmpvYikKc3R1ZGVudF9kYXQkcmVhc29uPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkcmVhc29uKQpzdHVkZW50X2RhdCRndWFyZGlhbjwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JGd1YXJkaWFuKQpzdHVkZW50X2RhdCRzY2hvb2xzdXA8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRzY2hvb2xzdXApCnN0dWRlbnRfZGF0JGZhbXN1cDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JGZhbXN1cCkKc3R1ZGVudF9kYXQkcGFpZDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JHBhaWQpCnN0dWRlbnRfZGF0JGFjdGl2aXRpZXM8LWFzLmZhY3RvcihzdHVkZW50X2RhdCRhY3Rpdml0aWVzKQpzdHVkZW50X2RhdCRudXJzZXJ5PC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkbnVyc2VyeSkKc3R1ZGVudF9kYXQkaGlnaGVyPC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkaGlnaGVyKQpzdHVkZW50X2RhdCRpbnRlcm5ldDwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JGludGVybmV0KQpzdHVkZW50X2RhdCRyb21hbnRpYzwtYXMuZmFjdG9yKHN0dWRlbnRfZGF0JHJvbWFudGljKQpzdHVkZW50X2RhdCRzdWJqZWN0PC1hcy5mYWN0b3Ioc3R1ZGVudF9kYXQkc3ViamVjdCkKYGBgCgpEaXNwbGF5IHN1bW1hcnkgb2YgY2xlYW4gZGF0YQpgYGB7cn0Kc3VtbWFyeShzdHVkZW50X2RhdCkKYGBgCgpXcml0ZSBjbGVhbiBkYXRhIGNzdiBmaWxlCmBgYHtyfQp3cml0ZS5jc3Yoc3R1ZGVudF9kYXQsICIvVXNlcnMvamFtaWUvRG9jdW1lbnRzL0dpdEh1Yi9wcm9ncmFtbWluZy1ncm91cC1wcm9qZWN0L2RhdGEvc3R1ZGVudC1kYXRhXzIuY3N2IikKYGBgCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGF0YSBjbGVhbmluZyAtIFN0dWRlbnQgUG9ydHVndWVzZSIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKTG9hZCBwYWNrYWdlcwpgYGB7cn0KbGlicmFyeShkcGx5cikKYGBgCgpSZWFkIGRhdGFzZXQgJ3N0dWRlbnRfcG9yJwpgYGB7cn0Kc3R1ZGVudF9wb3IgPC0gcmVhZC5jc3YoJy9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LXBvci5jc3YnLCBoZWFkZXIgPSBUUlVFLCBzZXAgPSAiOyIpCnN0cihzdHVkZW50X3BvcikKYGBgCgpDaGVjayBmb3IgbWlzc2luZyBkYXRhCmBgYHtyfQp0YWJsZShpcy5uYShzdHVkZW50X3BvcikpCmBgYAoKQ2hhbmdlIGRhdGEgdHlwZSAnY2hyJyB0byAnZmFjdG9yJwpgYGB7cn0Kc3R1ZGVudF9wb3Ikc2Nob29sIDwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHNjaG9vbCkKc3R1ZGVudF9wb3Ikc2V4PC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3Ikc2V4KQpzdHVkZW50X3BvciRhZGRyZXNzPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkYWRkcmVzcykKc3R1ZGVudF9wb3IkZmFtc2l6ZTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJGZhbXNpemUpCnN0dWRlbnRfcG9yJFBzdGF0dXM8LWFzLmZhY3RvcihzdHVkZW50X3BvciRQc3RhdHVzKQpzdHVkZW50X3BvciRNam9iPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkTWpvYikKc3R1ZGVudF9wb3IkRmpvYjwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJEZqb2IpCnN0dWRlbnRfcG9yJHJlYXNvbjwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHJlYXNvbikKc3R1ZGVudF9wb3IkZ3VhcmRpYW48LWFzLmZhY3RvcihzdHVkZW50X3BvciRndWFyZGlhbikKc3R1ZGVudF9wb3Ikc2Nob29sc3VwPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3Ikc2Nob29sc3VwKQpzdHVkZW50X3BvciRmYW1zdXA8LWFzLmZhY3RvcihzdHVkZW50X3BvciRmYW1zdXApCnN0dWRlbnRfcG9yJHBhaWQ8LWFzLmZhY3RvcihzdHVkZW50X3BvciRwYWlkKQpzdHVkZW50X3BvciRhY3Rpdml0aWVzPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkYWN0aXZpdGllcykKc3R1ZGVudF9wb3IkbnVyc2VyeTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJG51cnNlcnkpCnN0dWRlbnRfcG9yJGhpZ2hlcjwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJGhpZ2hlcikKc3R1ZGVudF9wb3IkaW50ZXJuZXQ8LWFzLmZhY3RvcihzdHVkZW50X3BvciRpbnRlcm5ldCkKc3R1ZGVudF9wb3Ikcm9tYW50aWM8LWFzLmZhY3RvcihzdHVkZW50X3BvciRyb21hbnRpYykKc3R1ZGVudF9wb3IkTWVkdTwtYXMuZmFjdG9yKHN0dWRlbnRfcG9yJE1lZHUpCnN0dWRlbnRfcG9yJEZlZHU8LWFzLmZhY3RvcihzdHVkZW50X3BvciRGZWR1KQpzdHVkZW50X3BvciR0cmF2ZWx0aW1lPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkdHJhdmVsdGltZSkKc3R1ZGVudF9wb3Ikc3R1ZHl0aW1lPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3Ikc3R1ZHl0aW1lKQpzdHVkZW50X3BvciRmYW1yZWw8LWFzLmZhY3RvcihzdHVkZW50X3BvciRmYW1yZWwpCnN0dWRlbnRfcG9yJGZyZWV0aW1lPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkZnJlZXRpbWUpCnN0dWRlbnRfcG9yJGdvb3V0PC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkZ29vdXQpCnN0dWRlbnRfcG9yJERhbGM8LWFzLmZhY3RvcihzdHVkZW50X3BvciREYWxjKQpzdHVkZW50X3BvciRXYWxjPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkV2FsYykKc3R1ZGVudF9wb3IkaGVhbHRoPC1hcy5mYWN0b3Ioc3R1ZGVudF9wb3IkaGVhbHRoKQpgYGAKCgpBZGQgY29sdW1uICdzdGF0dXMnIGNvbnRhaW5pbmcgJ2ZhaWw6IEczPD0xMCcgb3IgJ3Bhc3M6IEczPjEwJwpgYGB7cn0Kc3R1ZGVudF9wb3I8LSBtdXRhdGUoc3R1ZGVudF9wb3IsIHJlc3VsdD0gaWZlbHNlKHN0dWRlbnRfcG9yJEczPjExLCJwYXNzIiwiZmFpbCIpKQpzdHVkZW50X3BvciRyZXN1bHQgPC0gYXMuZmFjdG9yKHN0dWRlbnRfcG9yJHJlc3VsdCkKYGBgCgoKRGlzcGxheSBkYXRhc2V0IHdpdGggdXBkYXRlZCBkYXRhIHR5cGVzCmBgYHtyfQpzdHIoc3R1ZGVudF9wb3IpCmBgYAoKCkRpc3BsYXkgc3VtbWFyeSBvZiBjbGVhbiBkYXRhCmBgYHtyfQpzdW1tYXJ5KHN0dWRlbnRfcG9yKQpgYGAKCldyaXRlIGNsZWFuIGRhdGEgY3N2IGZpbGUKYGBge3J9CndyaXRlLmNzdihzdHVkZW50X3BvciwgIi9Vc2Vycy9qYW1pZS9Eb2N1bWVudHMvR2l0SHViL3Byb2dyYW1taW5nLWdyb3VwLXByb2plY3QvZGF0YS9zdHVkZW50LXBvcl92My5jc3YiKQpgYGAKCg==</div>
 
 
 
@@ -1985,7 +2016,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Data_cleaning_version_2.Rmd");
+  window.initializeSourceEmbed("Data_cleaning_version_3.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
