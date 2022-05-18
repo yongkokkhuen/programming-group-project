@@ -53,7 +53,7 @@ student_por$health<-as.factor(student_por$health)
 
 Add column 'status' containing 'fail: G3<=10' or 'pass: G3>10'
 ```{r}
-student_por<- mutate(student_por, result= ifelse(student_por$G3>11,"pass","fail"))
+student_por<- mutate(student_por, result= ifelse(student_por$G3>10,"pass","fail"))
 student_por$result <- as.factor(student_por$result)
 ```
 
