@@ -1,0 +1,376 @@
+---
+title: "Univariate EDA"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+Read clean file and remove unecessary column 'X'
+```{r}
+student_por<-read.csv('/Users/jamie/Documents/GitHub/programming-group-project/data/student-por_v3.csv', header = TRUE, sep = ",")
+student_por<- select(student_por, -c(X))
+str(student_por)
+```
+
+Change to factors
+```{r}
+student_por$school <-as.factor(student_por$school)
+student_por$sex<-as.factor(student_por$sex)
+student_por$address<-as.factor(student_por$address)
+student_por$famsize<-as.factor(student_por$famsize)
+student_por$Pstatus<-as.factor(student_por$Pstatus)
+student_por$Mjob<-as.factor(student_por$Mjob)
+student_por$Fjob<-as.factor(student_por$Fjob)
+student_por$reason<-as.factor(student_por$reason)
+student_por$guardian<-as.factor(student_por$guardian)
+student_por$schoolsup<-as.factor(student_por$schoolsup)
+student_por$famsup<-as.factor(student_por$famsup)
+student_por$paid<-as.factor(student_por$paid)
+student_por$activities<-as.factor(student_por$activities)
+student_por$nursery<-as.factor(student_por$nursery)
+student_por$higher<-as.factor(student_por$higher)
+student_por$internet<-as.factor(student_por$internet)
+student_por$romantic<-as.factor(student_por$romantic)
+student_por$Medu<-as.factor(student_por$Medu)
+student_por$Fedu<-as.factor(student_por$Fedu)
+student_por$traveltime<-as.factor(student_por$traveltime)
+student_por$studytime<-as.factor(student_por$studytime)
+student_por$famrel<-as.factor(student_por$famrel)
+student_por$freetime<-as.factor(student_por$freetime)
+student_por$goout<-as.factor(student_por$goout)
+student_por$Dalc<-as.factor(student_por$Dalc)
+student_por$Walc<-as.factor(student_por$Walc)
+student_por$health<-as.factor(student_por$health)
+student_por$result <- as.factor(student_por$result)
+```
+
+Check
+```{r}
+str(student_por)
+```
+
+Univariate barcharts
+
+```{r}
+ggplot(student_por, aes(x = school)) + 
+  geom_bar(fill='blue') +
+  labs(x = "School",
+       y = "No. of students",
+       title = "1. Student's school")
+# ^'GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira'
+```
+
+```{r}
+ggplot(student_por, aes(x = sex)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Sex",
+       y = "No. of students",
+       title = "2. Student's sex")
+# ^'F' - female or 'M' - male
+```
+
+```{r}
+ggplot(student_por, aes(x = age)) + 
+  geom_histogram(fill='green', 
+                 color = "black") +
+  labs(x = "Age",
+       y = "Frequency",
+       title = "3. Student's age")
+# ^from 15 to 22
+```
+
+
+```{r}
+ggplot(student_por, aes(x = address)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Address",
+       y = "Frequency",
+       title = "4. Student's home address type")
+# ^'U' - urban or 'R' - rural'
+```
+
+
+```{r}
+ggplot(student_por, aes(x = famsize)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Family size",
+       y = "Frequency",
+       title = "5. Family size ")
+# ^'LE3' - less or equal to 3 or 'GT3' - greater than 3
+```
+
+
+```{r}
+ggplot(student_por, aes(x = Pstatus)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Parent's Status",
+       y = "Frequency",
+       title = "6. Parent's cohabitation status ")
+# ^'T' - living together or 'A' - apart
+```
+
+```{r}
+ggplot(student_por, aes(x = Medu)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Medu",
+       y = "Frequency",
+       title = "7. Mother's education level")
+# ^0- none, 1- primary education (4th grade), 2- 5th to 9th grade, 3- secondary education, or 4- higher education
+```
+
+
+```{r}
+ggplot(student_por, aes(x = Fedu)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Fedu",
+       y = "Frequency",
+       title = "8. Father's education level")
+# ^0- none, 1- primary education (4th grade), 2- 5th to 9th grade, 3- secondary education, or 4- higher education
+```
+
+
+
+
+```{r}
+ggplot(student_por, aes(x = Mjob)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Mjob",
+       y = "Frequency",
+       title = "9. Mother's job")
+# ^'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other'
+```
+
+
+```{r}
+ggplot(student_por, aes(x = Fjob)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Fjob",
+       y = "Frequency",
+       title = "10. Father's job")
+# ^'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other'
+```
+
+
+```{r}
+ggplot(student_por, aes(x = reason)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Reason",
+       y = "Frequency",
+       title = "11. Reason for selecting school")
+# ^close to 'home', school 'reputation', 'course' preference or 'other",
+```
+
+
+```{r}
+ggplot(student_por, aes(x = guardian)) + 
+  geom_bar(fill='purple') +
+  labs(x = "Guardian",
+       y = "Frequency",
+       title = "12. Student's guardian")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = traveltime)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Traveltime",
+       y = "Frequency",
+       title = "13. Home to school travel time")
+# ^1 - <15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - >1 hour
+```
+
+
+```{r}
+ggplot(student_por, aes(x = studytime)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Studytime",
+       y = "Frequency",
+       title = "14. Weekly study time")
+# ^1 - <2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - >10 hours
+```
+
+```{r}
+ggplot(student_por, aes(x = failures)) +
+  geom_histogram(fill = "green", 
+                 color = "black") + 
+  labs(title="15. Number of past class failures",
+       x = "Failures")
+```
+
+```{r}
+ggplot(student_por, aes(x = schoolsup)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Schoolsup",
+       y = "Frequency",
+       title = "16. Extra educational support")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = famsup)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Famsup",
+       y = "Frequency",
+       title = "17. Family educational support")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = paid)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Paid",
+       y = "Frequency",
+       title = "18. Extra paid Portuguese classes ")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = activities)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Activities",
+       y = "Frequency",
+       title = "19. Extra-curricular activities")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = nursery)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Nursery",
+       y = "Frequency",
+       title = "20. Attended nursery school")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = higher)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Higher",
+       y = "Frequency",
+       title = "21. Wants to take higher education")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = internet)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Internet",
+       y = "Frequency",
+       title = "22. Internet access at home")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = romantic)) + 
+  geom_bar(fill='blue') +
+  labs(x = "Romantic",
+       y = "Frequency",
+       title = "23. In a romantic relationship")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = famrel)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Famrel",
+       y = "Frequency",
+       title = "24. Quality of family relationship")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = freetime)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Freetime",
+       y = "Frequency",
+       title = "25. Free time after school")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = goout)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Goout",
+       y = "Frequency",
+       title = "26. Going out with friends")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = Dalc)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Dalc",
+       y = "Frequency",
+       title = "27. Workday alcohol consumption")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = Walc)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "Walc",
+       y = "Frequency",
+       title = "28. Weekend alcohol consumption")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = health)) + 
+  geom_bar(fill='white', 
+                 color = "black") +
+  labs(x = "health",
+       y = "Frequency",
+       title = "29. Current health status")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = absences)) + 
+  geom_histogram(fill='green', 
+                 color = "black")+
+  labs(x = "Absences",
+       y = "Frequency",
+       title = "30. Number of school absences")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = G1)) + 
+  geom_histogram(fill='pink', 
+                 color = "black") +
+  labs(x = "G1",
+       y = "Frequency",
+       title = "31. First period grade")
+```
+
+
+```{r}
+ggplot(student_por, aes(x = G2)) + 
+  geom_histogram(fill='pink', 
+                 color = "black") +
+  labs(x = "G2",
+       y = "Frequency",
+       title = "31. Second period grade")
+```
+
+```{r}
+ggplot(student_por, aes(x = G3)) + 
+  geom_histogram(fill='orange', 
+                 color = "black") +
+  labs(x = "G3",
+       y = "Frequency",
+       title = "31. Final grade-output target")
+```
+
