@@ -122,6 +122,19 @@ summary(student_por)
 Section 1: Scatter plot
 
 School Vs Final Grade
+```{r}
+# Stacked barplot with multiple groups
+ggplot(data=student_por, aes(x=school, y= student_por%>% group_by(school) %>% count(result),
+                             fill=school)) +
+  geom_bar(stat="identity")
+
+# Use position=position_dodge()
+ggplot(data=student_por, aes(x=school, y= student_por%>% group_by(school) %>% count(result),
+                             fill=school)) +
+  geom_bar(stat="identity", position=position_dodge())
+```
+
+
 
 ```{r}
 ggplot(student_por, aes(school, count(result), fill = result)) + geom_col(position = "dodge") + 
