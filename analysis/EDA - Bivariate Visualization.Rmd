@@ -6,34 +6,31 @@ output:
 ---
 
 List of used library
-
 ```{r}
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
-library(reshape2)
-library("plotly") #graphing library with ggplot2
+library(reshape2) #TBC
+library(ggbeeswarm) #TBC
+#library(ggcorrplot) #TBC
 ```
 
-Read processed dataset as data frame as 'student_por', and have a glimpse look at available attributes and factor
-
+# 1. Read processed dataset as data frame as 'student_por', and have a glimpse look at available attributes and factor
 ```{r}
 student_por <- read.csv("C:/Users/Fanny/Documents/GitHub/programming-group-project/data/student-por_v3.csv", header = TRUE, sep = ",", stringsAsFactors = TRUE)
 student_por <- data.frame(student_por)
 str(student_por)
 ```
 
-Purge first column that come with default unhelpful index number
-
+# 2. Purge first column that come with default unhelpful index number
 ```{r}
 #remove column with position 
 student_por <- student_por %>% select(-1)
 ```
 
-Mutate selected attributes' data type into factors that come with more instinctive representative value in dataset
-
-Remarks: Scale conversion reference - <https://davidfharris.com/2014/10/05/avoid-bias-poor-excellent-scale-making-balanced/>
-
+# 3. Mutate selected attributes' data type into factors that come with more instinctive representative value in dataset
+### Remarks: Scale conversion reference - 
+### <https://davidfharris.com/2014/10/05/avoid-bias-poor-excellent-scale-making-balanced/>
 ```{r}
 # Medu / Male Education in ordered factors manner
 student_por$Medu  <- recode_factor(student_por$Medu,
@@ -113,82 +110,470 @@ student_por$health  <- recode_factor(student_por$health,
                                      `5` = "very good", .ordered = TRUE)
 ```
 
-Check on dataset summary
-
+# 4. Check on dataset summary
 ```{r}
 summary(student_por)
 ```
 
-Section 1: Scatter plot
-
-School Vs Final Grade
+# 5. Section 1: Bivariate Visualization for Expected Result Attribute
+### a. School Vs Expected Result 
 ```{r}
-# Stacked barplot with multiple groups
-ggplot(data=student_por, aes(x=school, y= student_por%>% group_by(school) %>% count(result),
-                             fill=school)) +
-  geom_bar(stat="identity")
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(school))
 
-# Use position=position_dodge()
-ggplot(data=student_por, aes(x=school, y= student_por%>% group_by(school) %>% count(result),
-                             fill=school)) +
-  geom_bar(stat="identity", position=position_dodge())
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = 'School versus Expected Result', subtitle = 'school vs result', 
+       x = "Student's School", y = 'count')
 ```
 
-
-
+### b. Sex Vs Expected Result 
 ```{r}
-ggplot(student_por, aes(school, count(result), fill = result)) + geom_col(position = "dodge") + 
-  ggtitle(label = 'School versus Final Grade ', subtitle = 'school vs G3') + 
-  labs(title = 'School versus Final Grade ', subtitle = 'school vs G3', 
-       x = "Student's School", y = 'Final Grade(numeric:0-20)')
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(sex))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = 'Gender versus Expected Result', subtitle = 'sex vs result', 
+       x = "Student's Sex", y = 'count')
 ```
 
-Age Vs Final Grade
-
+### c. Age Vs Expected Result 
 ```{r}
-ggplot(student_por, aes(age, G3, fill = sex)) + geom_col(position = "dodge") + 
-  ggtitle(label = 'Age versus Final Grade ', subtitle = 'age vs G3') + 
-  labs(title = 'Age versus Final Grade ', subtitle = 'age vs G3', 
-       x = "Student's Age", y = 'Final Grade(numeric:0-20)')
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(age))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = 'Age versus Expected Result', subtitle = 'age vs result', 
+       x = "Student's Age", y = 'count')
+```
+### d. Address Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(address))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Student's Home Address Type versus Expected Result", subtitle = 'address vs result',
+       x = "Address Type", y = 'count')
 ```
 
-Address (student's home address type) Vs Final Grade
-
+### e. Family Size Vs Expected Result 
 ```{r}
-ggplot(student_por, aes(address, G3, fill = famsize)) + geom_col(position = "dodge") + 
-  ggtitle(label = 'Address versus Final Grade ', subtitle = 'famsize vs G3') + 
-  labs(title = 'Address versus Final Grade ', subtitle = 'famsize vs G3', 
-       x = "Student's Home Address Type", y = 'Final Grade(numeric:0-20)')
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(famsize))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Student's Family Size versus Expected Result", subtitle = 'famsize vs result',
+       x = "Family Size", y = 'count')
 ```
 
-Family Size Vs Final Grade
-
+### f. Parent's Cohabitation Status Vs Expected Result 
 ```{r}
-ggplot(student_por, aes(famsize, G3, fill = sex)) + geom_col(position = "dodge") + 
-  ggtitle(label = 'Family Size versus Final Grade ', subtitle = 'famsize vs G3') + 
-  labs(title = 'Family Size versus Final Grade ', subtitle = 'famsize vs G3', 
-       x = "Family Size", y = 'Final Grade(numeric:0-20)')
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Pstatus))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Parent's Cohabitation Status versus Expected Result", 
+       subtitle = 'Pstatus vs result', x = "Parent's Cohabitation Status", y = 'count')
+```
+
+### g. Mother's Education Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Medu))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Mother's Education Vs Expected Result ", subtitle = 'Medu vs result', 
+       x = "Mother's Education Level", y = 'count')
+```
+
+### h. Father's Education Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Fedu))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Father's Education Vs Expected Result ", subtitle = 'Fedu vs result', 
+       x = "Father's Education Level", y = 'count')
+```
+### i. Mother's Job Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Mjob))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Mother's Job Vs Expected Result ", subtitle = 'Mjob vs result', 
+       x = "Mother's Job", y = 'count')
+```
+### j. Father's Job Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Fjob))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Father's Job Vs Expected Result ", subtitle = 'Fjob vs result', 
+       x = "Father's Job", y = 'count')
+```
+
+### k. Reason to Choose Selected School Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(reason))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Reason to Choose Selected School Vs Expected Result", subtitle = 'reason vs result',        x = "Reason Category", y = 'count')
+```
+
+### l. Student's Guardian Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(guardian))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Student's Guardian Vs Expected Result ", subtitle = 'guardian vs result', 
+       x = "Guardian", y = 'count')
+```
+
+### m. Home to School Travel Time Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(traveltime))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Home to School Travel Time Vs Expected Result", subtitle = 'traveltime vs result', 
+       x = "Travel Time", y = 'count')
+```
+
+### n. Weekly Study Time Vs Expected Result 
+```{r}
+## the sample code i refer to is showing scatterplot, but when being implemented into dataset, become like this
+# create scatter plot of hours studied vs. exam score
+plot(student_por$studytime, student_por$result, pch=16, col='steelblue',
+     main='Weekly Study Time Vs Expected Result',
+     xlab='Weekly Study Time', ylab='Expected Result')
+```
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(studytime ))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Weekly Study Time Vs Expected Result", subtitle = 'studytime vs result', 
+       x = "Weekly Study Time", y = 'count')
+```
+### o. Number of Past Class Failures Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(failures))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Number of Past Class Failures Vs Expected Result", subtitle = 'failures vs result',
+       x = "Number of Past Class Failures", y = 'count')
+```
+
+### p. Extra Educational Support Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(schoolsup ))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Extra Educational Support Vs Expected Result", subtitle = 'schoolsup vs result',
+       x = "Extra Educational Support", y = 'count')
+```
+
+### q. Family Educational Support Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(famsup))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Family Educational Support Vs Expected Result", subtitle = 'famsup vs result',
+       x = "Family Educational Support", y = 'count')
+```
+
+### r. Extra Paid Classes Within The Course Subject(Portuguese) Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(paid ))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Extra Paid Classes Within The Course Subject(Portuguese) Vs Expected Result",
+       subtitle = 'paid  vs result',
+       x = "Extra Paid Classes?", 
+       y = 'count')
+```
+
+### s. Extra-Curricular Activities Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(activities))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Extra-Curricular Activities Vs Expected Result",
+       subtitle = 'activities vs result',
+       x = "Extra-Curricular Activities?", 
+       y = 'count')
+```
+
+### t. Intention to Pursue Higher Education Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(higher))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Intention to Pursue Higher Education Vs Expected Result",
+       subtitle = 'higher vs result',
+       x = "Intention to Pursue Higher Education", 
+       y = 'count')
+```
+
+### u. Internet Access at Home Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(internet))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Internet Access at Home Vs Expected Result ",
+       subtitle = 'internet vs result',
+       x = "Internet Access at Home", 
+       y = 'count')
+```
+
+### v. With a Romantic Relationship Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(romantic))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "With a Romantic Relationship Vs Expected Result ",
+       subtitle = 'romantic vs result',
+       x = "With a Romantic Relationship?", 
+       y = 'count')
+```
+
+### w. Quality of Family Relationships Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(famrel))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Quality of Family Relationships Vs Expected Result",
+       subtitle = 'famrel vs result',
+       x = "Quality of Family Relationships", 
+       y = 'count')
+```
+
+### x. Free Time After School Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(freetime))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Free Time After School Vs Expected Result",
+       subtitle = 'freetime vs result',
+       x = "Free Time After School", 
+       y = 'count')
+```
+
+### y. Going Out with Friends Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(goout))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Going Out with Friends Vs Expected Result",
+       subtitle = 'goout vs result',
+       x = "Going Out with Friends", 
+       y = 'count')
+```
+
+### z. Workday Alcohol Consumption Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Dalc))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Workday Alcohol Consumption Vs Expected Result",
+       subtitle = 'Dalc vs result',
+       x = "Workday Alcohol Consumption", 
+       y = 'count')
+```
+
+### aa. Weekend Alcohol Consumption Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(Walc))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Weekend Alcohol Consumption Vs Expected Result",
+       subtitle = 'Walc vs result',
+       x = "Weekend Alcohol Consumption", 
+       y = 'count')
+```
+
+### ab. Current Health Status Vs Expected Result 
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(health))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Current Health Status Vs Expected Result",
+       subtitle = 'health vs result',
+       x = "Current Health Status", 
+       y = 'count')
+```
+
+### ac. Number of School Absences Vs Expected Result 
+```{r}
+# boxplot creation
+ggplot(student_por, aes(x = absences, y = result)) +
+  geom_boxplot() + 
+  labs(title = "Number of School Absences Vs Expected Result",
+       subtitle = 'absences vs result',
+       x = "Number of School Absences", 
+       y = 'Result')
 ```
 
 ```{r}
-ggplot(student_por, aes(Medu, result, colour = 'cyl')) + geom_point()
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(absences))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  labs(title = "Number of School Absences Vs Expected Result",
+       subtitle = 'absences vs result',
+       x = "Number of School Absences", 
+       y = 'count')
 ```
 
+### ad. First Period Grade Vs Expected Result 
 ```{r}
-ggplot(student_por, aes(G1, G2, colour = 'cyl')) + geom_point()
+# boxplot creation
+ggplot(student_por, aes(x = G1, y = result)) +
+  geom_boxplot() + 
+  labs(title = "First Period Grade Vs Expected Result",
+       subtitle = 'G1 vs result',
+       x = "First Period Grade", 
+       y = 'Result')
+```
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(G1))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') +  
+  facet_wrap(~ result) + 
+  labs(title = "First Period Grade Vs Expected Result",
+       subtitle = 'G1 vs result',
+       x = "First Period Grade", 
+       y = 'count')
+
+```
+### ae. Second Period Grade Vs Expected Result
+```{r}
+# boxplot creation
+ggplot(student_por, aes(x = G2, y = result)) +
+  geom_boxplot() + 
+  labs(title = "Second Period Grade Vs Expected Result",
+       subtitle = 'G2 vs result',
+       x = "Second Period Grade", 
+       y = 'Result')
+```
+```{r}
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(G2))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') + 
+  facet_wrap(~ result) + 
+  labs(title = "Second Period Grade Vs Expected Result",
+       subtitle = 'G2 vs result',
+       x = "Second Period Grade", 
+       y = 'count')
+```
+### af. Final Grade Vs Expected Result
+```{r}
+# boxplot creation
+ggplot(student_por, aes(x = G3, y = result)) +
+  geom_boxplot() + 
+  labs(title = "Final Grade Vs Expected Result",
+       subtitle = 'G3 vs result',
+       x = "Final Grade", 
+       y = 'Result')
+```
+```{r}
+## Binary classification – pass if G3≥10, else fail; 
+## according to graph, we seems to mark 10 marks as fail 
+
+# counts (or sums of weights)
+bivariate_bargraph <- ggplot(student_por, aes(G3))
+
+# Number of tuples in each class:
+bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') + 
+  facet_wrap(~ result) + 
+  labs(title = "Final Grade Vs Expected Result",
+       subtitle = 'G3 vs result',
+       x = "Final Grade", 
+       y = 'Count')
 ```
 
-Correlation Matrix 1. convert data back to int for correlation analysis
+# 6. Section 2: Simple Linear Regression
 
+
+# 7. Correlation Matrix 
+```{r}
+# i not sure will we make R bias by converting attribute back to numeric form for chi-square test 
+print("Pearson Correlation Coefficient between School and Result")
+cor(as.numeric(student_por$school), as.numeric(student_por$result))
+
+print("Correlation Between between School and Result")
+cor.test(as.numeric(student_por$school), as.numeric(student_por$result), method = c("pearson"), conf.level = 0.95)
+```
+
+# Random plot 
+```{r}
+ggplot(student_por, aes(x = result, y = absences, color = result)) +
+  geom_beeswarm(cex = 3, priority = "density")
+```
+```{r}
+# Bivariate density plots
+# In a 2D density plot, nested contours (or contours plus colors) indicate regions of higher local density. 
+ggplot(student_por, aes(x = G3, y = absences)) + 
+  geom_density2d() + 
+  geom_jitter(alpha=0.35) + # using geom_jitter to avoid overplotting of points
+  labs(title = "Final Grade vs Absences",
+       subtitle = 'G3 vs absences',
+       x = "Final Grade", 
+       y = 'Absences') +
+  theme_classic()  + 
+  theme(aspect.ratio = 1)
+```
 ```{r}
 
 ```
 
-```{r}
-#student_por_corr <- round(cor(student_por),2)
-#student_por_corr
-```
-
-```{r}
-#student_por %>% cor(student_por$absences,student_por$G1)
-```
