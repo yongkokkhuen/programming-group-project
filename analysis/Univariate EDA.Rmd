@@ -374,3 +374,12 @@ ggplot(student_por, aes(x = G3)) +
        title = "31. Final grade-output target")
 ```
 
+
+```{r}
+ggplot(student_por, aes(x = result)) + 
+  geom_bar(fill='blue', 
+                 color = "black") +
+  labs(x = "Result",
+       y = "Frequency",
+       title = "32. Final grade-result")
+```
