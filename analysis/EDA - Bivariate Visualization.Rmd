@@ -1,0 +1,181 @@
+---
+title: "EDA_Bivariate Visualization"
+output:
+  html_document:
+    df_print: paged
+---
+
+List of used library
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+library("plotly") #graphing library with ggplot2
+```
+
+Read processed dataset as data frame as 'student_por', and have a glimpse look at available attributes and factor
+
+```{r}
+student_por <- read.csv("C:/Users/Fanny/Documents/GitHub/programming-group-project/data/student-por_v3.csv", header = TRUE, sep = ",", stringsAsFactors = TRUE)
+student_por <- data.frame(student_por)
+str(student_por)
+```
+
+Purge first column that come with default unhelpful index number
+
+```{r}
+#remove column with position 
+student_por <- student_por %>% select(-1)
+```
+
+Mutate selected attributes' data type into factors that come with more instinctive representative value in dataset
+
+Remarks: Scale conversion reference - <https://davidfharris.com/2014/10/05/avoid-bias-poor-excellent-scale-making-balanced/>
+
+```{r}
+# Medu / Male Education in ordered factors manner
+student_por$Medu  <- recode_factor(student_por$Medu,
+                                   `0` = "none", 
+                                   `1` = "primary_edu", 
+                                   `2` = "5th_to_9th_grade", 
+                                   `3` = "secondary_edu", 
+                                   `4` = "higher_edu", .ordered = TRUE)
+
+# Fedu / Female Education in ordered factors manner
+student_por$Fedu  <- recode_factor(student_por$Fedu,
+                                   `0` = "none", `1`="primary_edu", 
+                                   `2` = "5th_to_9th_grade", 
+                                   `3` = "secondary_edu", 
+                                   `4` = "higher_edu", .ordered = TRUE)
+
+# traveltime / home to school travel time 
+student_por$traveltime  <- recode_factor(student_por$traveltime, 
+                                         `1` = "<2 hours", 
+                                         `2` = "2 - 5 hours", 
+                                         `3` = "30 min-1 hour", 
+                                         `4` = ">1 hour", .ordered = TRUE)
+
+# studytime / weekly study time 
+student_por$studytime  <- recode_factor(student_por$studytime, 
+                                        `1` = "<15 min", 
+                                        `2` = "15-30 min", 
+                                        `3` = "5 - 10 hours", 
+                                        `4` = ">10 hours", .ordered = TRUE)
+
+# famrel / quality of family relationships
+student_por$famrel  <- recode_factor(student_por$famrel, 
+                                     `1` = "very bad", 
+                                     `2` = "fair", 
+                                     `3` = "good", 
+                                     `4` = "very good", 
+                                     `5` = "excellent", .ordered = TRUE)
+
+# freetime / free time after school
+student_por$freetime  <- recode_factor(student_por$freetime, 
+                                     `1` = "very low", 
+                                     `2` = "low", 
+                                     `3` = "fair", 
+                                     `4` = "high", 
+                                     `5` = "very high", .ordered = TRUE)
+
+# goout / going out with friends
+student_por$goout  <- recode_factor(student_por$goout, 
+                                     `1` = "very low", 
+                                     `2` = "low", 
+                                     `3` = "fair", 
+                                     `4` = "high", 
+                                     `5` = "very high", .ordered = TRUE)
+
+# Dalc  / workday alcohol consumption
+student_por$Dalc  <- recode_factor(student_por$Dalc, 
+                                     `1` = "very low", 
+                                     `2` = "low", 
+                                     `3` = "fair", 
+                                     `4` = "high", 
+                                     `5` = "very high", .ordered = TRUE)
+
+# Walc  / weekend alcohol consumption
+student_por$Walc  <- recode_factor(student_por$Walc, 
+                                     `1` = "very low", 
+                                     `2` = "low", 
+                                     `3` = "fair", 
+                                     `4` = "high", 
+                                     `5` = "very high", .ordered = TRUE)
+
+# health / current health status
+student_por$health  <- recode_factor(student_por$health, 
+                                     `1` = "very bad", 
+                                     `2` = "Somewhat bad", 
+                                     `3` = "fair", 
+                                     `4` = "Somewhat good", 
+                                     `5` = "very good", .ordered = TRUE)
+```
+
+Check on dataset summary
+
+```{r}
+summary(student_por)
+```
+
+Section 1: Scatter plot
+
+School Vs Final Grade
+
+```{r}
+ggplot(student_por, aes(school, count(result), fill = result)) + geom_col(position = "dodge") + 
+  ggtitle(label = 'School versus Final Grade ', subtitle = 'school vs G3') + 
+  labs(title = 'School versus Final Grade ', subtitle = 'school vs G3', 
+       x = "Student's School", y = 'Final Grade(numeric:0-20)')
+```
+
+Age Vs Final Grade
+
+```{r}
+ggplot(student_por, aes(age, G3, fill = sex)) + geom_col(position = "dodge") + 
+  ggtitle(label = 'Age versus Final Grade ', subtitle = 'age vs G3') + 
+  labs(title = 'Age versus Final Grade ', subtitle = 'age vs G3', 
+       x = "Student's Age", y = 'Final Grade(numeric:0-20)')
+```
+
+Address (student's home address type) Vs Final Grade
+
+```{r}
+ggplot(student_por, aes(address, G3, fill = famsize)) + geom_col(position = "dodge") + 
+  ggtitle(label = 'Address versus Final Grade ', subtitle = 'famsize vs G3') + 
+  labs(title = 'Address versus Final Grade ', subtitle = 'famsize vs G3', 
+       x = "Student's Home Address Type", y = 'Final Grade(numeric:0-20)')
+```
+
+Family Size Vs Final Grade
+
+```{r}
+ggplot(student_por, aes(famsize, G3, fill = sex)) + geom_col(position = "dodge") + 
+  ggtitle(label = 'Family Size versus Final Grade ', subtitle = 'famsize vs G3') + 
+  labs(title = 'Family Size versus Final Grade ', subtitle = 'famsize vs G3', 
+       x = "Family Size", y = 'Final Grade(numeric:0-20)')
+```
+
+```{r}
+ggplot(student_por, aes(Medu, result, colour = 'cyl')) + geom_point()
+```
+
+```{r}
+ggplot(student_por, aes(G1, G2, colour = 'cyl')) + geom_point()
+```
+
+Correlation Matrix 1. convert data back to int for correlation analysis
+
+```{r}
+
+```
+
+```{r}
+#student_por_corr <- round(cor(student_por),2)
+#student_por_corr
+```
+
+```{r}
+#student_por %>% cor(student_por$absences,student_por$G1)
+```
