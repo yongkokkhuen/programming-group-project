@@ -3,6 +3,200 @@ title: "Regression"
 output: html_notebook
 ---
 
+Reference: http://www3.dsi.uminho.pt/pcortez/student.pdf
+
+Past research conducted by comparing three input configurations:
+<br>1. A - with all variables from Table 1 except G3 (the output)
+<br>2. B - similar to A but without G2 (the second period grade)
+<br>3. C - similar to B but without G1 (the first period grade)
+
+Best result is A using naive predictor (NV) and randomForest (RF) with RMSE value = 1.32
+
+# Import Libraries
 ```{r}
-# Our code here.
+library(caret)
+```
+
+***
+
+# Load Data
+```{r}
+data <- read.csv("../data/student-por_v3.csv", stringsAsFactors = TRUE)
+str(data)
+summary(data)
+```
+***
+
+# Drop Columns
+```{r}
+data <- subset(data,select=-c(X,result))
+str(data)
+summary(data)
+```
+
+```{r}
+barplot(table(data$G3), ylim=c(0,150), las = 2)
+```
+
+***
+
+# Train-Test Split
+```{r}
+set.seed(42)
+
+train_index <- createDataPartition(
+  data$G3,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set <- data[train_index, ]
+test_set <- data[-train_index, ]
+
+```
+
+```{r}
+nrow(train_set)
+nrow(test_set)
+```
+
+***
+
+# Modelling
+
+### Set 10-fold CV
+```{r}
+set.seed(42)
+
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+```{r}
+get_best_result = function(caret_fit) {
+  best = which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
+  best_result = caret_fit$results[best, ]
+  rownames(best_result) = NULL
+  best_result
+}
+```
+
+## 1. Decision Tree
+
+CART
+
+  method = 'rpart'
+  
+Type: Regression, Classification
+
+Tuning parameters:
+
+cp (Complexity Parameter)
+Required packages: rpart
+
+A model-specific variable importance metric is available.
+
+### Training model
+```{r}
+dt_fit <- train(
+  G3 ~ .,
+  data = train_set,
+  method = "rpart",
+  trControl = fit_control,
+  preProcess = c("center", "scale")
+)
+
+dt_fit
+```
+
+```{r}
+get_best_result(dt_fit)
+dt_fit$bestTune
+```
+
+### Plot the model
+```{r}
+plot(dt_fit)
+```
+
+### Predict G3 from test data
+```{r}
+dt_pred <- predict(dt_fit, test_set)
+```
+
+### Evaluation
+```{r}
+# RMSE
+sqrt(mean((test_set$G3 - dt_pred)^2))
+
+# R2
+cor(test_set$G3, dt_pred) ^ 2
+```
+
+### Hyperparameter Tuning
+```{r}
+tuneGrid <- expand.grid(
+  cp = c(0.01, 0.005, 0.001)
+)
+
+dt_fit <- train(
+  G3 ~ .,
+  data = train_set,
+  method = "rpart",
+  trControl = fit_control,
+  preProcess = c("center", "scale"),
+  tuneGrid = tuneGrid
+)
+
+dt_fit
+```
+```{r}
+get_best_result(dt_fit)
+dt_fit$bestTune
+```
+
+### Plot the model
+```{r}
+plot(dt_fit)
+```
+### Predict G3 from test data
+```{r}
+dt_pred <- predict(dt_fit, test_set)
+```
+
+### Evaluation
+```{r}
+# RMSE
+sqrt(mean((test_set$G3 - dt_pred)^2))
+
+# R2
+cor(test_set$G3, dt_pred) ^ 2
+```
+
+## 2. Random Forest
+
+```{r}
+
+```
+
+## 3. SVM
+
+```{r}
+
+```
+
+## 4. Elastic Net
+
+```{r}
+
+```
+
+## 5. Linear Regression
+
+```{r}
+
 ```
