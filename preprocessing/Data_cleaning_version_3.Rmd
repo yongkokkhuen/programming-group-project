@@ -71,6 +71,6 @@ summary(student_por)
 
 Write clean data csv file
 ```{r}
-write.csv(student_por, "/Users/jamie/Documents/GitHub/programming-group-project/data/student-por_v3.csv")
+write.csv(student_por, "/Users/jamie/Documents/GitHub/programming-group-project/data/student-por_v3.csv", row.names=FALSE)
 ```
 
