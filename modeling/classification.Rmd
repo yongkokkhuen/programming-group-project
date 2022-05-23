@@ -3,6 +3,465 @@ title: "Classification"
 output: html_notebook
 ---
 
+### Best Result From Previous Study
+
+93% PCC with Decision Tree - [Reference](http://www3.dsi.uminho.pt/pcortez/student.pdf)
+
+### Imports
+
 ```{r}
-# Our code here.
+library(dplyr)
+library(ggplot2)
+library(caret)
+```
+
+### Preparation
+
+```{r}
+df <- read.csv("../data/student-por_v3.csv", stringsAsFactors = TRUE)
+head(df)
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+Convert ordinal variables into ordered factors.
+
+```{r}
+df$famsize <- factor(df$famsize, ordered = TRUE, levels = c("LE3", "GT3"))
+df$Medu <- factor(df$Medu, ordered = TRUE, levels = 0:4)
+df$Fedu <- factor(df$Fedu, ordered = TRUE, levels = 0:4)
+df$traveltime <- factor(df$traveltime, ordered = TRUE, levels = 1:4)
+df$studytime <- factor(df$studytime, ordered = TRUE, levels = 1:4)
+df$failures <- factor(df$failures, ordered = TRUE, levels = 0:4)
+df$famrel <- factor(df$famrel, ordered = TRUE, levels = 1:5)
+df$freetime <- factor(df$freetime, ordered = TRUE, levels = 1:5)
+df$goout <- factor(df$goout, ordered = TRUE, levels = 1:5)
+df$Dalc <- factor(df$Dalc, ordered = TRUE, levels = 1:5)
+df$Walc <- factor(df$Walc, ordered = TRUE, levels = 1:5)
+df$health <- factor(df$health, ordered = TRUE, levels = 1:5)
+```
+
+Drop `G3` column as `G3` will be used for regression.
+
+```{r}
+df$G3 <- NULL
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+### Train-Test Split
+
+```{r}
+set.seed(42)
+
+train_index <- createDataPartition(
+  df$result,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set <- df[train_index, ]
+test_set <- df[-train_index, ]
+```
+
+```{r}
+nrow(train_set)
+```
+
+```{r}
+nrow(test_set)
+```
+
+### Subsampling
+
+Check original classes.
+
+```{r}
+table(train_set$result)
+```
+
+Create sample using down-sampling.
+
+```{r}
+set.seed(42)
+
+down_train_set <- downSample(
+  x = train_set[, -ncol(train_set)],
+  y = train_set$result,
+  yname = "result"
+)
+
+table(down_train_set$result)
+```
+
+Create sample using up-sampling.
+
+```{r}
+set.seed(42)
+
+up_train_set <- upSample(
+  x = train_set[, -ncol(train_set)],
+  y = train_set$result,
+  yname = "result"
+)
+
+table(up_train_set$result)
+```
+
+### Modeling
+
+Define repeated 10-fold cross validation.
+
+```{r}
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+Define a helper function to perform training and evaluation.
+
+```{r}
+train_evaluate <- function(method = "", data = train_set, tuneGrid = NULL, name="") {
+  set.seed(42)
+  
+  fit <- train(
+    result ~ .,
+    data = data,
+    method = method,
+    trControl = fit_control,
+    preProcess = c("center", "scale"),
+    tuneGrid = tuneGrid
+  )
+  
+  print(fit)
+  
+  pred <- predict(fit, test_set)
+  
+  cm <- confusionMatrix(pred, test_set$result, mode = "prec_recall")
+  print(cm)
+  
+  precision_score <- precision(pred, test_set$result)
+  recall_score <- recall(pred, test_set$result)
+  f1_score <- F_meas(pred, test_set$result)
+  
+  return(
+    list(
+      model = fit,
+      metrics = data.frame(
+        Model = name,
+        Accuracy = round(cm$overall[["Accuracy"]], 3),
+        Precision = round(precision_score, 3),
+        Recall = round(recall_score, 3),
+        F1 = round(f1_score, 3)
+      )
+    )
+  )
+}
+```
+
+#### Logistic Regression
+
+```{r}
+# TODO
+```
+
+#### K-Nearest Neighbors
+
+```{r}
+# TODO
+```
+
+#### Decision Tree
+
+Use original train set.
+
+```{r}
+dt_clf <- train_evaluate("rpart", name = "DT")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_dt_clf <- train_evaluate("rpart", down_train_set, name = "DT")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_dt_clf <- train_evaluate("rpart", up_train_set, name = "DT")
+```
+
+#### Random Forest
+
+Use original train set.
+
+```{r}
+rf_clf <- train_evaluate("ranger", name = "RF")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_rf_clf <- train_evaluate("ranger", down_train_set, name = "RF")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_rf_clf <- train_evaluate("ranger", up_train_set, name = "RF")
+```
+
+#### Support Vector Machine (Linear Kernel)
+
+Use original train set.
+
+```{r}
+svm_linear_clf = train_evaluate("svmLinear2", name = "SVM - Linear")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_svm_linear_clf <- train_evaluate("svmLinear2", down_train_set, name = "SVM - Linear")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_svm_linear_clf <- train_evaluate("svmLinear2", up_train_set, name = "SVM - Linear")
+```
+
+#### Support Vector Machine with Polynomial Kernel
+
+Use original train set.
+
+```{r}
+svm_poly_clf <- train_evaluate("svmPoly", name = "SVM - Polynomial")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_svm_poly_clf <- train_evaluate("svmPoly", down_train_set, name = "SVM - Polynomial")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_svm_poly_clf <- train_evaluate("svmPoly", up_train_set, name = "SVM - Polynomial")
+```
+
+#### Support Vector Machine with Radial Basis Function Kernel
+
+Use original train set.
+
+```{r}
+svm_rbf_clf <- train_evaluate("svmRadial", name = "SVM - RBF")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_svm_rbf_clf <- train_evaluate("svmRadial", down_train_set, name = "SVM - RBF")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_svm_rbf_clf <- train_evaluate("svmRadial", up_train_set, name = "SVM - RBF")
+```
+
+#### Naive Bayes
+
+Use original train set.
+
+```{r}
+nb_clf <- train_evaluate("naive_bayes", name = "NB")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_nb_clf <- train_evaluate("naive_bayes", down_train_set, name = "NB")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_nb_clf <- train_evaluate("naive_bayes", up_train_set, name = "NB")
+```
+
+#### AdaBoost
+
+Use original train set.
+
+```{r}
+ab_clf <- train_evaluate("adaboost", name = "AB")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_ab_clf <- train_evaluate("adaboost", down_train_set, name = "AB")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_ab_clf <- train_evaluate("adaboost", up_train_set, name = "AB")
+```
+
+#### XGBoost
+
+Use original train set.
+
+```{r}
+xgb_clf <- train_evaluate("xgbLinear", name = "XGB")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_xgb_clf <- train_evaluate("xgbLinear", down_train_set, name = "XGB")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_xgb_clf <- train_evaluate("xgbLinear", up_train_set, name = "XGB")
+```
+
+#### Neural Network
+
+Use original train set.
+
+```{r}
+nn_clf <- train_evaluate("nnet", name = "NN")
+```
+
+Use down-sampled train set.
+
+```{r}
+down_nn_clf <- train_evaluate("nnet", down_train_set, name = "NN")
+```
+
+Use up-sampled train set.
+
+```{r}
+up_nn_clf <- train_evaluate("nnet", up_train_set, name = "NN")
+```
+
+### Evaluation
+
+#### Original
+
+```{r}
+df_eval <- rbind(
+  dt_clf$metrics, 
+  rf_clf$metrics, 
+  svm_linear_clf$metrics, 
+  svm_poly_clf$metrics, 
+  svm_rbf_clf$metrics, 
+  nb_clf$metrics, 
+  ab_clf$metrics, 
+  xgb_clf$metrics,
+  nn_clf$metrics
+)
+
+df_eval
+```
+
+```{r}
+df_eval %>%
+  ggplot(aes(x = reorder(Model, -Accuracy), y = Accuracy, fill = Model)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Accuracy), vjust=-0.5) +
+  ggtitle("Accuracy by Model") +
+  xlab("Model") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+```{r}
+df_eval %>%
+  ggplot(aes(x = reorder(Model, -F1), y = F1, fill = Model)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = F1), vjust=-0.5) +
+  ggtitle("F1 Score by Model") +
+  xlab("Model") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+#### Down-Sampled
+
+```{r}
+df_eval_down <- rbind(
+  down_dt_clf$metrics, 
+  down_rf_clf$metrics, 
+  down_svm_linear_clf$metrics, 
+  down_svm_poly_clf$metrics, 
+  down_svm_rbf_clf$metrics, 
+  down_nb_clf$metrics, 
+  down_ab_clf$metrics, 
+  down_xgb_clf$metrics,
+  down_nn_clf$metrics
+)
+
+df_eval_down
+```
+
+```{r}
+df_eval_down %>%
+  ggplot(aes(x = reorder(Model, -Accuracy), y = Accuracy, fill = Model)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Accuracy), vjust=-0.5) +
+  ggtitle("Accuracy by Model (Down-Sampled)") +
+  xlab("Model") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+```
+
+#### Up-Sampled
+
+```{r}
+df_eval_up <- rbind(
+  up_dt_clf$metrics, 
+  up_rf_clf$metrics, 
+  up_svm_linear_clf$metrics, 
+  up_svm_poly_clf$metrics, 
+  up_svm_rbf_clf$metrics, 
+  up_nb_clf$metrics, 
+  up_ab_clf$metrics, 
+  up_xgb_clf$metrics,
+  up_nn_clf$metrics
+)
+
+df_eval_up
+```
+
+```{r}
+df_eval_up %>%
+  ggplot(aes(x = reorder(Model, -Accuracy), y = Accuracy, fill = Model)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = Accuracy), vjust=-0.5) +
+  ggtitle("Accuracy by Model (Up-Sampled)") +
+  xlab("Model") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
