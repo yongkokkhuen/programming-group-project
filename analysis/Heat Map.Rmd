@@ -1,0 +1,65 @@
+---
+title: "Heat Map"
+output: html_notebook
+    
+---
+
+
+
+```{r}
+library(reshape2)  
+library(data.table)                                      
+library(plotly)   
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(pheatmap)
+
+```
+
+# 1. Read processed dataset as matrix as 'student_por'
+```{r}
+student_por <- read.csv("C:/Users/Sun Yu/Documents/GitHub/programming-group-project/data/student-por_v3.csv", header = TRUE)
+student_por <- student_por %>% select(-1)
+student_por <- data.matrix(student_por)
+str(student_por)
+
+```
+#2.caculate the correlation value for each attribute
+
+```{r}
+
+student_por <- round(cor(student_por, method = "pearson"),2)
+head(student_por)
+
+```
+
+#3.change the matrix student_pro from  short data to long data
+```{r}
+student_por <- melt(student_por)
+head(student_por)
+```
+
+#4. draw the Heat map
+```{r}
+
+map <- ggplot(data = student_por, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low="red", high="darkblue")+
+  theme(
+ axis.text.x=element_text(angle=90, size=8),
+ axis.title.x=element_text(angle=0, color='red'),
+ axis.title.y=element_text(angle=360, color='blue')
+ )+coord_equal()
+
+map
+
+```
+#5 only show the absolute correlation value of G3 with Descending order
+```{r}
+G3 <- subset(student_por,Var2=="G3")
+G3[3] <- abs(G3[3])
+G3 <- G3[order(G3[,3],decreasing = TRUE),]
+G3
+```
+
