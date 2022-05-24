@@ -1,8 +1,6 @@
 ---
 title: "R Notebook"
-output:
-  html_document:
-    df_print: paged
+output: html_notebook
 ---
 
 List of used library
@@ -114,7 +112,7 @@ student_por$health  <- recode_factor(student_por$health,
 summary(student_por)
 ```
 
-# 4. Preparare General Function for Graph Plotting
+# 4. Prepare General Function for Graph Plotting
 
 ```{r}
 # bar graph for bivariate analysis
@@ -141,378 +139,340 @@ Unstacked_bi_bar_graph <- function(`x.axis` = "", Result = ""){
 }
 ```
 
-# 5. Section 1: Bivariate Visualization for Expected Result Attribute
+# 5. Bivariate Visualization for Final Grade Result
 
-### a. School Vs Expected Result
-
+### a. School Vs Final Grade Result
+#### 'GP' - Gabriel Pereira 
+#### 'MS' - Mousinho da Silveira'
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$school, student_por$result)
-output = output + ggtitle(label = 'School versus Expected Result', 
-                          subtitle = 'school vs result') +
+output = output + ggtitle(label = 'School versus Final Grade Result') +
   labs(x = "Student's School") 
 output
 ```
 
-### b. Sex Vs Expected Result
-
+### b. Sex Vs Final Grade Result
+#### 'F' - female
+#### 'M' - male
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$sex, student_por$result)
-output = output + ggtitle(label = 'Gender versus Expected Result', 
-                          subtitle = 'sex vs result') +
+output = output + ggtitle(label = 'Gender versus Final Grade Result') +
   labs(x = "Student's Sex") 
 output
 ```
 
-### c. Age Vs Expected Result
-
+### c. Age Vs Final Grade Result
+#### min age is 15
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$age, student_por$result)
-output = output + ggtitle(label = 'Age versus Expected Result', 
-                          subtitle = 'age vs result') +
+output = output + ggtitle(label = 'Age versus Final Grade Result') +
   labs(x = "Student's Age") 
 output
-
-min(student_por$age)
-max(student_por$age)
 ```
 
-### d. Address Vs Expected Result
-
+### d. Address Vs Final Grade Result
+#### 'R' - rural
+#### 'U' - urban
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$address, student_por$result)
-output = output + ggtitle(label = "Student's Home Address Type versus Expected Result", 
-                          subtitle = 'address vs result') +
+output = output + ggtitle(label = "Student's Home Address Type versus Final Grade Result") +
   labs(x = "Address Type") 
 output
 ```
 
-### e. Family Size Vs Expected Result
-
+### e. Family Size Vs Final Grade Result
+#### 'GT3' - greater than 3
+#### 'LE3' - lesser than 3
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$famsize, student_por$result)
-output = output + ggtitle(label = "Student's Family Size versus Expected Result", 
-                          subtitle = 'famsize vs result') +
+output = output + ggtitle(label = "Student's Family Size versus Final Grade Result") +
   labs(x = "Family Size") 
 output
 ```
 
-### f. Parent's Cohabitation Status Vs Expected Result
-
+### f. Parent's Cohabitation Status Vs Final Grade Result
+#### 'A' - Apart
+#### 'T' - Together
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Pstatus, student_por$result)
-output = output + ggtitle(label = "Parent's Cohabitation Status versus Expected Result", 
-                          subtitle = 'Pstatus vs result') +
+output = output + ggtitle(label = "Parent's Cohabitation Status versus Final Grade Result") +
   labs(x = "Parent's Cohabitation Status") 
 output
 ```
 
-### g. Mother's Education Vs Expected Result
+### g. Mother's Education Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Medu, student_por$result)
-output = output + ggtitle(label = "Mother's Education Vs Expected Result", 
-                          subtitle = 'Medu vs result') +
+output = output + ggtitle(label = "Mother's Education Vs Final Grade Result") +
   labs(x = "Mother's Education Level") 
 output
 ```
 
-### h. Father's Education Vs Expected Result
+### h. Father's Education Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Fedu, student_por$result)
-output = output + ggtitle(label = "Father's Education Vs Expected Result", 
-                          subtitle = 'Fedu vs result') +
+output = output + ggtitle(label = "Father's Education Vs Final Grade Result") +
   labs(x = "Father's Education Level") 
 output
 ```
 
-### i. Mother's Job Vs Expected Result
+### i. Mother's Job Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Mjob, student_por$result)
 
-output = output + ggtitle(label = "Mother's Job Vs Expected Result", 
-                          subtitle = 'Mjob vs result') +
+output = output + ggtitle(label = "Mother's Job Vs Final Grade Result") +
   labs(x = "Mother's Job") 
 output
 ```
 
-### j. Father's Job Vs Expected Result
+### j. Father's Job Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Fjob, student_por$result)
 
-output = output + ggtitle(label = "Father's Job Vs Expected Result", 
-                          subtitle = 'Fjob vs result') +
+output = output + ggtitle(label = "Father's Job Vs Final Grade Result") +
   labs(x = "Father's Job") 
 output
 ```
 
-### k. Reason to Choose Selected School Vs Expected Result
+### k. Reason to Choose Selected School Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$reason, student_por$result)
 
-output = output + ggtitle(label = "Reason to Choose Selected School Vs Expected Result", 
-                          subtitle = 'reason vs result') +
+output = output + ggtitle(label = "Reason to Choose Selected School Vs Final Grade Result") +
   labs(x = "Reason Types") 
 output
 ```
 
-### l. Student's Guardian Vs Expected Result
+### l. Student's Guardian Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$guardian, student_por$result)
 
-output = output + ggtitle(label = "Student's Guardian Vs Expected Result", 
-                          subtitle = 'guardian vs result') +
+output = output + ggtitle(label = "Student's Guardian Vs Final Grade Result") +
   labs(x = "Guardian") 
 output
 ```
 
-### m. Home to School Travel Time Vs Expected Result
+### m. Home to School Travel Time Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$traveltime, student_por$result)
 
-output = output + ggtitle(label = "Home to School Travel Time Vs Expected Result", 
-                          subtitle = 'traveltime vs result') +
+output = output + ggtitle(label = "Home to School Travel Time Vs Final Grade Result") +
   labs(x = "Travel Time") 
 output
 ```
 
-### n. Weekly Study Time Vs Expected Result
-
-```{r}
-## the sample code i refer to is showing scatterplot, but when being implemented into dataset, become like this
-# create scatter plot of hours studied vs. exam score
-plot(student_por$studytime, student_por$result, pch=16, col='steelblue',
-     main='Weekly Study Time Vs Expected Result',
-     xlab='Weekly Study Time', ylab='Expected Result')
-```
+### n. Weekly Study Time Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$studytime, student_por$result)
 
-output = output + ggtitle(label = "Weekly Study Time Vs Expected Result", 
-                          subtitle = 'studytime vs result') +
+output = output + ggtitle(label = "Weekly Study Time Vs Final Grade Result") +
   labs(x = "Weekly Study Time") 
 output
 ```
 
-### o. Number of Past Class Failures Vs Expected Result
+### o. Number of Past Class Failures Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$failures, student_por$result)
 
-output = output + ggtitle(label = "Number of Past Class Failures Vs Expected Result", 
-                          subtitle = 'failures vs result') +
+output = output + ggtitle(label = "Number of Past Class Failures Vs Final Grade Result") +
   labs(x = "Number of Past Class Failures") 
 output
 ```
 
-### p. Extra Educational Support Vs Expected Result
+### p. Extra Educational Support Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$schoolsup, student_por$result)
 
-output = output + ggtitle(label = "Extra Educational Support Vs Expected Result", 
-                          subtitle = 'schoolsup vs result') +
+output = output + ggtitle(label = "Extra Educational Support Vs Final Grade Result") +
   labs(x = "Extra Educational Support") 
 output
 ```
 
-### q. Family Educational Support Vs Expected Result
+### q. Family Educational Support Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$famsup, student_por$result)
 
-output = output + ggtitle(label = "Family Educational Support Vs Expected Result", 
-                          subtitle = 'famsup vs result') +
+output = output + ggtitle(label = "Family Educational Support Vs Final Grade Result") +
   labs(x = "Family Educational Support") 
 output
 ```
 
-### r. Extra Paid Classes Within The Course Subject(Portuguese) Vs Expected Result
+### r. Extra Paid Classes Within The Course Subject(Portuguese) Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$paid, student_por$result)
 
-output = output + ggtitle(label = "Extra Paid Classes for Portuguese Subject Vs Expected Result", 
-                          subtitle = 'paid vs result') +
+output = output + 
+  ggtitle(label = "Extra Paid Classes for Portuguese Subject Vs Final Grade Result") + 
   labs(x = "Joined Extra Paid Classes?") 
 output
 ```
 
-### s. Extra-Curricular Activities Vs Expected Result
+### s. Extra-Curricular Activities Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$activities, student_por$result)
 
-output = output + ggtitle(label = "Extra-Curricular Activities Vs Expected Result", 
-                          subtitle = 'activities vs result') +
+output = output + ggtitle(label = "Extra-Curricular Activities Vs Final Grade Result") +
   labs(x = "Joined Extra-Curricular Activities?") 
 output
 ```
 
-### t. Intention to Pursue Higher Education Vs Expected Result
+### t. Intention to Pursue Higher Education Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$higher, student_por$result)
 
-output = output + ggtitle(label = "Intention to Pursue Higher Education Vs Expected Result", 
-                          subtitle = 'higher vs result') +
+output = output + ggtitle(label = "Intention to Pursue Higher Education Vs Final Grade Result") +
   labs(x = "Intention to Pursue Higher Education") 
 output
 ```
 
-### u. Internet Access at Home Vs Expected Result
+### u. Internet Access at Home Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$internet, student_por$result)
 
-output = output + ggtitle(label = "Internet Access at Home Vs Expected Result", 
-                          subtitle = 'internet vs result') +
+output = output + ggtitle(label = "Internet Access at Home Vs Final Grade Result") +
   labs(x = "Internet Access at Home") 
 output
 ```
 
-### v. With a Romantic Relationship Vs Expected Result
+### v. With a Romantic Relationship Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$romantic, student_por$result)
 
-output = output + ggtitle(label = "With a Romantic Relationship Vs Expected Result", 
-                          subtitle = 'romantic vs result') +
+output = output + ggtitle(label = "With a Romantic Relationship Vs Final Grade Result") +
   labs(x = "With a Romantic Relationship?") 
 output
 ```
 
-### w. Quality of Family Relationships Vs Expected Result
+### w. Quality of Family Relationships Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$famrel, student_por$result)
 
-output = output + ggtitle(label = "Quality of Family Relationships Vs Expected Result", 
-                          subtitle = 'famrel vs result') +
+output = output + ggtitle(label = "Quality of Family Relationships Vs Final Grade Result") +
   labs(x = "Quality of Family Relationships") 
 output
 ```
 
-### x. Free Time After School Vs Expected Result
+### x. Free Time After School Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$freetime, student_por$result)
 
-output = output + ggtitle(label = "Free Time After School Vs Expected Result", 
-                          subtitle = 'freetime vs result') +
+output = output + ggtitle(label = "Free Time After School Vs Final Grade Result") +
   labs(x = "Free Time After School") 
 output
 ```
 
-### y. Going Out with Friends Vs Expected Result
+### y. Going Out with Friends Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$goout, student_por$result)
 
-output = output + ggtitle(label = "Going Out with Friends Vs Expected Result", 
-                          subtitle = 'goout vs result') +
+output = output + ggtitle(label = "Going Out with Friends Vs Final Grade Result") +
   labs(x = "Going Out with Friends") 
 output
 ```
 
-### z. Workday Alcohol Consumption Vs Expected Result
+### z. Workday Alcohol Consumption Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Dalc, student_por$result)
 
-output = output + ggtitle(label = "Workday Alcohol Consumption Vs Expected Result", 
-                          subtitle = 'Dalc vs result') +
+output = output + ggtitle(label = "Workday Alcohol Consumption Vs Final Grade Result") +
   labs(x = "Workday Alcohol Consumption") 
 output
 ```
 
-### aa. Weekend Alcohol Consumption Vs Expected Result
+### aa. Weekend Alcohol Consumption Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$Walc, student_por$result)
 
-output = output + ggtitle(label = "Weekend Alcohol Consumption Vs Expected Result", 
-                          subtitle = 'Walc vs result') +
+output = output + ggtitle(label = "Weekend Alcohol Consumption Vs Final Grade Result") +
   labs(x = "Weekend Alcohol Consumption") 
 output
 ```
 
-### ab. Current Health Status Vs Expected Result
+### ab. Current Health Status Vs Final Grade Result
 
 ```{r}
 output = Unstacked_bi_bar_graph(student_por$health, student_por$result)
 
-output = output + ggtitle(label = "Current Health Status Vs Expected Result", 
-                          subtitle = 'health vs result') +
+output = output + ggtitle(label = "Current Health Status Vs Final Grade Result") +
   labs(x = "Current Health Status") 
 output
 ```
 
-### ac. Number of School Absences Vs Expected Result
-
+### ac. Number of School Absences Vs Final Grade Result
+#### Output: 
+#### There are wide range of school absences counts even though most of the student didn't absent from class for once. 
+#### There might be two genius students in class, they come with with 30 and above absent counts and yet able to pass G3. 
+#### max absent count = 32
 ```{r}
-output = Unstacked_bi_bar_graph(student_por$absences, student_por$result)
-
-output = output + ggtitle(label = "Number of School Absences Vs Expected Result", 
-                          subtitle = 'absences vs result') +
-  labs(x = "Number of School Absences") 
-output
+# boxplot creation
+ggplot(student_por, aes(x = absences, y = result)) +
+  geom_boxplot() + 
+  ggtitle(label = "Number of School Absences Vs Final Grade Result") + 
+  labs(x = "Number of School Absences", y = "Result")
 ```
 
 ```{r}
 # beeswarm 
 ggplot(student_por, aes(x = result, y = absences, color = result)) +
-  geom_beeswarm(cex = 3, priority = "density") + 
-  ggtitle(label = "Number of School Absences Vs Expected Result", 
-          subtitle = 'absences vs result') +
-  labs(x = "Number of School Absences", y = "Marks") 
+  geom_beeswarm(cex = 3.5, priority = "density") + 
+  ggtitle(label = "Number of School Absences Vs Final Grade Result") +
+  labs(x = "Number of School Absences", y = "Frequency") 
+
 ```
 
-### ad. First Period Grade Vs Expected Result
 
+### ad. First Period Grade Vs Final Grade Result
+#### Output: 
+#### There is a student that scored 0 in G1 manage to pass G3 Exam
 ```{r}
 # boxplot creation
 ggplot(student_por, aes(x = G1, y = result)) +
   geom_boxplot() + 
-  labs(title = "First Period Grade Vs Expected Result",
-       subtitle = 'G1 vs result',
+  labs(title = "First Period Grade Vs Final Grade Result",
        x = "First Period Grade", 
        y = 'Result')
-```
-
-```{r}
-# this is how the graphs looks like without separation by result 
-output = Unstacked_bi_bar_graph(student_por$G1, student_por$result)
-
-output = output + ggtitle(label = "First Period Grade Vs Expected Result", 
-                          subtitle = 'G1 vs result') +
-  labs(x = "First Period Grade") 
-output
 ```
 
 ```{r}
 # beeswarm 
 ggplot(student_por, aes(x = result, y = G1, color = result)) +
   geom_beeswarm(cex = 3, priority = "density") + 
-  ggtitle(label = "First Period Grade Vs Expected Result", 
+  ggtitle(label = "First Period Grade Vs Final Grade Result", 
           subtitle = 'G1 vs result') +
   labs(x = "First Period Grade", y = "Marks") 
+
+# max G1 marks = 19 
 ```
 
-### ae. Second Period Grade Vs Expected Result
-
+### ae. Second Period Grade Vs Final Grade Result
+#### outcome: 
+#### There are 7 students scored 0 in G2, and they failed in final grade exam as well. 
 ```{r}
 # boxplot creation
 ggplot(student_por, aes(x = G2, y = result)) +
   geom_boxplot() + 
-  labs(title = "Second Period Grade Vs Expected Result",
-       subtitle = 'G2 vs result',
+  labs(title = "Second Period Grade Vs Final Grade Result",
        x = "Second Period Grade", 
        y = 'Result')
 ```
@@ -521,57 +481,17 @@ ggplot(student_por, aes(x = G2, y = result)) +
 # beeswarm 
 ggplot(student_por, aes(x = result, y = G2, color = result)) +
   geom_beeswarm(cex = 3, priority = "density") + 
-  ggtitle(label = "Second Period Grade Vs Expected Result", 
+  ggtitle(label = "Second Period Grade Vs Final Grade Result", 
           subtitle = 'G2 vs result') +
   labs(x = "Second Period Grade", y = "Marks") 
 ```
 
-```{r}
-# counts (or sums of weights)
-bivariate_bargraph <- ggplot(student_por, aes(G2))
-
-# Number of tuples in each class:
-bivariate_bargraph + geom_bar(aes(fill = result), position = 'dodge') + 
-  #facet_wrap(~ result) + 
-  labs(title = "Second Period Grade Vs Expected Result",
-       subtitle = 'G2 vs result',
-       x = "Second Period Grade", 
-       y = 'count')
-```
-
-### af. Final Grade Vs Expected Result
+### af. Final Grade Vs Final Grade Result
 
 ```{r}
 # beeswarm 
 ggplot(student_por, aes(x = result, y = G3, color = result)) +
   geom_beeswarm(cex = 3, priority = "density") + 
-  ggtitle(label = "Final Grade Vs Expected Result", 
-          subtitle = 'G3 vs result') +
+  ggtitle(label = "Final Grade Vs Final Grade Result") + 
   labs(x = "Final Grade", y = "Marks") 
-```
-
-# 6. Correlation Matrix
-
-```{r}
-# i not sure will we make R bias by converting attribute back to numeric form for chi-square test 
-print("Pearson Correlation Coefficient between School and Result")
-cor(as.numeric(student_por$school), as.numeric(student_por$result))
-
-print("Correlation Between between School and Result")
-cor.test(as.numeric(student_por$school), as.numeric(student_por$result), method = c("pearson"), conf.level = 0.95)
-```
-
-# Random plot
-```{r}
-# Bivariate density plots
-# In a 2D density plot, nested contours (or contours plus colors) indicate regions of higher local density. 
-ggplot(student_por, aes(x = G3, y = absences)) + 
-  geom_density2d() + 
-  geom_jitter(alpha=0.35) + # using geom_jitter to avoid overplotting of points
-  labs(title = "Final Grade vs Absences",
-       subtitle = 'G3 vs absences',
-       x = "Final Grade", 
-       y = 'Absences') +
-  theme_classic()  + 
-  theme(aspect.ratio = 1)
 ```
