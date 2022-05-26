@@ -29,10 +29,22 @@ summary(data)
 
 # Drop Columns
 ```{r}
-data <- subset(data,select=-c(X,result))
+data <- subset(data, select = -result)
 str(data)
 summary(data)
 ```
+
+***
+
+# Convert Columns to Factor
+```{r}
+col_names <- setdiff(colnames(data), c("age","absences","G1","G2","G3"))
+
+data[col_names] <- lapply(data[col_names] , factor)
+str(data)
+summary(data)
+```
+
 
 ```{r}
 barplot(table(data$G3), ylim=c(0,150), las = 2)
@@ -82,6 +94,7 @@ get_best_result = function(caret_fit) {
   best_result = caret_fit$results[best, ]
   rownames(best_result) = NULL
   best_result
+  #getTrainPerf(caret_fit)
 }
 ```
 
@@ -89,18 +102,14 @@ get_best_result = function(caret_fit) {
 
 CART
 
-  method = 'rpart'
-  
-Type: Regression, Classification
+- method = 'rpart'
+- Type: Regression, Classification
+- Tuning parameters:
+  - cp (Complexity Parameter)
+- Required packages: rpart
+- A model-specific variable importance metric is available.
 
-Tuning parameters:
-
-cp (Complexity Parameter)
-Required packages: rpart
-
-A model-specific variable importance metric is available.
-
-### Training model
+### Training model with auto tuning
 ```{r}
 dt_fit <- train(
   G3 ~ .,
@@ -110,18 +119,22 @@ dt_fit <- train(
   preProcess = c("center", "scale")
 )
 
+# warning message above is just a warning about some parameters that do very poorly so that the RMSE is a little worse than the basic st deviation of the outcome
+# Reference: https://github.com/topepo/caret/issues/905
+
 dt_fit
 ```
 
+### Training result
 ```{r}
 get_best_result(dt_fit)
-dt_fit$bestTune
 ```
 
-### Plot the model
+### Plot the trained model
 ```{r}
 plot(dt_fit)
 ```
+Value 0.09 is not the optimal value for complexity parameter, hence the parameter should be tuned with value < 0.09.
 
 ### Predict G3 from test data
 ```{r}
@@ -130,14 +143,14 @@ dt_pred <- predict(dt_fit, test_set)
 
 ### Evaluation
 ```{r}
-# RMSE
-sqrt(mean((test_set$G3 - dt_pred)^2))
-
-# R2
-cor(test_set$G3, dt_pred) ^ 2
+postResample(pred = dt_pred, obs = test_set$G3)
 ```
+The performance of model can be improved compared to model from past research where RMSE value = 1.32
 
-### Hyperparameter Tuning
+### Training model with manual tuning
+
+- cp (Complexity Parameter) = 0.01 or 0.005 or 0.001
+
 ```{r}
 tuneGrid <- expand.grid(
   cp = c(0.01, 0.005, 0.001)
@@ -154,34 +167,170 @@ dt_fit <- train(
 
 dt_fit
 ```
+### Training result after manual tuning
 ```{r}
 get_best_result(dt_fit)
-dt_fit$bestTune
 ```
 
-### Plot the model
+### Plot the trained model after manual tuning
 ```{r}
 plot(dt_fit)
 ```
-### Predict G3 from test data
+Value 0.005 is the optimal value for complexity parameter.
+
+### Predict G3 from test data using the manually tuned model
 ```{r}
 dt_pred <- predict(dt_fit, test_set)
 ```
 
-### Evaluation
+### Evaluation of the manually tuned model
 ```{r}
-# RMSE
-sqrt(mean((test_set$G3 - dt_pred)^2))
-
-# R2
-cor(test_set$G3, dt_pred) ^ 2
+postResample(pred = dt_pred, obs = test_set$G3)
 ```
+The performance of model has improved significantly from RMSE of 1.74 to 1.34 although it did not perform better than model from past research where RMSE value = 1.32.
+
+***
 
 ## 2. Random Forest
 
+Random Forest
+
+- method = 'ranger'
+- Type: Classification, Regression
+- Tuning parameters:
+  - mtry (#Randomly Selected Predictors) (Number of variables randomly sampled as candidates at each split.)
+  - splitrule (Splitting Rule)
+  - min.node.size (Minimal Node Size)
+- Required packages: e1071, ranger, dplyr
+- A model-specific variable importance metric is available.
+
+### Training model with auto tuning
 ```{r}
+rf_fit <- train(
+  G3 ~ .,
+  data = train_set,
+  method = "ranger",
+  trControl = fit_control,
+  preProcess = c("center", "scale")
+)
+
+rf_fit
 
 ```
+
+### Training result
+```{r}
+get_best_result(rf_fit)
+```
+
+### Plot the trained model
+```{r}
+plot(rf_fit)
+```
+- For splitrule (splitting rule) = variance, mtry = 36 is already the optimal value.
+- For splitrule (splitting rule) = extratrees, can try to tune with mtry > 70 to optimize the model's performance.
+- Tuning parameter 'min.node.size' was held constant at a value of 5, can try to tune with other values.
+
+### Predict G3 from test data
+```{r}
+rf_pred <- predict(rf_fit, test_set)
+```
+
+### Evaluation
+```{r}
+postResample(pred = rf_pred, obs = test_set$G3)
+```
+- The Random Forest model is performed a lot better compared to model from past research where RMSE value = 1.32.
+- We can still try to tune the parameters manually to optimize the model's performance.
+
+### Training model with manual tuning
+- mtry (#Randomly Selected Predictors)
+- splitrule (Splitting Rule)
+- min.node.size (Minimal Node Size)
+
+```{r}
+tuneGrid <- expand.grid(
+  mtry = c(36, 70, 80),
+  splitrule = c("variance", "extratrees"),
+  min.node.size = c(2,5,8)
+)
+
+rf_fit <- train(
+  G3 ~ .,
+  data = train_set,
+  method = "ranger",
+  trControl = fit_control,
+  preProcess = c("center", "scale"),
+  tuneGrid = tuneGrid
+)
+
+rf_fit
+
+#Error: mtry can not be larger than number of variables in data. Ranger will EXIT now.
+#Warning: model fit failed for Fold07.Rep02: mtry=80, splitrule=extratrees, min.node.size=5 Error in ranger::ranger(dependent.variable.name = ".outcome", data = x,  : 
+#  User interrupt or internal error.
+```
+
+
+### Training result after manual tuning
+```{r}
+get_best_result(rf_fit)
+```
+### Plot the trained model after manual tuning
+```{r}
+plot(rf_fit)
+```
+- Parameter mtry cannot be 80 hence the maximum mtry seems to be 71. (Not sure how to calculate maximum mtry)
+- For splitrule = extratrees, the result is not as good as splitrule = variance. So we will stop the optimization using splitrule = extratrees at this point.
+- For splitrule = variance, we can try to tune with minimal node size > 8 and mtry < 36.
+
+```{r}
+tuneGrid <- expand.grid(
+  mtry = seq(30,36,by=2),
+  splitrule = c("variance"),
+  min.node.size = seq(5,10,by=1)
+)
+
+rf_fit <- train(
+  G3 ~ .,
+  data = train_set,
+  method = "ranger",
+  trControl = fit_control,
+  preProcess = c("center", "scale"),
+  tuneGrid = tuneGrid
+)
+
+rf_fit
+
+```
+
+### Training result after manual tuning
+```{r}
+get_best_result(rf_fit)
+```
+
+### Plot the trained model after manual tuning
+```{r}
+plot(rf_fit)
+```
+
+- Optimal values:
+  - minial node size = 7
+  - mtry = 36
+  - splitting rule = variance
+
+### Predict G3 from test data using manually tuned model
+```{r}
+rf_pred <- predict(rf_fit, test_set)
+```
+
+### Evaluation of manually tuned model
+```{r}
+postResample(pred = rf_pred, obs = test_set$G3)
+```
+Slight improvement of the model's performance from RMSE of 1.100 to 1.096 compared to auto tuned model.
+
+***
 
 ## 3. SVM
 
