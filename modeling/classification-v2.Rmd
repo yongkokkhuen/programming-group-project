@@ -1,0 +1,695 @@
+---
+title: "Classification"
+output: html_notebook
+---
+
+### Best Result From Previous Study
+
+93% PCC with Decision Tree - [Reference](http://www3.dsi.uminho.pt/pcortez/student.pdf)
+
+### Imports
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(caret)
+```
+
+### Preparation
+
+```{r}
+df <- read.csv("../data/student-por_v3.csv", stringsAsFactors = TRUE)
+head(df)
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+Convert ordinal variables into ordered factors.
+
+```{r}
+df$famsize <- factor(df$famsize, ordered = TRUE, levels = c("LE3", "GT3"))
+df$Medu <- factor(df$Medu, ordered = TRUE, levels = 0:4)
+df$Fedu <- factor(df$Fedu, ordered = TRUE, levels = 0:4)
+df$traveltime <- factor(df$traveltime, ordered = TRUE, levels = 1:4)
+df$studytime <- factor(df$studytime, ordered = TRUE, levels = 1:4)
+df$failures <- factor(df$failures, ordered = TRUE, levels = 0:4)
+df$famrel <- factor(df$famrel, ordered = TRUE, levels = 1:5)
+df$freetime <- factor(df$freetime, ordered = TRUE, levels = 1:5)
+df$goout <- factor(df$goout, ordered = TRUE, levels = 1:5)
+df$Dalc <- factor(df$Dalc, ordered = TRUE, levels = 1:5)
+df$Walc <- factor(df$Walc, ordered = TRUE, levels = 1:5)
+df$health <- factor(df$health, ordered = TRUE, levels = 1:5)
+```
+
+Drop `G3` column as `G3` will be used for regression.
+
+```{r}
+df$G3 <- NULL
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+### Train-Test Split
+
+```{r}
+set.seed(42)
+
+train_index <- createDataPartition(
+  df$result,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set <- df[train_index, ]
+test_set <- df[-train_index, ]
+```
+
+```{r}
+nrow(train_set)
+```
+
+```{r}
+nrow(test_set)
+```
+
+### Subsampling
+
+Check original classes.
+
+```{r}
+table(train_set$result)
+```
+
+Create sample using down-sampling.
+
+```{r}
+set.seed(42)
+
+down_train_set <- downSample(
+  x = train_set[, -ncol(train_set)],
+  y = train_set$result,
+  yname = "result"
+)
+
+table(down_train_set$result)
+```
+
+Create sample using up-sampling.
+
+```{r}
+set.seed(42)
+
+up_train_set <- upSample(
+  x = train_set[, -ncol(train_set)],
+  y = train_set$result,
+  yname = "result"
+)
+
+table(up_train_set$result)
+```
+
+### Modeling
+
+Define repeated 10-fold cross validation.
+
+```{r}
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+Define a helper function to train model.
+
+```{r}
+train_model <- function(method = "",
+                        data = train_set,
+                        tuneGrid = NULL,
+                        tuneLength = 3) {
+  set.seed(42)
+
+  fit <- train(
+    result ~ .,
+    data = data,
+    method = method,
+    trControl = fit_control,
+    preProcess = c("center", "scale"),
+    tuneGrid = tuneGrid,
+    tuneLength = tuneLength
+  )
+
+  print(fit)
+  
+  return(fit)
+}
+```
+
+Define a helper function to evaluate model.
+
+```{r}
+evaluate_model <- function(model = NULL, alias = "") {
+  pred <- predict(model, test_set)
+
+  cm <- confusionMatrix(pred, test_set$result, mode = "prec_recall")
+  print(cm)
+
+  precision_score <- precision(pred, test_set$result)
+  recall_score <- recall(pred, test_set$result)
+  f1_score <- F_meas(pred, test_set$result)
+
+  return(data.frame(
+    Model = alias,
+    Accuracy = round(cm$overall[["Accuracy"]], 3),
+    Precision = round(precision_score, 3),
+    Recall = round(recall_score, 3),
+    F1 = round(f1_score, 3)
+  ))
+}
+```
+
+#### Decision Tree
+
+##### Original Train Set
+
+```{r}
+dt_clf <- train_model("rpart2")
+```
+
+```{r}
+plot(dt_clf)
+```
+
+No further tuning required.
+
+```{r}
+dt_metrics <- evaluate_model(dt_clf, "DT")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_dt_clf <- train_model("rpart2", down_train_set)
+```
+
+```{r}
+plot(down_dt_clf)
+```
+
+No further tuning required.
+
+```{r}
+down_dt_metrics <- evaluate_model(down_dt_clf, "DT")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_dt_clf <- train_model("rpart2", up_train_set)
+```
+
+```{r}
+plot(up_dt_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+up_dt_clf <- train_model("rpart2", up_train_set, tuneLength = 10)
+```
+
+```{r}
+plot(up_dt_clf)
+```
+
+Tuning done.
+
+```{r}
+up_dt_metrics <- evaluate_model(up_dt_clf, "DT")
+```
+
+#### Random Forest
+
+##### Original Train Set
+
+```{r}
+rf_clf <- train_model("ranger")
+```
+
+```{r}
+plot(rf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+rf_clf <- train_model("ranger", tuneLength = 7)
+```
+
+```{r}
+plot(rf_clf)
+```
+
+Tuning done.
+
+```{r}
+rf_metrics <- evaluate_model(rf_clf, "RF")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_rf_clf <- train_model("ranger", down_train_set)
+```
+
+```{r}
+plot(down_rf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+down_rf_clf <- train_model("ranger", down_train_set, tuneLength = 7)
+```
+
+```{r}
+plot(down_rf_clf)
+```
+
+Tuning done.
+
+```{r}
+down_rf_metrics <- evaluate_model(down_rf_clf, "RF")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_rf_clf <- train_model("ranger", up_train_set)
+```
+
+```{r}
+plot(up_rf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+up_rf_clf <- train_model("ranger", up_train_set, tuneLength = 7)
+```
+
+```{r}
+plot(up_rf_clf)
+```
+
+Tuning done.
+
+```{r}
+up_rf_metrics <- evaluate_model(up_rf_clf, "RF")
+```
+
+#### Support Vector Machine (Linear Kernel)
+
+##### Original Train Set
+
+```{r}
+svm_lin_clf <- train_model("svmLinear2")
+```
+
+```{r}
+plot(svm_lin_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+svm_lin_tuneGrid <- expand.grid(cost = seq(0.05, 0.5, 0.05))
+
+svm_lin_clf <- train_model("svmLinear2", tuneGrid = svm_lin_tuneGrid)
+```
+
+```{r}
+plot(svm_lin_clf)
+```
+
+Tuning done.
+
+```{r}
+svm_lin_metrics <- evaluate_model(svm_lin_clf, "SVM - Linear")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_svm_lin_clf <- train_model("svmLinear2", down_train_set)
+```
+
+```{r}
+plot(down_svm_lin_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+down_svm_lin_tuneGrid <- expand.grid(cost = seq(0.05, 0.5, 0.05))
+
+down_svm_lin_clf <- train_model(
+  "svmLinear2",
+  down_train_set,
+  tuneGrid = down_svm_lin_tuneGrid
+)
+```
+
+```{r}
+plot(down_svm_lin_clf)
+```
+
+Tuning done.
+
+```{r}
+down_svm_lin_metrics <- evaluate_model(down_svm_lin_clf, "SVM - Linear")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_svm_lin_clf <- train_model("svmLinear2", up_train_set)
+```
+
+```{r}
+plot(up_svm_lin_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+up_svm_lin_clf <- train_model("svmLinear2", up_train_set, tuneLength = 10)
+```
+
+```{r}
+plot(up_svm_lin_clf)
+```
+
+Tuning done.
+
+```{r}
+up_svm_lin_metrics <- evaluate_model(up_svm_lin_clf, "SVM - Linear")
+```
+
+#### Support Vector Machine (Polynomial Kernel)
+
+##### Original Train Set
+
+```{r}
+svm_poly_clf <- train_model("svmPoly")
+```
+
+```{r}
+plot(svm_poly_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+svm_poly_tuneGrid <- expand.grid(
+  degree = 1,
+  scale = c(0.01, 0.1),
+  C = seq(0.1, 1.5, 0.05)
+)
+
+svm_poly_clf <- train_model("svmPoly", tuneGrid = svm_poly_tuneGrid)
+```
+
+```{r}
+plot(svm_poly_clf)
+```
+
+Tuning done.
+
+```{r}
+svm_poly_metrics <- evaluate_model(svm_poly_clf, "SVM - Poly")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_svm_poly_clf <- train_model("svmPoly", down_train_set)
+```
+
+```{r}
+plot(down_svm_poly_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+down_svm_poly_tuneGrid <- expand.grid(
+  degree = 3,
+  scale = 0.01,
+  C = seq(0.25, 1, 0.05)
+)
+
+down_svm_poly_clf <- train_model(
+  "svmPoly",
+  down_train_set,
+  tuneGrid = down_svm_poly_tuneGrid
+)
+```
+
+```{r}
+plot(down_svm_poly_clf)
+```
+
+Tuning done.
+
+```{r}
+down_svm_poly_metrics <- evaluate_model(down_svm_poly_clf, "SVM - Poly")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_svm_poly_clf <- train_model("svmPoly", up_train_set)
+```
+
+```{r}
+plot(up_svm_poly_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+up_svm_poly_tuneGrid <- expand.grid(
+  degree = 3,
+  scale = 0.1,
+  C = seq(0.05, 0.25, 0.05)
+)
+
+up_svm_poly_clf <- train_model(
+  "svmPoly",
+  up_train_set,
+  tuneGrid = up_svm_poly_tuneGrid
+)
+```
+
+```{r}
+plot(up_svm_poly_clf)
+```
+
+Tuning done.
+
+```{r}
+up_svm_poly_metrics <- evaluate_model(up_svm_poly_clf, "SVM - Poly")
+```
+
+#### Support Vector Machine (Radial Basis Function Kernel)
+
+##### Original Train Set
+
+```{r}
+svm_rbf_clf <- train_model("svmRadial")
+```
+
+```{r}
+plot(svm_rbf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+svm_rbf_clf <- train_model("svmRadial", tuneLength = 7)
+```
+
+```{r}
+plot(svm_rbf_clf)
+```
+
+Tuning done.
+
+```{r}
+svm_rbf_metrics <- evaluate_model(svm_rbf_clf, "SVM - RBF")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_svm_rbf_clf <- train_model("svmRadial", down_train_set)
+```
+
+```{r}
+plot(down_svm_rbf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+down_svm_rbf_clf <- train_model("svmRadial", down_train_set, tuneLength = 7)
+```
+
+```{r}
+plot(down_svm_rbf_clf)
+```
+
+Tuning done.
+
+```{r}
+down_svm_rbf_metrics <- evaluate_model(down_svm_rbf_clf, "SVM - RBF")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_svm_rbf_clf <- train_model("svmRadial", up_train_set)
+```
+
+```{r}
+plot(up_svm_rbf_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+up_svm_rbf_clf <- train_model("svmRadial", up_train_set, tuneLength = 10)
+```
+
+```{r}
+plot(up_svm_rbf_clf)
+```
+
+Tuning done.
+
+```{r}
+up_svm_rbf_metrics <- evaluate_model(up_svm_rbf_clf, "SVM - RBF")
+```
+
+#### Naive Bayes
+
+##### Original Train Set
+
+```{r}
+nb_clf <- train_model("naive_bayes")
+```
+
+```{r}
+plot(nb_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+nb_tuneGrid <- expand.grid(
+  adjust = 1,
+  usekernel = FALSE,
+  laplace = seq(0, 1, 0.1)
+)
+
+nb_clf <- train_model("naive_bayes", tuneGrid = nb_tuneGrid)
+```
+
+```{r}
+plot(nb_clf)
+```
+
+Tuning done.
+
+```{r}
+nb_metrics <- evaluate_model(nb_clf, "NB")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_nb_clf <- train_model("naive_bayes", down_train_set)
+```
+
+```{r}
+plot(down_nb_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+down_nb_tuneGrid <- expand.grid(
+  adjust = 1,
+  usekernel = FALSE,
+  laplace = seq(0, 1, 0.1)
+)
+
+down_nb_clf <- train_model("naive_bayes", tuneGrid = down_nb_tuneGrid)
+```
+
+```{r}
+plot(down_nb_clf)
+```
+
+Tuning done.
+
+```{r}
+down_nb_metrics <- evaluate_model(down_nb_clf, "NB")
+```
+
+##### Up-Sampled
+
+```{r}
+up_nb_clf <- train_model("naive_bayes", up_train_set)
+```
+
+```{r}
+plot(up_nb_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+up_nb_tuneGrid <- expand.grid(
+  adjust = 1,
+  usekernel = FALSE,
+  laplace = seq(0, 1, 0.1)
+)
+
+up_nb_clf <- train_model("naive_bayes", tuneGrid = up_nb_tuneGrid)
+```
+
+```{r}
+plot(up_nb_clf)
+```
+
+Tuning done.
+
+```{r}
+up_nb_metrics <- evaluate_model(up_nb_clf, "NB")
+```
+
