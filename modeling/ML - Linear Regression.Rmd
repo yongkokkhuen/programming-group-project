@@ -1,0 +1,227 @@
+---
+title: "Linear Regression"
+output: html_notebook
+---
+
+# 1. Load in packages
+```{r}
+library(ggplot2)
+library(dplyr)
+# library(lattice)
+library(caret)
+library(ggcorrplot)
+library(effectsize)
+library(kernlab) # for svm linear regression 
+```
+
+# 2. Load in dataset we processed thus far in R
+```{r}
+student_por <- read.csv("C:/Users/Fanny/Documents/GitHub/programming-group-project/data/student-por_v3.csv", header = TRUE, sep = ",", stringsAsFactors = TRUE)
+head(student_por)
+```
+
+## Review the structure of loaded dataset
+```{r}
+str(student_por)
+```
+
+## Convert selected columns into factors
+```{r}
+student_por$famsize <- factor(student_por$famsize, ordered = TRUE, levels = c("LE3", "GT3"))
+student_por$Medu <- factor(student_por$Medu, ordered = TRUE, levels = 0:4)
+student_por$Fedu <- factor(student_por$Fedu, ordered = TRUE, levels = 0:4)
+student_por$traveltime <- factor(student_por$traveltime, ordered = TRUE, levels = 1:4)
+student_por$studytime <- factor(student_por$studytime, ordered = TRUE, levels = 1:4)
+student_por$failures <- factor(student_por$failures, ordered = TRUE, levels = 0:4)
+student_por$famrel <- factor(student_por$famrel, ordered = TRUE, levels = 1:5)
+student_por$freetime <- factor(student_por$freetime, ordered = TRUE, levels = 1:5)
+student_por$goout <- factor(student_por$goout, ordered = TRUE, levels = 1:5)
+student_por$Dalc <- factor(student_por$Dalc, ordered = TRUE, levels = 1:5)
+student_por$Walc <- factor(student_por$Walc, ordered = TRUE, levels = 1:5)
+student_por$health <- factor(student_por$health, ordered = TRUE, levels = 1:5)
+```
+
+## Drop potential duplicate values for linear regression analysis 
+```{r}
+#student_por$G1 <- NULL
+#student_por$G2 <- NULL
+student_por$result <- NULL
+```
+
+## Check on the summary of loaded dataset again
+```{r}
+summary(student_por)
+```
+```{r}
+str(student_por)
+```
+
+# 3. Prepare the loaded dataset for Linear Regression 
+```{r}
+# smoothed density estimates --> smoothed version of histogram for continuous data that comes from an underlying smooth distribution 
+# plot the G3 / Final Grade target variable to check its' original skewness
+ggplot(student_por) + geom_density(aes(x = G3)) + labs(x="result") + scale_x_continuous(limits = c(0, 20))
+```
+### It seems G3 or final grade is quite normalized, no rescale will be performed.
+
+## Remove variables that are highly correlated to G3 attribute 
+```{r}
+# create subset table based on correlation analysis output 
+## ref: https://minimatech.org/linear-regression-with-r-and-caret/
+
+# unable to get this done due to technical limitation 
+```
+
+```{r}
+cor_mat <- cor(as.numeric(student_por))
+
+# 2d density plot
+#normal geom_point + stat_density2d(aes(color = ..level..), #geom = "raster" / "polygon")
+```
+
+```{r}
+# https://quantifyinghealth.com/variables-to-include-in-regression/
+head(interpret_vif(c(student_por$G1, student_por$G2, student_por$G3)),5)
+```
+
+
+# 4. Train - Test Data Split 
+```{r}
+set.seed(79)
+
+student_por_idx <- createDataPartition(student_por$G3, p = 0.80, list = FALSE, times = 1)
+student_por_trn <- student_por[student_por_idx, ]
+student_por_tst <- student_por[-student_por_idx, ]
+```
+
+```{r}
+nrow(student_por_trn)
+```
+
+```{r}
+nrow(student_por_tst)
+```
+
+# 5. Modelling
+## Define repeated 10 folds cross validation
+```{r}
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+```{r}
+get_best_result = function(caret_fit) {
+  best = which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
+  best_result = caret_fit$results[best, ]
+  rownames(best_result) = NULL
+  best_result
+  #getTrainPerf(caret_fit)
+}
+```
+
+# Linear Regression with Auto Tuning
+## CART 
+### - method = ‘glmnet’
+### - Type: Regression, Classification
+### - Tuning parameters:
+###     alpha (Mixing Percentage)
+###     lambda (Regularization Parameter)
+### - Required packages: glmnet, Matrix
+### A model-specific variable importance metric is available.
+```{r}
+
+model <- train(school ~. , 
+               data = student_por_trn, 
+               method = "glmnet", 
+               trControl = fit_control, 
+               preProc = c("center", "scale")) 
+
+```
+
+
+```{r}
+model
+```
+
+```{r}
+best.result <- round(get_best_result(model),3)
+best.result
+```
+
+
+```{r}
+plot(model)
+```
+#### Accuracy of 0.65 shows that conducting linear regression using glmnet training method might not be appropriate for our dataset. 
+
+# Predict G3 from test data 
+```{r}
+pred.result <- predict(model, student_por_tst)
+```
+
+# Evaluate the result 
+```{r}
+## i have no idea what is happening 
+postResample(pred = pred.result, obs = student_por_tst$G3)
+```
+
+```{r}
+# don't think we can use linear regression for our dataset 
+set.seed(1)
+
+model2 <- train(
+  G3  ~ .,
+  data = student_por_trn,
+  method = 'lm'
+)
+model2
+```
+
+# Support Vector Machines with Linear Kernel
+### method = 'svmLinear'
+### Type: Regression, Classification
+### Tuning parameters:
+    C (Cost)
+### Required packages: kernlab
+```{r}
+model3 <- train(school ~. , 
+               data = student_por_trn, 
+               method = "svmLinear", 
+               trControl = fit_control, 
+               preProc = c("center", "scale")) 
+```
+
+```{r}
+model3
+#Kappa value interpretation Landis & Koch (1977):
+#<0 No agreement
+#0 — .20 Slight
+#.21 — .40 Fair
+#.41 — .60 Moderate
+#.61 — .80 Substantial
+#.81–1.0 Perfect
+# https://towardsdatascience.com/interpretation-of-kappa-values-2acd1ca7b18f
+```
+
+```{r}
+best.result.svm <- round(get_best_result(model3),2)
+best.result.svm
+```
+
+```{r}
+# error?
+plot(model3)
+```
+
+```{r}
+pred.result.svm <- predict(model3, student_por_tst)
+```
+
+```{r}
+# error?
+postResample(pred = pred.result.svm, obs = student_por_tst$G3)
+```
+
