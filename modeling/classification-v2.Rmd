@@ -161,7 +161,7 @@ train_model <- function(method = "",
 Define a helper function to evaluate model.
 
 ```{r}
-evaluate_model <- function(model = NULL, alias = "") {
+evaluate_model <- function(model = NULL, alias = "", family = "") {
   pred <- predict(model, test_set)
 
   cm <- confusionMatrix(pred, test_set$result, mode = "prec_recall")
@@ -173,6 +173,7 @@ evaluate_model <- function(model = NULL, alias = "") {
 
   return(data.frame(
     Model = alias,
+    Family = ifelse(family == "", alias, family),
     Accuracy = round(cm$overall[["Accuracy"]], 3),
     Precision = round(precision_score, 3),
     Recall = round(recall_score, 3),
@@ -348,7 +349,7 @@ plot(svm_lin_clf)
 Tuning done.
 
 ```{r}
-svm_lin_metrics <- evaluate_model(svm_lin_clf, "SVM - Linear")
+svm_lin_metrics <- evaluate_model(svm_lin_clf, "SVM - Linear", "SVM")
 ```
 
 ##### Down-Sampled Train Set
@@ -380,7 +381,7 @@ plot(down_svm_lin_clf)
 Tuning done.
 
 ```{r}
-down_svm_lin_metrics <- evaluate_model(down_svm_lin_clf, "SVM - Linear")
+down_svm_lin_metrics <- evaluate_model(down_svm_lin_clf, "SVM - Linear", "SVM")
 ```
 
 ##### Up-Sampled Train Set
@@ -406,7 +407,7 @@ plot(up_svm_lin_clf)
 Tuning done.
 
 ```{r}
-up_svm_lin_metrics <- evaluate_model(up_svm_lin_clf, "SVM - Linear")
+up_svm_lin_metrics <- evaluate_model(up_svm_lin_clf, "SVM - Linear", "SVM")
 ```
 
 #### Support Vector Machine (Polynomial Kernel)
@@ -440,7 +441,7 @@ plot(svm_poly_clf)
 Tuning done.
 
 ```{r}
-svm_poly_metrics <- evaluate_model(svm_poly_clf, "SVM - Poly")
+svm_poly_metrics <- evaluate_model(svm_poly_clf, "SVM - Poly", "SVM")
 ```
 
 ##### Down-Sampled Train Set
@@ -476,7 +477,7 @@ plot(down_svm_poly_clf)
 Tuning done.
 
 ```{r}
-down_svm_poly_metrics <- evaluate_model(down_svm_poly_clf, "SVM - Poly")
+down_svm_poly_metrics <- evaluate_model(down_svm_poly_clf, "SVM - Poly", "SVM")
 ```
 
 ##### Up-Sampled Train Set
@@ -512,7 +513,7 @@ plot(up_svm_poly_clf)
 Tuning done.
 
 ```{r}
-up_svm_poly_metrics <- evaluate_model(up_svm_poly_clf, "SVM - Poly")
+up_svm_poly_metrics <- evaluate_model(up_svm_poly_clf, "SVM - Poly", "SVM")
 ```
 
 #### Support Vector Machine (Radial Basis Function Kernel)
@@ -540,7 +541,7 @@ plot(svm_rbf_clf)
 Tuning done.
 
 ```{r}
-svm_rbf_metrics <- evaluate_model(svm_rbf_clf, "SVM - RBF")
+svm_rbf_metrics <- evaluate_model(svm_rbf_clf, "SVM - RBF", "SVM")
 ```
 
 ##### Down-Sampled Train Set
@@ -566,7 +567,7 @@ plot(down_svm_rbf_clf)
 Tuning done.
 
 ```{r}
-down_svm_rbf_metrics <- evaluate_model(down_svm_rbf_clf, "SVM - RBF")
+down_svm_rbf_metrics <- evaluate_model(down_svm_rbf_clf, "SVM - RBF", "SVM")
 ```
 
 ##### Up-Sampled Train Set
@@ -592,7 +593,7 @@ plot(up_svm_rbf_clf)
 Tuning done.
 
 ```{r}
-up_svm_rbf_metrics <- evaluate_model(up_svm_rbf_clf, "SVM - RBF")
+up_svm_rbf_metrics <- evaluate_model(up_svm_rbf_clf, "SVM - RBF", "SVM")
 ```
 
 #### Naive Bayes
@@ -648,7 +649,11 @@ down_nb_tuneGrid <- expand.grid(
   laplace = seq(0, 1, 0.1)
 )
 
-down_nb_clf <- train_model("naive_bayes", tuneGrid = down_nb_tuneGrid)
+down_nb_clf <- train_model(
+  "naive_bayes",
+  down_train_set,
+  tuneGrid = down_nb_tuneGrid
+)
 ```
 
 ```{r}
@@ -661,7 +666,7 @@ Tuning done.
 down_nb_metrics <- evaluate_model(down_nb_clf, "NB")
 ```
 
-##### Up-Sampled
+##### Up-Sampled Train Set
 
 ```{r}
 up_nb_clf <- train_model("naive_bayes", up_train_set)
@@ -680,7 +685,7 @@ up_nb_tuneGrid <- expand.grid(
   laplace = seq(0, 1, 0.1)
 )
 
-up_nb_clf <- train_model("naive_bayes", tuneGrid = up_nb_tuneGrid)
+up_nb_clf <- train_model("naive_bayes", up_train_set, tuneGrid = up_nb_tuneGrid)
 ```
 
 ```{r}
@@ -693,3 +698,567 @@ Tuning done.
 up_nb_metrics <- evaluate_model(up_nb_clf, "NB")
 ```
 
+#### AdaBoost
+
+##### Original Train Set
+
+```{r}
+ab_clf <- train_model("adaboost")
+```
+
+```{r}
+plot(ab_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+ab_tuneGrid <- expand.grid(
+  method = "Real adaboost",
+  nIter = seq(150, 500, 50)
+)
+
+ab_clf <- train_model("adaboost", tuneGrid = ab_tuneGrid)
+```
+
+```{r}
+plot(ab_clf)
+```
+
+Tuning done.
+
+```{r}
+ab_metrics <- evaluate_model(ab_clf, "AB")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_ab_clf <- train_model("adaboost", down_train_set)
+```
+
+```{r}
+plot(down_ab_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+down_ab_tuneGrid <- expand.grid(
+  method = "Real adaboost",
+  nIter = seq(150, 500, 50)
+)
+
+down_ab_clf <- train_model(
+  "adaboost",
+  down_train_set,
+  tuneGrid = down_ab_tuneGrid
+)
+```
+
+```{r}
+plot(down_ab_clf)
+```
+
+Tuning done.
+
+```{r}
+down_ab_metrics <- evaluate_model(down_ab_clf, "AB")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_ab_clf <- train_model("adaboost", up_train_set)
+```
+
+```{r}
+plot(up_ab_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+up_ab_tuneGrid <- expand.grid(
+  method = "Real adaboost",
+  nIter = seq(150, 500, 50)
+)
+
+up_ab_clf <- train_model(
+  "adaboost",
+  up_train_set,
+  tuneGrid = up_ab_tuneGrid
+)
+```
+
+```{r}
+plot(up_ab_clf)
+```
+
+Tuning done.
+
+```{r}
+up_ab_metrics <- evaluate_model(up_ab_clf, "AB")
+```
+
+#### XGBoost (Linear)
+
+##### Original Train Set
+
+```{r}
+xgb_lin_clf <- train_model("xgbLinear")
+```
+
+```{r}
+plot(xgb_lin_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+xgb_lin_tuneGrid <- expand.grid(
+  eta = 0.3,
+  lambda = 0,
+  alpha = 0,
+  nrounds = seq(50, 100, 10)
+)
+
+xgb_lin_clf <- train_model("xgbLinear", tuneGrid = xgb_lin_tuneGrid)
+```
+
+```{r}
+plot(xgb_lin_clf)
+```
+
+Tuning done.
+
+```{r}
+xgb_lin_metrics <- evaluate_model(xgb_lin_clf, "XGB - Linear", "XGB")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_xgb_lin_clf <- train_model("xgbLinear", down_train_set)
+```
+
+```{r}
+plot(down_xgb_lin_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+down_xgb_lin_tuneGrid <- expand.grid(
+  eta = 0.3,
+  lambda = 0.1,
+  alpha = c(0.0001, 0.001, 0.01, 0.1, 0),
+  nrounds = seq(50, 200, 10)
+)
+
+down_xgb_lin_clf <- train_model(
+  "xgbLinear", 
+  down_train_set, 
+  tuneGrid = down_xgb_lin_tuneGrid
+)
+```
+
+```{r}
+plot(down_xgb_lin_clf)
+```
+
+Tuning done.
+
+```{r}
+down_xgb_lin_metrics <- evaluate_model(down_xgb_lin_clf, "XGB - Linear", "XGB")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_xgb_lin_clf <- train_model("xgbLinear", up_train_set)
+```
+
+```{r}
+plot(up_xgb_lin_clf)
+```
+
+No further tuning required.
+
+```{r}
+up_xgb_lin_metrics <- evaluate_model(up_xgb_lin_clf, "XGB - Linear", "XGB")
+```
+
+#### XGBoost (Tree)
+
+Define a helper function to train XGBoost model with less verbose output.
+
+```{r}
+train_xgb_tree <- function(method = "",
+                        data = train_set,
+                        tuneGrid = NULL,
+                        tuneLength = 3) {
+  set.seed(42)
+
+  fit <- train(
+    result ~ .,
+    data = data,
+    method = method,
+    trControl = fit_control,
+    preProcess = c("center", "scale"),
+    tuneGrid = tuneGrid,
+    tuneLength = tuneLength,
+    verbosity = 0
+  )
+
+  print(fit)
+  
+  return(fit)
+}
+```
+
+##### Original Train Set
+
+```{r}
+xgb_tree_clf <- train_xgb_tree("xgbTree")
+```
+
+```{r}
+plot(xgb_tree_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+xgb_tree_tuneGrid <- expand.grid(
+  gamma = 0,
+  min_child_weight = 1,
+  max_depth = 1,
+  eta = 0.4,
+  subsample = 1,
+  colsample_bytree = seq(0.6, 1.0, 0.1),
+  nrounds = seq(100, 200, 10)
+)
+
+xgb_tree_clf <- train_xgb_tree("xgbTree", tuneGrid = xgb_tree_tuneGrid)
+```
+
+```{r}
+plot(xgb_tree_clf)
+```
+
+Tuning done.
+
+```{r}
+xgb_tree_metrics <- evaluate_model(xgb_tree_clf, "XGB - Tree", "XGB")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_xgb_tree_clf <- train_xgb_tree("xgbTree", down_train_set)
+```
+
+```{r}
+plot(down_xgb_tree_clf)
+```
+
+No further tuning required.
+
+```{r}
+down_xgb_tree_metrics <- evaluate_model(down_xgb_tree_clf, "XGB - Tree", "XGB")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_xgb_tree_clf <- train_xgb_tree("xgbTree", up_train_set)
+```
+
+```{r}
+plot(up_xgb_tree_clf)
+```
+
+Perform hyperparameter tuning using `tuneGrid`.
+
+```{r}
+up_xgb_tree_tuneGrid <- expand.grid(
+  gamma = 0,
+  min_child_weight = 1,
+  max_depth = 2,
+  eta = 0.4,
+  subsample = 1,
+  colsample_bytree = 0.6,
+  nrounds = seq(100, 200, 10)
+)
+
+up_xgb_tree_clf <- train_xgb_tree(
+  "xgbTree", 
+  up_train_set, 
+  tuneGrid = up_xgb_tree_tuneGrid
+)
+```
+
+```{r}
+plot(up_xgb_tree_clf)
+```
+
+Tuning done.
+
+```{r}
+up_xgb_tree_metrics <- evaluate_model(up_xgb_tree_clf, "XGB - Tree", "XGB")
+```
+
+#### Neural Network
+
+Define a helper function to train neural network model with less verbose output.
+
+```{r}
+train_nn <- function(method = "",
+                        data = train_set,
+                        tuneGrid = NULL,
+                        tuneLength = 3) {
+  set.seed(42)
+
+  fit <- train(
+    result ~ .,
+    data = data,
+    method = method,
+    trControl = fit_control,
+    preProcess = c("center", "scale"),
+    tuneGrid = tuneGrid,
+    tuneLength = tuneLength,
+    trace = FALSE
+  )
+
+  print(fit)
+  
+  return(fit)
+}
+```
+
+##### Original Train Set
+
+```{r}
+nn_clf <- train_nn("nnet")
+```
+
+```{r}
+plot(nn_clf)
+```
+
+Perform hyperparameter tuning using `tuneLength`.
+
+```{r}
+nn_clf <- train_nn("nnet", tuneLength = 7)
+```
+
+```{r}
+plot(nn_clf)
+```
+
+Tuning done.
+
+```{r}
+nn_metrics <- evaluate_model(nn_clf, "NN")
+```
+
+##### Down-Sampled Train Set
+
+```{r}
+down_nn_clf <- train_nn("nnet", down_train_set)
+```
+
+```{r}
+plot(down_nn_clf)
+```
+
+Perform hyperparameter tuning with `tuneLength`.
+
+```{r}
+down_nn_clf <- train_nn("nnet", down_train_set, tuneLength = 7)
+```
+
+```{r}
+plot(down_nn_clf)
+```
+
+Tuning done.
+
+```{r}
+down_nn_metrics <- evaluate_model(down_nn_clf, "NN")
+```
+
+##### Up-Sampled Train Set
+
+```{r}
+up_nn_clf <- train_nn("nnet", up_train_set)
+```
+
+```{r}
+plot(up_nn_clf)
+```
+
+Perform hyperparameter tuning with `tuneLength`.
+
+```{r}
+up_nn_clf <- train_nn("nnet", up_train_set, tuneLength = 7)
+```
+
+```{r}
+plot(up_nn_clf)
+```
+
+Tuning done.
+
+```{r}
+up_nn_metrics <- evaluate_model(up_nn_clf, "NN")
+```
+
+### Evaluation
+
+Define a function to aggregate accuracy from model of same family.
+
+```{r}
+aggregate_accuracy <- function(df) {
+  df_accuracy <- df %>%
+    group_by(Family) %>%
+    slice(which.max(Accuracy)) %>%
+    arrange(desc(Accuracy)) %>%
+    select(-1)
+
+  print(df_accuracy)
+  
+  plot_accuracy <- df_accuracy %>%
+    ggplot(aes(x = reorder(Family, -Accuracy), y = Accuracy, fill = Family)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = Accuracy), vjust=-0.5) +
+    ggtitle("Accuracy by Model") +
+    xlab("Model") +
+    ylim(0, 1) +
+    labs(fill = "Model") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  print(plot_accuracy)
+}
+```
+
+Define a function to aggregate F1 score from model of same family.
+
+```{r}
+aggregate_f1 <- function(df) {
+  df_f1 <- df %>%
+    group_by(Family) %>%
+    slice(which.max(F1)) %>%
+    arrange(desc(F1)) %>%
+    select(-1)
+
+  print(df_f1)
+  
+  plot_f1 <- df_f1 %>%
+    ggplot(aes(x = reorder(Family, -F1), y = F1, fill = Family)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = F1), vjust=-0.5) +
+    ggtitle("F1 Score by Model") +
+    xlab("Model") +
+    ylab("F1 Score") +
+    ylim(0, 1) +
+    labs(fill = "Model") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  
+  print(plot_f1)
+}
+```
+
+#### Original Train Set
+
+```{r}
+df_eval <- rbind(
+  dt_metrics,
+  rf_metrics,
+  svm_lin_metrics,
+  svm_poly_metrics,
+  svm_rbf_metrics,
+  nb_metrics,
+  ab_metrics,
+  xgb_lin_metrics,
+  xgb_tree_metrics,
+  nn_metrics
+)
+
+df_eval
+```
+
+##### By Accuracy
+
+```{r}
+aggregate_accuracy(df_eval)
+```
+
+##### By F1 Score
+
+```{r}
+aggregate_f1(df_eval)
+```
+
+#### Down-Sampled Train Set
+
+```{r}
+down_df_eval <- rbind(
+  down_dt_metrics,
+  down_rf_metrics,
+  down_svm_lin_metrics,
+  down_svm_poly_metrics,
+  down_svm_rbf_metrics,
+  down_nb_metrics,
+  down_ab_metrics,
+  down_xgb_lin_metrics,
+  down_xgb_tree_metrics,
+  down_nn_metrics
+)
+
+down_df_eval
+```
+
+##### By Accuracy
+
+```{r}
+aggregate_accuracy(down_df_eval)
+```
+
+##### By F1 Score
+
+```{r}
+aggregate_f1(down_df_eval)
+```
+
+#### Up-Sampled Train Set
+
+```{r}
+up_df_eval <- rbind(
+  up_dt_metrics,
+  up_rf_metrics,
+  up_svm_lin_metrics,
+  up_svm_poly_metrics,
+  up_svm_rbf_metrics,
+  up_nb_metrics,
+  up_ab_metrics,
+  up_xgb_lin_metrics,
+  up_xgb_tree_metrics,
+  up_nn_metrics
+)
+
+up_df_eval
+```
+
+##### By Accuracy
+
+```{r}
+aggregate_accuracy(up_df_eval)
+```
+
+##### By F1 Score
+
+```{r}
+aggregate_f1(up_df_eval)
+```
