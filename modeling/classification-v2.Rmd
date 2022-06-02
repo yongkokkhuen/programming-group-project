@@ -182,6 +182,73 @@ evaluate_model <- function(model = NULL, alias = "", family = "") {
 }
 ```
 
+#### k-Nearest Neighbour
+
+##### Original Train Set
+```{r}
+knn_clf <- train_model("knn")
+```
+
+```{r}
+plot(knn_clf)
+```
+Check for tuning using `tuneLength`.
+
+```{r}
+knn_clf <- train_model("knn", tuneLength = 5)
+```
+
+```{r}
+plot(knn_clf)
+```
+
+
+```{r}
+knn_metrics <- evaluate_model(knn_clf, "knn")
+```
+
+##### Down-Sampled Train Set
+```{r}
+down_knn_clf <- train_model("knn", down_train_set)
+
+```
+
+```{r}
+plot(down_knn_clf)
+```
+Perform parameter tuning using `tuneLength`.
+```{r}
+down_knn_clf <- train_model("knn", down_train_set, tuneLength = 10)
+```
+
+```{r}
+plot(down_knn_clf)
+```
+```{r}
+down_knn_metrics <- evaluate_model(down_knn_clf,"knn")
+```
+##### Up-Sampled Train Set
+
+```{r}
+up_knn_clf <- train_model("knn", up_train_set)
+```
+
+```{r}
+plot(up_knn_clf)
+```
+Check for tuning using `tuneLength`.
+
+```{r}
+up_knn_clf <- train_model("knn", up_train_set, tuneLength = 5)
+```
+
+```{r}
+plot(up_knn_clf)
+```
+```{r}
+up_knn_metrics <- evaluate_model(up_knn_clf,"knn")
+```
+
 #### Decision Tree
 
 ##### Original Train Set
