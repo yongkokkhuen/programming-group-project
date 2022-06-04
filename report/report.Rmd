@@ -7,6 +7,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+### Introduction
+
+TODO
+
 ### Problem Statement
 
 TODO
@@ -234,4 +238,3 @@ fit_control <- trainControl(
 ### Conclusion
 
 TODO
-
