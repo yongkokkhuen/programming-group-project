@@ -366,7 +366,390 @@ pre code {
 </div>
 
 
+<div id="problem-statement" class="section level3">
+<h3>Problem Statement</h3>
+<p>TODO</p>
+</div>
+<div id="research-questions" class="section level3">
+<h3>Research Questions</h3>
+<p>TODO</p>
+</div>
+<div id="research-objectives" class="section level3">
+<h3>Research Objectives</h3>
+<p>TODO</p>
+</div>
+<div id="dataset" class="section level3">
+<h3>Dataset</h3>
+<p>TODO</p>
+</div>
+<div id="metadata" class="section level3">
+<h3>Metadata</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TODO</td>
+<td>TODO</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>TODO</p>
+</div>
+<div id="imports" class="section level3">
+<h3>Imports</h3>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre class="r"><code>df &lt;- read.csv(&quot;../data/student-por.csv&quot;, sep = &quot;;&quot;, stringsAsFactors = TRUE)
+head(df)</code></pre>
+<pre><code>##   school sex age address famsize Pstatus Medu Fedu     Mjob     Fjob     reason
+## 1     GP   F  18       U     GT3       A    4    4  at_home  teacher     course
+## 2     GP   F  17       U     GT3       T    1    1  at_home    other     course
+## 3     GP   F  15       U     LE3       T    1    1  at_home    other      other
+## 4     GP   F  15       U     GT3       T    4    2   health services       home
+## 5     GP   F  16       U     GT3       T    3    3    other    other       home
+## 6     GP   M  16       U     LE3       T    4    3 services    other reputation
+##   guardian traveltime studytime failures schoolsup famsup paid activities
+## 1   mother          2         2        0       yes     no   no         no
+## 2   father          1         2        0        no    yes   no         no
+## 3   mother          1         2        0       yes     no   no         no
+## 4   mother          1         3        0        no    yes   no        yes
+## 5   father          1         2        0        no    yes   no         no
+## 6   mother          1         2        0        no    yes   no        yes
+##   nursery higher internet romantic famrel freetime goout Dalc Walc health
+## 1     yes    yes       no       no      4        3     4    1    1      3
+## 2      no    yes      yes       no      5        3     3    1    1      3
+## 3     yes    yes      yes       no      4        3     2    2    3      3
+## 4     yes    yes      yes      yes      3        2     2    1    1      5
+## 5     yes    yes       no       no      4        3     2    1    2      5
+## 6     yes    yes      yes       no      5        4     2    1    2      5
+##   absences G1 G2 G3
+## 1        4  0 11 11
+## 2        2  9 11 11
+## 3        6 12 13 12
+## 4        0 14 14 14
+## 5        0 11 13 13
+## 6        6 12 12 13</code></pre>
+</div>
+<div id="preprocessing" class="section level3">
+<h3>Preprocessing</h3>
+<pre class="r"><code>str(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    649 obs. of  33 variables:
+##  $ school    : Factor w/ 2 levels &quot;GP&quot;,&quot;MS&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ sex       : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 2 2 1 2 2 ...
+##  $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
+##  $ address   : Factor w/ 2 levels &quot;R&quot;,&quot;U&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ famsize   : Factor w/ 2 levels &quot;GT3&quot;,&quot;LE3&quot;: 1 1 2 1 1 2 2 1 2 1 ...
+##  $ Pstatus   : Factor w/ 2 levels &quot;A&quot;,&quot;T&quot;: 1 2 2 2 2 2 2 1 1 2 ...
+##  $ Medu      : int  4 1 1 4 3 4 2 4 3 3 ...
+##  $ Fedu      : int  4 1 1 2 3 3 2 4 2 4 ...
+##  $ Mjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 1 1 1 2 3 4 3 3 4 3 ...
+##  $ Fjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 5 3 3 4 3 3 3 5 3 3 ...
+##  $ reason    : Factor w/ 4 levels &quot;course&quot;,&quot;home&quot;,..: 1 1 3 2 2 4 2 2 2 2 ...
+##  $ guardian  : Factor w/ 3 levels &quot;father&quot;,&quot;mother&quot;,..: 2 1 2 2 1 2 2 2 2 2 ...
+##  $ traveltime: int  2 1 1 1 1 1 1 2 1 1 ...
+##  $ studytime : int  2 2 2 3 2 2 2 2 2 2 ...
+##  $ failures  : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ schoolsup : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 1 1 1 1 2 1 1 ...
+##  $ famsup    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 1 2 2 2 1 2 2 2 ...
+##  $ paid      : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ activities: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 2 1 1 1 2 ...
+##  $ nursery   : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 2 2 2 2 2 2 2 ...
+##  $ higher    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ internet  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 2 2 1 2 2 1 2 2 ...
+##  $ romantic  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 1 1 1 1 1 ...
+##  $ famrel    : int  4 5 4 3 4 5 4 4 4 5 ...
+##  $ freetime  : int  3 3 3 2 3 4 4 1 2 5 ...
+##  $ goout     : int  4 3 2 2 2 2 4 4 2 1 ...
+##  $ Dalc      : int  1 1 2 1 1 1 1 1 1 1 ...
+##  $ Walc      : int  1 1 3 1 2 2 1 1 1 1 ...
+##  $ health    : int  3 3 3 5 5 5 3 1 1 5 ...
+##  $ absences  : int  4 2 6 0 0 6 0 2 0 0 ...
+##  $ G1        : int  0 9 12 14 11 12 13 10 15 12 ...
+##  $ G2        : int  11 11 13 14 13 12 12 13 16 12 ...
+##  $ G3        : int  11 11 12 14 13 13 13 13 17 13 ...</code></pre>
+<pre class="r"><code>summary(df)</code></pre>
+<pre><code>##  school   sex          age        address famsize   Pstatus      Medu      
+##  GP:423   F:383   Min.   :15.00   R:197   GT3:457   A: 80   Min.   :0.000  
+##  MS:226   M:266   1st Qu.:16.00   U:452   LE3:192   T:569   1st Qu.:2.000  
+##                   Median :17.00                             Median :2.000  
+##                   Mean   :16.74                             Mean   :2.515  
+##                   3rd Qu.:18.00                             3rd Qu.:4.000  
+##                   Max.   :22.00                             Max.   :4.000  
+##       Fedu             Mjob           Fjob            reason      guardian  
+##  Min.   :0.000   at_home :135   at_home : 42   course    :285   father:153  
+##  1st Qu.:1.000   health  : 48   health  : 23   home      :149   mother:455  
+##  Median :2.000   other   :258   other   :367   other     : 72   other : 41  
+##  Mean   :2.307   services:136   services:181   reputation:143               
+##  3rd Qu.:3.000   teacher : 72   teacher : 36                                
+##  Max.   :4.000                                                              
+##    traveltime      studytime        failures      schoolsup famsup     paid    
+##  Min.   :1.000   Min.   :1.000   Min.   :0.0000   no :581   no :251   no :610  
+##  1st Qu.:1.000   1st Qu.:1.000   1st Qu.:0.0000   yes: 68   yes:398   yes: 39  
+##  Median :1.000   Median :2.000   Median :0.0000                                
+##  Mean   :1.569   Mean   :1.931   Mean   :0.2219                                
+##  3rd Qu.:2.000   3rd Qu.:2.000   3rd Qu.:0.0000                                
+##  Max.   :4.000   Max.   :4.000   Max.   :3.0000                                
+##  activities nursery   higher    internet  romantic      famrel     
+##  no :334    no :128   no : 69   no :151   no :410   Min.   :1.000  
+##  yes:315    yes:521   yes:580   yes:498   yes:239   1st Qu.:4.000  
+##                                                     Median :4.000  
+##                                                     Mean   :3.931  
+##                                                     3rd Qu.:5.000  
+##                                                     Max.   :5.000  
+##     freetime        goout            Dalc            Walc          health     
+##  Min.   :1.00   Min.   :1.000   Min.   :1.000   Min.   :1.00   Min.   :1.000  
+##  1st Qu.:3.00   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:1.00   1st Qu.:2.000  
+##  Median :3.00   Median :3.000   Median :1.000   Median :2.00   Median :4.000  
+##  Mean   :3.18   Mean   :3.185   Mean   :1.502   Mean   :2.28   Mean   :3.536  
+##  3rd Qu.:4.00   3rd Qu.:4.000   3rd Qu.:2.000   3rd Qu.:3.00   3rd Qu.:5.000  
+##  Max.   :5.00   Max.   :5.000   Max.   :5.000   Max.   :5.00   Max.   :5.000  
+##     absences            G1             G2              G3       
+##  Min.   : 0.000   Min.   : 0.0   Min.   : 0.00   Min.   : 0.00  
+##  1st Qu.: 0.000   1st Qu.:10.0   1st Qu.:10.00   1st Qu.:10.00  
+##  Median : 2.000   Median :11.0   Median :11.00   Median :12.00  
+##  Mean   : 3.659   Mean   :11.4   Mean   :11.57   Mean   :11.91  
+##  3rd Qu.: 6.000   3rd Qu.:13.0   3rd Qu.:13.00   3rd Qu.:14.00  
+##  Max.   :32.000   Max.   :19.0   Max.   :19.00   Max.   :19.00</code></pre>
+<p>Convert ordinal variables into ordered factors.</p>
+<pre class="r"><code>df$famsize &lt;- factor(df$famsize, ordered = TRUE, levels = c(&quot;LE3&quot;, &quot;GT3&quot;))
+df$Medu &lt;- factor(df$Medu, ordered = TRUE, levels = 0:4)
+df$Fedu &lt;- factor(df$Fedu, ordered = TRUE, levels = 0:4)
+df$traveltime &lt;- factor(df$traveltime, ordered = TRUE, levels = 1:4)
+df$studytime &lt;- factor(df$studytime, ordered = TRUE, levels = 1:4)
+df$failures &lt;- factor(df$failures, ordered = TRUE, levels = 0:4)
+df$famrel &lt;- factor(df$famrel, ordered = TRUE, levels = 1:5)
+df$freetime &lt;- factor(df$freetime, ordered = TRUE, levels = 1:5)
+df$goout &lt;- factor(df$goout, ordered = TRUE, levels = 1:5)
+df$Dalc &lt;- factor(df$Dalc, ordered = TRUE, levels = 1:5)
+df$Walc &lt;- factor(df$Walc, ordered = TRUE, levels = 1:5)
+df$health &lt;- factor(df$health, ordered = TRUE, levels = 1:5)</code></pre>
+<p>Create label from <code>G3</code>.</p>
+<pre class="r"><code>df$result &lt;- ifelse(df$G3 &gt;= 10, &quot;pass&quot;, &quot;fail&quot;)
+df$result &lt;- as.factor(df$result)</code></pre>
+</div>
+<div id="descriptive-analysis" class="section level3">
+<h3>Descriptive Analysis</h3>
+<pre class="r"><code>str(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    649 obs. of  34 variables:
+##  $ school    : Factor w/ 2 levels &quot;GP&quot;,&quot;MS&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ sex       : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 2 2 1 2 2 ...
+##  $ age       : int  18 17 15 15 16 16 16 17 15 15 ...
+##  $ address   : Factor w/ 2 levels &quot;R&quot;,&quot;U&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ famsize   : Ord.factor w/ 2 levels &quot;LE3&quot;&lt;&quot;GT3&quot;: 2 2 1 2 2 1 1 2 1 2 ...
+##  $ Pstatus   : Factor w/ 2 levels &quot;A&quot;,&quot;T&quot;: 1 2 2 2 2 2 2 1 1 2 ...
+##  $ Medu      : Ord.factor w/ 5 levels &quot;0&quot;&lt;&quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;..: 5 2 2 5 4 5 3 5 4 4 ...
+##  $ Fedu      : Ord.factor w/ 5 levels &quot;0&quot;&lt;&quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;..: 5 2 2 3 4 4 3 5 3 5 ...
+##  $ Mjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 1 1 1 2 3 4 3 3 4 3 ...
+##  $ Fjob      : Factor w/ 5 levels &quot;at_home&quot;,&quot;health&quot;,..: 5 3 3 4 3 3 3 5 3 3 ...
+##  $ reason    : Factor w/ 4 levels &quot;course&quot;,&quot;home&quot;,..: 1 1 3 2 2 4 2 2 2 2 ...
+##  $ guardian  : Factor w/ 3 levels &quot;father&quot;,&quot;mother&quot;,..: 2 1 2 2 1 2 2 2 2 2 ...
+##  $ traveltime: Ord.factor w/ 4 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;: 2 1 1 1 1 1 1 2 1 1 ...
+##  $ studytime : Ord.factor w/ 4 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;: 2 2 2 3 2 2 2 2 2 2 ...
+##  $ failures  : Ord.factor w/ 5 levels &quot;0&quot;&lt;&quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ schoolsup : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 1 1 1 1 2 1 1 ...
+##  $ famsup    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 1 2 2 2 1 2 2 2 ...
+##  $ paid      : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ activities: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 2 1 1 1 2 ...
+##  $ nursery   : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 1 2 2 2 2 2 2 2 2 ...
+##  $ higher    : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ internet  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 2 2 2 1 2 2 1 2 2 ...
+##  $ romantic  : Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 1 1 1 2 1 1 1 1 1 1 ...
+##  $ famrel    : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 4 5 4 3 4 5 4 4 4 5 ...
+##  $ freetime  : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 3 3 3 2 3 4 4 1 2 5 ...
+##  $ goout     : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 4 3 2 2 2 2 4 4 2 1 ...
+##  $ Dalc      : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 1 1 2 1 1 1 1 1 1 1 ...
+##  $ Walc      : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 1 1 3 1 2 2 1 1 1 1 ...
+##  $ health    : Ord.factor w/ 5 levels &quot;1&quot;&lt;&quot;2&quot;&lt;&quot;3&quot;&lt;&quot;4&quot;&lt;..: 3 3 3 5 5 5 3 1 1 5 ...
+##  $ absences  : int  4 2 6 0 0 6 0 2 0 0 ...
+##  $ G1        : int  0 9 12 14 11 12 13 10 15 12 ...
+##  $ G2        : int  11 11 13 14 13 12 12 13 16 12 ...
+##  $ G3        : int  11 11 12 14 13 13 13 13 17 13 ...
+##  $ result    : Factor w/ 2 levels &quot;fail&quot;,&quot;pass&quot;: 2 2 2 2 2 2 2 2 2 2 ...</code></pre>
+<pre class="r"><code>summary(df)</code></pre>
+<pre><code>##  school   sex          age        address famsize   Pstatus Medu    Fedu   
+##  GP:423   F:383   Min.   :15.00   R:197   LE3:192   A: 80   0:  6   0:  7  
+##  MS:226   M:266   1st Qu.:16.00   U:452   GT3:457   T:569   1:143   1:174  
+##                   Median :17.00                             2:186   2:209  
+##                   Mean   :16.74                             3:139   3:131  
+##                   3rd Qu.:18.00                             4:175   4:128  
+##                   Max.   :22.00                                            
+##        Mjob           Fjob            reason      guardian   traveltime
+##  at_home :135   at_home : 42   course    :285   father:153   1:366     
+##  health  : 48   health  : 23   home      :149   mother:455   2:213     
+##  other   :258   other   :367   other     : 72   other : 41   3: 54     
+##  services:136   services:181   reputation:143                4: 16     
+##  teacher : 72   teacher : 36                                           
+##                                                                        
+##  studytime failures schoolsup famsup     paid     activities nursery  
+##  1:212     0:549    no :581   no :251   no :610   no :334    no :128  
+##  2:305     1: 70    yes: 68   yes:398   yes: 39   yes:315    yes:521  
+##  3: 97     2: 16                                                      
+##  4: 35     3: 14                                                      
+##            4:  0                                                      
+##                                                                       
+##  higher    internet  romantic  famrel  freetime goout   Dalc    Walc    health 
+##  no : 69   no :151   no :410   1: 22   1: 45    1: 48   1:451   1:247   1: 90  
+##  yes:580   yes:498   yes:239   2: 29   2:107    2:145   2:121   2:150   2: 78  
+##                                3:101   3:251    3:205   3: 43   3:120   3:124  
+##                                4:317   4:178    4:141   4: 17   4: 87   4:108  
+##                                5:180   5: 68    5:110   5: 17   5: 45   5:249  
+##                                                                                
+##     absences            G1             G2              G3         result   
+##  Min.   : 0.000   Min.   : 0.0   Min.   : 0.00   Min.   : 0.00   fail:100  
+##  1st Qu.: 0.000   1st Qu.:10.0   1st Qu.:10.00   1st Qu.:10.00   pass:549  
+##  Median : 2.000   Median :11.0   Median :11.00   Median :12.00             
+##  Mean   : 3.659   Mean   :11.4   Mean   :11.57   Mean   :11.91             
+##  3rd Qu.: 6.000   3rd Qu.:13.0   3rd Qu.:13.00   3rd Qu.:14.00             
+##  Max.   :32.000   Max.   :19.0   Max.   :19.00   Max.   :19.00</code></pre>
+</div>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>Exploratory Data Analysis</h3>
+<div id="univariate" class="section level4">
+<h4>Univariate</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+<div id="bivariate" class="section level4">
+<h4>Bivariate</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+</div>
+<div id="correlation-analysis" class="section level3">
+<h3>Correlation Analysis</h3>
+<pre class="r"><code># TODO</code></pre>
+</div>
+<div id="train-test-split" class="section level3">
+<h3>Train-Test Split</h3>
+<p>Create train set and test set for regression and classification
+respectively.</p>
+<div id="regression" class="section level4">
+<h4>Regression</h4>
+<pre class="r"><code>df_reg &lt;- df
 
+df_reg$result &lt;- NULL
+
+set.seed(42)
+
+train_index_reg &lt;- createDataPartition(
+  df_reg$G3,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set_reg &lt;- df_reg[train_index_reg, ]
+test_set_reg &lt;- df_reg[-train_index_reg, ]</code></pre>
+</div>
+<div id="classification" class="section level4">
+<h4>Classification</h4>
+<pre class="r"><code>df_clf &lt;- df
+
+df_clf$G3 &lt;- NULL
+
+set.seed(42)
+
+train_index_clf &lt;- createDataPartition(
+  df_clf$result,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set_clf &lt;- df_clf[train_index_clf, ]
+test_set_clf &lt;- df_clf[-train_index_clf, ]</code></pre>
+</div>
+</div>
+<div id="subsampling" class="section level3">
+<h3>Subsampling</h3>
+<p>Since we are dealing with imbalanced classes, we explore subsampling
+techniques for classification.</p>
+<div id="original-sample" class="section level4">
+<h4>Original Sample</h4>
+<pre class="r"><code>table(train_set_clf$result)</code></pre>
+<pre><code>## 
+## fail pass 
+##   80  440</code></pre>
+</div>
+<div id="down-sampling" class="section level4">
+<h4>Down-Sampling</h4>
+<pre class="r"><code>set.seed(42)
+
+train_set_clf_down &lt;- downSample(
+  x = train_set_clf[, -ncol(train_set_clf)],
+  y = train_set_clf$result,
+  yname = &quot;result&quot;
+)
+
+table(train_set_clf_down$result)</code></pre>
+<pre><code>## 
+## fail pass 
+##   80   80</code></pre>
+</div>
+<div id="up-sampling" class="section level4">
+<h4>Up-Sampling</h4>
+<pre class="r"><code>set.seed(42)
+
+train_set_clf_up &lt;- upSample(
+  x = train_set_clf[, -ncol(train_set_clf)],
+  y = train_set_clf$result,
+  yname = &quot;result&quot;
+)
+
+table(train_set_clf_up$result)</code></pre>
+<pre><code>## 
+## fail pass 
+##  440  440</code></pre>
+</div>
+</div>
+<div id="modeling" class="section level3">
+<h3>Modeling</h3>
+<p>Define repeated 10-fold cross validation.</p>
+<pre class="r"><code>fit_control &lt;- trainControl(
+  method = &quot;repeatedcv&quot;,
+  number = 10,
+  repeats = 10
+)</code></pre>
+<div id="regression-1" class="section level4">
+<h4>Regression</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+<div id="classification-1" class="section level4">
+<h4>Classification</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+</div>
+<div id="evaluation" class="section level3">
+<h3>Evaluation</h3>
+<div id="regression-2" class="section level4">
+<h4>Regression</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+<div id="classification-2" class="section level4">
+<h4>Classification</h4>
+<pre class="r"><code># TODO</code></pre>
+</div>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>TODO</p>
+</div>
 
 
 

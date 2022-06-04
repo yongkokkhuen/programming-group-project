@@ -6,3 +6,232 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+### Problem Statement
+
+TODO
+
+### Research Questions
+
+TODO
+
+### Research Objectives
+
+TODO
+
+### Dataset
+
+TODO
+
+### Metadata
+
+| Variable | Description |
+| --- | --- |
+| TODO | TODO |
+
+### References
+
+TODO
+
+
+### Imports
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(caret)
+```
+
+```{r}
+df <- read.csv("../data/student-por.csv", sep = ";", stringsAsFactors = TRUE)
+head(df)
+```
+
+### Preprocessing
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+Convert ordinal variables into ordered factors.
+
+```{r}
+df$famsize <- factor(df$famsize, ordered = TRUE, levels = c("LE3", "GT3"))
+df$Medu <- factor(df$Medu, ordered = TRUE, levels = 0:4)
+df$Fedu <- factor(df$Fedu, ordered = TRUE, levels = 0:4)
+df$traveltime <- factor(df$traveltime, ordered = TRUE, levels = 1:4)
+df$studytime <- factor(df$studytime, ordered = TRUE, levels = 1:4)
+df$failures <- factor(df$failures, ordered = TRUE, levels = 0:4)
+df$famrel <- factor(df$famrel, ordered = TRUE, levels = 1:5)
+df$freetime <- factor(df$freetime, ordered = TRUE, levels = 1:5)
+df$goout <- factor(df$goout, ordered = TRUE, levels = 1:5)
+df$Dalc <- factor(df$Dalc, ordered = TRUE, levels = 1:5)
+df$Walc <- factor(df$Walc, ordered = TRUE, levels = 1:5)
+df$health <- factor(df$health, ordered = TRUE, levels = 1:5)
+```
+
+Create label from `G3`.
+
+```{r}
+df$result <- ifelse(df$G3 >= 10, "pass", "fail")
+df$result <- as.factor(df$result)
+```
+
+### Descriptive Analysis
+
+```{r}
+str(df)
+```
+
+```{r}
+summary(df)
+```
+
+### Exploratory Data Analysis
+
+#### Univariate
+
+```{r}
+# TODO
+```
+
+#### Bivariate
+
+```{r}
+# TODO
+```
+
+### Correlation Analysis
+
+```{r}
+# TODO
+```
+
+### Train-Test Split
+
+Create train set and test set for regression and classification respectively.
+
+#### Regression
+
+```{r}
+df_reg <- df
+
+df_reg$result <- NULL
+
+set.seed(42)
+
+train_index_reg <- createDataPartition(
+  df_reg$G3,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set_reg <- df_reg[train_index_reg, ]
+test_set_reg <- df_reg[-train_index_reg, ]
+```
+
+#### Classification
+
+```{r}
+df_clf <- df
+
+df_clf$G3 <- NULL
+
+set.seed(42)
+
+train_index_clf <- createDataPartition(
+  df_clf$result,
+  p = 0.8,
+  list = FALSE,
+  times = 1
+)
+
+train_set_clf <- df_clf[train_index_clf, ]
+test_set_clf <- df_clf[-train_index_clf, ]
+```
+
+### Subsampling
+
+Since we are dealing with imbalanced classes, we explore subsampling techniques for classification.
+
+#### Original Sample
+
+```{r}
+table(train_set_clf$result)
+```
+
+#### Down-Sampling
+
+```{r}
+set.seed(42)
+
+train_set_clf_down <- downSample(
+  x = train_set_clf[, -ncol(train_set_clf)],
+  y = train_set_clf$result,
+  yname = "result"
+)
+
+table(train_set_clf_down$result)
+```
+
+#### Up-Sampling
+
+```{r}
+set.seed(42)
+
+train_set_clf_up <- upSample(
+  x = train_set_clf[, -ncol(train_set_clf)],
+  y = train_set_clf$result,
+  yname = "result"
+)
+
+table(train_set_clf_up$result)
+```
+
+### Modeling
+
+Define repeated 10-fold cross validation.
+
+```{r}
+fit_control <- trainControl(
+  method = "repeatedcv",
+  number = 10,
+  repeats = 10
+)
+```
+
+#### Regression
+
+```{r}
+# TODO
+```
+
+#### Classification
+
+```{r}
+# TODO
+```
+
+### Evaluation
+
+#### Regression
+
+```{r}
+# TODO
+```
+
+#### Classification
+
+```{r}
+# TODO
+```
+
+### Conclusion
+
+TODO
+
