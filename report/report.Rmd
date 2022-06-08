@@ -428,8 +428,278 @@ fit_control <- trainControl(
 
 #### Regression
 
+Helper function for regression models
+
 ```{r}
-# TODO
+train_evaluate_reg <- function(method = "", data = train_set_reg, tuneGrid = NULL, tuneLength = NULL, name="") {
+  set.seed(42)
+  
+  fit <- train(
+    G3 ~ .,
+    data = data,
+    method = method,
+    trControl = fit_control,
+    preProcess = c("center", "scale"),
+    tuneGrid = tuneGrid,
+    tuneLength = tuneLength
+  )
+  print(fit)
+
+  pred <- predict(fit, test_set_reg)
+  result <- postResample(pred = pred, obs = test_set_reg$G3)
+  
+  metrics = data.frame(
+        Model = name,
+        RMSE = result[["RMSE"]],
+        Rsquared = result[["Rsquared"]],
+        MAE = result[["MAE"]]
+      )
+
+  return(
+    list(
+      model = fit,
+      metrics = metrics
+    )
+  )
+}
+```
+
+```{r}
+get_best_result = function(caret_fit) {
+  best = which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
+  best_result = caret_fit$results[best, ]
+  rownames(best_result) = NULL
+  best_result
+}
+```
+
+1. Decision Tree
+
+CART
+
+- method = 'rpart'
+- Type: Regression, Classification
+- Tuning parameters:
+  - cp (Complexity Parameter)
+- Required packages: rpart
+- A model-specific variable importance metric is available.
+
+Training model with auto tuning:
+```{r}
+dt_reg <- train_evaluate_reg("rpart", name = "DT", tuneLength = 10)
+
+```
+Best parameters from tuning:
+```{r}
+get_best_result(dt_reg$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(dt_reg$model)
+```
+Value 0.005577788 is the optimal value for complexity parameter.
+
+Evaluation of model:
+```{r}
+dt_reg$metrics
+```
+
+2. Random Forest
+
+Random Forest
+
+- method = 'ranger'
+- Type: Classification, Regression
+- Tuning parameters:
+  - mtry (#Randomly Selected Predictors) (Number of variables randomly sampled as candidates at each split.)
+  - splitrule (Splitting Rule)
+  - min.node.size (Minimal Node Size)
+- Required packages: e1071, ranger, dplyr
+- A model-specific variable importance metric is available.
+
+Training model with auto tuning:
+```{r}
+rf_reg <- train_evaluate_reg("ranger", name = "RF", tuneLength = 10)
+
+```
+
+Best parameters from tuning:
+```{r}
+get_best_result(rf_reg$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(rf_reg$model)
+```
+
+- For splitrule (splitting rule) = variance, mtry = 48 is already the optimal value.
+- For splitrule (splitting rule) = extratrees, mtry = 64. Can try to tune with mtry between 64 and 72 (max mtry = 72).
+- Tuning parameter 'min.node.size' was held constant at a value of 5, can try to tune with other values.
+
+Evaluation of model:
+```{r}
+rf_reg$metrics
+``` 
+Training model with manual tuning:
+- splitrule = variance or extratrees
+- mtry between 48 to 72
+- min.node.size between 1 to 10
+```{r}
+tuneGrid_rf_reg <- expand.grid(
+  splitrule = c("variance","extratrees"),
+  mtry = seq(48,72,by=2),
+  min.node.size = seq(1,10)
+)
+
+rf_reg_manual_tune <- train_evaluate_reg("ranger", name = "RF", tuneGrid = tuneGrid_rf_reg)
+```
+Best parameters from tuning:
+```{r}
+get_best_result(rf_reg_manual_tune$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(rf_reg_manual_tune$model)
+```
+
+Optimal value for each parameters:
+- mtry = 72
+- splitrule = extratrees
+- min.node.size = 9
+
+Evaluation of model:
+```{r}
+rf_reg_manual_tune$metrics
+``` 
+
+3. SVM with Polynomial Kernel
+
+Support Vector Machines with Polynomial Kernel
+
+- method = 'svmPoly'
+- Type: Regression, Classification
+- Tuning parameters:
+  - degree (Polynomial Degree)
+  - scale (Scale)
+  - C (Cost)
+- Required packages: kernlab
+
+Training model with auto tuning:
+- We have tried with tuneLength of 10, unfortunately it took too much of time to finish, thus we have decided to go with tuneLength of 5 in SVM.
+```{r}
+svm_reg <- train_evaluate_reg("svmPoly", name = "SVM", tuneLength = 5)
+
+```
+
+Best parameters from tuning:
+```{r}
+get_best_result(svm_reg$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(svm_reg$model)
+```
+The parameters degree (Polynomial Degree) = 1, scale = 10, and C (Cost) = 0.25 reached their optimal value.
+
+Evaluation of model:
+```{r}
+svm_reg$metrics
+``` 
+
+4. Elastic Net
+
+Elasticnet
+
+- method = 'enet'
+- Type: Regression
+- Tuning parameters:
+  - fraction (Fraction of Full Solution)
+  - lambda (Weight Decay)
+- Required packages: elasticnet
+
+Training model with auto tuning:
+```{r}
+en_reg <- train_evaluate_reg("enet", name = "Elastic Net", tuneLength = 10)
+
+```
+
+Best parameters from tuning:
+```{r}
+get_best_result(en_reg$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(en_reg$model)
+```
+The parameters Fraction (Fraction of Full Solution) = 0.4722222 and lambda (Weight Decay) = 0.01778279 reached their optimal value.
+
+Evaluation of model:
+```{r}
+en_reg$metrics
+```
+
+5. Linear Regression
+
+- method = ‘glmnet’
+- Type: Regression, Classification
+- Tuning parameters:
+  - alpha (Mixing Percentage)
+  - lambda (Regularization Parameter)
+- Required packages: glmnet, Matrix
+- A model-specific variable importance metric is available.
+
+Training model with auto tuning:
+```{r}
+lr_reg <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneLength = 10)
+
+```
+
+Best parameters from tuning:
+```{r}
+get_best_result(lr_reg$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(lr_reg$model)
+```
+The parameter alpha (Mixing Percentage) = 1 is the optimal value while there's possibility to get better result with lambda (Regularization Parameter) < 0.2110029.
+
+Evaluation of model:
+```{r}
+lr_reg$metrics
+```
+
+Training model with manual tuning:
+- alpha = 1
+- lambda between 0.001 to 0.300
+```{r}
+tuneGrid_lr_reg <- expand.grid(
+  alpha = c(1),
+  lambda = seq(0.00,0.30,by=0.05)
+)
+
+lr_reg_manual_tune <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneGrid = tuneGrid_lr_reg)
+```
+Best parameters from tuning:
+```{r}
+get_best_result(lr_reg_manual_tune$model)
+``` 
+
+Plot the trained model:
+```{r}
+plot(lr_reg_manual_tune$model)
+```
+The parameter alpha (Mixing Percentage) = 1 and lambda (Regularization Parameter) = 0.15 reached their optimal value.
+
+Evaluation of model:
+```{r}
+lr_reg_manual_tune$metrics
 ```
 
 #### Classification
@@ -443,7 +713,31 @@ fit_control <- trainControl(
 #### Regression
 
 ```{r}
-# TODO
+df_eval_reg <- rbind(
+  dt_reg$metrics, 
+  rf_reg_manual_tune$metrics, 
+  svm_reg$metrics,
+  en_reg$metrics,
+  lr_reg_manual_tune$metrics
+)
+
+df_eval_reg <- df_eval_reg[order(df_eval_reg$RMSE),]
+row.names(df_eval_reg) <- NULL
+df_eval_reg
+
+```
+
+```{r}
+df_eval_reg["RMSE"] = round(df_eval_reg["RMSE"],4)
+df_eval_reg %>%
+  ggplot(aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = RMSE), vjust=-0.5) +
+  ggtitle("RMSE by Model") +
+  xlab("Model") +
+  ylim(0,1.5) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
 ```
 
 #### Classification
