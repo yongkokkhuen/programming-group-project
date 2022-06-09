@@ -509,7 +509,45 @@ ggplot(df, aes(y = G2, x = result)) +
   scale_y_continuous(breaks=seq(0,22,by=2))
 
 ```
+#### Heat Map
+#### 1. change processed dataset to matrix as 'heat_map_data'
+```{r}
+heat_map_data <- df %>% select(-1)
+heat_map_data <- data.matrix(heat_map_data)
+str(heat_map_data)
+```
+####2.caculate the correlation value for each attribute
 
+```{r}
+heat_map_data <- round(cor(heat_map_data, method = "pearson"),2)
+head(heat_map_data)
+```
+
+####3.change the matrix student_pro from  short data to long data
+```{r}
+heat_map_data <- melt(heat_map_data)
+head(heat_map_data)
+```
+
+####4. draw the Heat map
+```{r}
+heatmap <- ggplot(data = heat_map_data, aes(x=Var1, y=Var2, fill=value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low="red", high="darkblue")+
+  theme(
+ axis.text.x=element_text(angle=90, size=8),
+ axis.title.x=element_text(angle=0, color='red'),
+ axis.title.y=element_text(angle=360, color='blue')
+ )+coord_equal()
+heatmap
+```
+####5 only show the absolute correlation value of G3 with Descending order
+```{r}
+G3 <- subset(heat_map_data,Var2=="G3")
+G3[3] <- abs(G3[3])
+G3 <- G3[order(G3[,3],decreasing = TRUE),]
+G3
+```
 ### Correlation Analysis
 
 ```{r}
