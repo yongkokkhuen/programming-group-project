@@ -43,7 +43,6 @@ TODO
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(reshape2)
 library(caret)
 ```
 
@@ -510,45 +509,7 @@ ggplot(df, aes(y = G2, x = result)) +
   scale_y_continuous(breaks=seq(0,20,by=2))
 
 ```
-#### Heat Map
-#### 1. change processed dataset to matrix as 'heat_map_data'
-```{r}
-heat_map_data <- df %>% select(-1)
-heat_map_data <- data.matrix(heat_map_data)
-str(heat_map_data)
-```
-####2.caculate the correlation value for each attribute
 
-```{r}
-heat_map_data <- round(cor(heat_map_data, method = "pearson"),2)
-head(heat_map_data)
-```
-
-####3.change the matrix student_pro from  short data to long data
-```{r}
-heat_map_data <- melt(heat_map_data)
-head(heat_map_data)
-```
-
-####4. draw the Heat map
-```{r}
-heatmap <- ggplot(data = heat_map_data, aes(x=Var1, y=Var2, fill=value)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient(low="red", high="darkblue")+
-  theme(
- axis.text.x=element_text(angle=90, size=8),
- axis.title.x=element_text(angle=0, color='red'),
- axis.title.y=element_text(angle=360, color='blue')
- )+coord_equal()
-heatmap
-```
-####5 only show the absolute correlation value of G3 with Descending order
-```{r}
-G3 <- subset(heat_map_data,Var2=="G3")
-G3[3] <- abs(G3[3])
-G3 <- G3[order(G3[,3],decreasing = TRUE),]
-G3
-```
 ### Correlation Analysis
 
 ```{r}
@@ -926,89 +887,10 @@ lr_reg_manual_tune$metrics
 ```
 
 #### Classification
-Define a helper function to train model.
 
 ```{r}
-train_model_clf <- function(method = "",
-                        data = train_set_clf,
-                        tuneGrid = NULL,
-                        tuneLength = 3) {
-  set.seed(42)
-  fit <- train(
-    result ~ .,
-    data = data,
-    method = method,
-    trControl = fit_control,
-    preProcess = c("center", "scale"),
-    tuneGrid = tuneGrid,
-    tuneLength = tuneLength
-  )
-  print(fit)
-  
-  return(fit)
-}
+# TODO
 ```
-
-Define a helper function to evaluate model.
-
-```{r}
-evaluate_model_clf <- function(model = NULL, alias = "", family = "") {
-  pred <- predict(model, test_set_clf)
-  cm <- confusionMatrix(pred, test_set_clf$result, mode = "prec_recall")
-  print(cm)
-  precision_score <- precision(pred, test_set_clf$result)
-  recall_score <- recall(pred, test_set_clf$result)
-  f1_score <- F_meas(pred, test_set_clf$result)
-  return(data.frame(
-    Model = alias,
-    Family = ifelse(family == "", alias, family),
-    Accuracy = round(cm$overall[["Accuracy"]], 3),
-    Precision = round(precision_score, 3),
-    Recall = round(recall_score, 3),
-    F1 = round(f1_score, 3)
-  ))
-}
-```
-
-#### Logistic Regression
-use original train set
-```{r}
-lr_clf <- train_model_clf("glmnet")
-```
-
-```{r}
-plot(lr_clf)
-```
-
-```{r}
-lr_metrics <- evaluate_model_clf(lr_clf,"LR")
-```
-##### Down-Sampled Train Set
-```{r}
-down_lr_clf <- train_model_clf("glmnet",train_set_clf_down)
-```
-
-```{r}
-plot(down_lr_clf)
-```
-
-```{r}
-down_lr_metrics <- evaluate_model_clf(down_lr_clf,"LR")
-```
-
-##### up-Sampled Train Set
-```{r}
-up_lr_clf <- train_model_clf("glmnet",train_set_clf_up)
-```
-
-```{r}
-plot(up_lr_clf)
-```
-
-```{r}
-up_lr_metrics <- evaluate_model_clf(up_lr_clf,"LR")
-```
-
 
 ### Evaluation
 
