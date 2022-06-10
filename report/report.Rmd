@@ -44,6 +44,7 @@ TODO
 library(dplyr)
 library(ggplot2)
 library(caret)
+library(reshape)
 ```
 
 ```{r}
@@ -531,7 +532,7 @@ head(heat_map_data)
 
 ####4. draw the Heat map
 ```{r}
-heatmap <- ggplot(data = heat_map_data, aes(x=Var1, y=Var2, fill=value)) +
+heatmap <- ggplot(data = heat_map_data, aes(x=X1, y=X2, fill=value)) +
   geom_tile(color = "white") +
   scale_fill_gradient(low="red", high="darkblue")+
   theme(
@@ -543,15 +544,10 @@ heatmap
 ```
 ####5 only show the absolute correlation value of G3 with Descending order
 ```{r}
-G3 <- subset(heat_map_data,Var2=="G3")
+G3 <- subset(heat_map_data,X1=="G3")
 G3[3] <- abs(G3[3])
 G3 <- G3[order(G3[,3],decreasing = TRUE),]
 G3
-```
-### Correlation Analysis
-
-```{r}
-# TODO
 ```
 
 ### Train-Test Split
@@ -695,7 +691,7 @@ get_best_result = function(caret_fit) {
 }
 ```
 
-1. Decision Tree
+#### 1. Decision Tree
 
 CART
 
@@ -727,7 +723,7 @@ Evaluation of model:
 dt_reg$metrics
 ```
 
-2. Random Forest
+#### 2. Random Forest
 
 Random Forest
 
@@ -797,7 +793,7 @@ Evaluation of model:
 rf_reg_manual_tune$metrics
 ``` 
 
-3. SVM with Polynomial Kernel
+#### 3. SVM with Polynomial Kernel
 
 Support Vector Machines with Polynomial Kernel
 
@@ -832,7 +828,7 @@ Evaluation of model:
 svm_reg$metrics
 ``` 
 
-4. Elastic Net
+#### 4. Elastic Net
 
 Elasticnet
 
@@ -865,7 +861,7 @@ Evaluation of model:
 en_reg$metrics
 ```
 
-5. Linear Regression
+#### 5. Linear Regression
 
 - method = ‘glmnet’
 - Type: Regression, Classification
