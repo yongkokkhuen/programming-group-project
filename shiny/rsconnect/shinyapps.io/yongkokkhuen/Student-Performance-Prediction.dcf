@@ -1,0 +1,13 @@
+name: Student-Performance-Prediction
+title: Student-Performance-Prediction
+username:
+account: yongkokkhuen
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6470563
+bundleId: 5998782
+url: https://yongkokkhuen.shinyapps.io/Student-Performance-Prediction/
+when: 1654949632.43356
+lastSyncTime: 1654949632.43357
+asMultiple: FALSE
+asStatic: FALSE
