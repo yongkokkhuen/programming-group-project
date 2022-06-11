@@ -8,20 +8,30 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### Introduction
+In this group assignment for WQD7004: Programming for Data Science, the scope is to use R Programming to create both a classification model as well as a regression model using a single dataset for prediction purposes. After careful consideration and discussion, the chosen dataset is determined to be Student Data collected by Cortez and Silva (2008) in their research.
+ 
+For context, the research conducted by Cortez and Silva (2008) was to assess the educational level of the Portuguese population from two different schools. This was presented as a concern as statistics have shown that Portugal has one of the highest failure rates in Europe despite their continuous improvements in the last decade. In 2006, the early school leaving rate in Portugal was 40% for those aged 18-24 years old, while the European Union average was only 15% (Eurostat, 2007). The two subjects most important are Mathematics and Portuguese as they are core classes that provide students with the fundamental information for success in other school subjects, such as Chemistry and History.
+ 
+Modeling student performance has consequently always been an important tool for both educators, students, and researchers alike. It can help to further research in the domain of factors that affect student achievement. Thus, the researchers addressed the prediction of secondary student grades by using past school performance, demographic, social, and other school related data. They then tested out three different data mining goals (binary classification, five level classification, and regression) and four data mining methods (decision trees, random forests, neural networks, and support vector machines).
+ 
+In concluding the study, the past researchers have noted that the best predictive accuracy of the final grade can be achieved if past performance grades are evaluated and that predictive performance decreases when each subsequent past performance is not used. However, the researchers have also postulated that the effects of other variables, such as number of school absences, parent’s job and education, and alcohol consumption, also influence the prediction of a student’s final grade, just not as much as past performance.
 
-TODO
+For this group assignment, the goal is to replicate the methodology in performing this predictive modeling study with specific alterations. The main deviation would be to only use the Portuguese language dataset, ignoring the Mathematics dataset given the present resource limitations of this group assignment.
+
 
 ### Problem Statement
 
 TODO
 
 ### Research Questions
-
-TODO
+1. What are the factors that highly impact to the student performance?
+2. How to design prediction models to predict student performance?
+3. Which model is the best to predict student performance?
 
 ### Research Objectives
-
-TODO
+1. To identify the factors that highly correlated with the student performance
+2. To create the regression and classification models to predict student performance
+3. To evaluate the performance of the models
 
 ### Dataset
 
@@ -70,9 +80,8 @@ In this project, we are interested in the student performance in the Portuguese 
 | G3         | final grade (numeric: from 0 to 20, output target)           |
 
 ### References
-
-TODO
-
+1. Cortez, P., & Silva, A. M. G. (2008). Using data mining to predict secondary school student performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7.
+2. Eurostat. (2007). Early school-leavers. http://epp.eurostat.ec.europa.eu/.
 
 ### Imports
 
@@ -546,13 +555,16 @@ ggplot(df, aes(y = G2, x = result)) +
   scale_y_continuous(breaks=seq(0,22,by=2))
 
 ```
+
 #### Heat Map
+
 #### 1. change processed dataset to matrix as 'heat_map_data'
 ```{r}
 heat_map_data <- df %>% select(-1)
 heat_map_data <- data.matrix(heat_map_data)
 str(heat_map_data)
 ```
+
 ####2.caculate the correlation value for each attribute
 
 ```{r}
@@ -561,12 +573,14 @@ head(heat_map_data)
 ```
 
 ####3.change the matrix student_pro from  short data to long data
+
 ```{r}
 heat_map_data <- melt(heat_map_data)
 head(heat_map_data)
 ```
 
 ####4. draw the Heat map
+
 ```{r}
 heatmap <- ggplot(data = heat_map_data, aes(x=X1, y=X2, fill=value)) +
   geom_tile(color = "white") +
@@ -578,7 +592,9 @@ heatmap <- ggplot(data = heat_map_data, aes(x=X1, y=X2, fill=value)) +
  )+coord_equal()
 heatmap
 ```
-####5 only show the absolute correlation value of G3 with Descending order
+
+####5. only show the absolute correlation value of G3 with Descending order
+
 ```{r}
 G3 <- subset(heat_map_data,X1=="G3")
 G3[3] <- abs(G3[3])
@@ -739,22 +755,28 @@ CART
 - A model-specific variable importance metric is available.
 
 Training model with auto tuning:
+
 ```{r}
 dt_reg <- train_evaluate_reg("rpart", name = "DT", tuneLength = 10)
 
 ```
+
 Best parameters from tuning:
+
 ```{r}
 get_best_result(dt_reg$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(dt_reg$model)
 ```
-Value 0.005577788 is the optimal value for complexity parameter.
+
+- Value 0.005577788 is the optimal value for complexity parameter.
 
 Evaluation of model:
+
 ```{r}
 dt_reg$metrics
 ```
@@ -773,17 +795,20 @@ Random Forest
 - A model-specific variable importance metric is available.
 
 Training model with auto tuning:
+
 ```{r}
 rf_reg <- train_evaluate_reg("ranger", name = "RF", tuneLength = 10)
 
 ```
 
 Best parameters from tuning:
+
 ```{r}
 get_best_result(rf_reg$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(rf_reg$model)
 ```
@@ -793,9 +818,11 @@ plot(rf_reg$model)
 - Tuning parameter 'min.node.size' was held constant at a value of 5, can try to tune with other values.
 
 Training model with manual tuning:
+
 - splitrule = variance or extratrees
 - mtry between 48 to 72
 - min.node.size between 1 to 10
+
 ```{r}
 tuneGrid_rf_reg <- expand.grid(
   splitrule = c("variance","extratrees"),
@@ -805,22 +832,27 @@ tuneGrid_rf_reg <- expand.grid(
 
 rf_reg_manual_tune <- train_evaluate_reg("ranger", name = "RF", tuneGrid = tuneGrid_rf_reg)
 ```
+
 Best parameters from tuning:
+
 ```{r}
 get_best_result(rf_reg_manual_tune$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(rf_reg_manual_tune$model)
 ```
 
 Optimal value for each parameters:
+
 - mtry = 72
 - splitrule = extratrees
 - min.node.size = 9
 
 Evaluation of model:
+
 ```{r}
 rf_reg_manual_tune$metrics
 ``` 
@@ -838,24 +870,30 @@ Support Vector Machines with Polynomial Kernel
 - Required packages: kernlab
 
 Training model with auto tuning:
+
 - We have tried with tuneLength of 10, unfortunately it took too much of time to finish, thus we have decided to go with tuneLength of 5 in SVM.
+
 ```{r}
 svm_reg <- train_evaluate_reg("svmPoly", name = "SVM", tuneLength = 5)
 
 ```
 
 Best parameters from tuning:
+
 ```{r}
 get_best_result(svm_reg$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(svm_reg$model)
 ```
-The parameters degree (Polynomial Degree) = 1, scale = 10, and C (Cost) = 0.25 reached their optimal value.
+
+- The parameters degree (Polynomial Degree) = 1, scale = 10, and C (Cost) = 0.25 reached their optimal value.
 
 Evaluation of model:
+
 ```{r}
 svm_reg$metrics
 ``` 
@@ -873,21 +911,25 @@ svm_reg$metrics
 - A model-specific variable importance metric is available.
 
 Training model with auto tuning:
+
 ```{r}
 xgb_reg <- train_evaluate_reg("xgbLinear", name = "XGB", tuneLength = 3)
 ```
 
 Best parameters from tuning:
+
 ```{r}
 get_best_result(xgb_reg$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(xgb_reg$model)
 ```
 
 Training model with manual tuning:
+
 ```{r}
 tuneGrid_xgb_reg <- expand.grid(
   eta = 0.3,
@@ -900,16 +942,19 @@ xgb_reg_manual_tune <- train_evaluate_reg("xgbLinear", name = "XGB", tuneGrid = 
 ```
 
 Best parameters from tuning:
+
 ```{r}
 get_best_result(xgb_reg_manual_tune$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(xgb_reg_manual_tune$model)
 ```
 
 Evaluation of model:
+
 ```{r}
 xgb_reg_manual_tune$metrics
 ``` 
@@ -925,25 +970,31 @@ xgb_reg_manual_tune$metrics
 - A model-specific variable importance metric is available.
 
 Training model with auto tuning:
+
 ```{r}
 lr_reg <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneLength = 10)
 
 ```
 
 Best parameters from tuning:
+
 ```{r}
 get_best_result(lr_reg$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(lr_reg$model)
 ```
-The parameter alpha (Mixing Percentage) = 1 is the optimal value while there's possibility to get better result with lambda (Regularization Parameter) < 0.2110029.
+
+- The parameter alpha (Mixing Percentage) = 1 is the optimal value while there's possibility to get better result with lambda (Regularization Parameter) < 0.2110029.
 
 Training model with manual tuning:
+
 - alpha = 1
 - lambda between 0.001 to 0.300
+
 ```{r}
 tuneGrid_lr_reg <- expand.grid(
   alpha = c(1),
@@ -952,18 +1003,23 @@ tuneGrid_lr_reg <- expand.grid(
 
 lr_reg_manual_tune <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneGrid = tuneGrid_lr_reg)
 ```
+
 Best parameters from tuning:
+
 ```{r}
 get_best_result(lr_reg_manual_tune$model)
 ``` 
 
 Plot the trained model:
+
 ```{r}
 plot(lr_reg_manual_tune$model)
 ```
-The parameter alpha (Mixing Percentage) = 1 and lambda (Regularization Parameter) = 0.15 reached their optimal value.
+
+- The parameter alpha (Mixing Percentage) = 1 and lambda (Regularization Parameter) = 0.15 reached their optimal value.
 
 Evaluation of model:
+
 ```{r}
 lr_reg_manual_tune$metrics
 ```
@@ -1646,4 +1702,12 @@ show_f1(up_df_eval_clf)
 
 ### Conclusion
 
-TODO
+In this study, we develop and evaluate the performance of different regression models and binary classification models to predict student performance in secondary education of two Portugese schools. G3, the final grade result is the target attribute in regression models while in binary classification models, the target attribute "result" is created by segregating the G3 result into binary labels "pass" and "fail". All the models are trained with hyperparameter tuning to optimize their performance.
+
+From the EDA result, we discovered that the attributes G1 and G2 are highly correlated to the target attribute G3. It shown that students that achieved higher G1 and G2 results are most likely to achieve higher G3 result.
+
+We aim to achieve better prediction result compared to previous study by Cortez and Silva (2008) where the study achieved RMSE of 1.32 and accuracy of 93% from their best regression model and binary classification model respectively. The research outcome shown that our best models outperformed the result from previous study with RMSE of 1.11 from regression model using random forest and accuracy of 93.8% from binary classification model using decision tree.
+
+In addition, we noticed the issue of imbalanced data with 440 pass label and 80 fail label in training dataset to address classification problem. Thus we have also trained the binary classification models using down-sampling and up-sampling data. We have compared the result of classification models using original sample data, down-sampling data, and up-sampling data. The comparison shown that the models using original dataset outperformed the other two datasets.
+
+In future work, G1 and G2 attributes can be removed from the features so that we can further study the impact of other attributes to student performance to address a more specific problem. For instance, future work can be conducted to study whether family background affects student's academic result by predicting student performance with their family ecological factors.
