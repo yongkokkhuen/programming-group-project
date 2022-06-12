@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ### Introduction
+
 In this group assignment for WQD7004: Programming for Data Science, the scope is to use R Programming to create both a classification model as well as a regression model using a single dataset for prediction purposes. After careful consideration and discussion, the chosen dataset is determined to be Student Data collected by Cortez and Silva (2008) in their research.
  
 For context, the research conducted by Cortez and Silva (2008) was to assess the educational level of the Portuguese population from two different schools. This was presented as a concern as statistics have shown that Portugal has one of the highest failure rates in Europe despite their continuous improvements in the last decade. In 2006, the early school leaving rate in Portugal was 40% for those aged 18-24 years old, while the European Union average was only 15% (Eurostat, 2007). The two subjects most important are Mathematics and Portuguese as they are core classes that provide students with the fundamental information for success in other school subjects, such as Chemistry and History.
@@ -18,7 +19,6 @@ In concluding the study, the past researchers have noted that the best predictiv
 
 For this group assignment, the goal is to replicate the methodology in performing this predictive modeling study with specific alterations. The main deviation would be to only use the Portuguese language dataset, ignoring the Mathematics dataset given the present resource limitations of this group assignment.
 
-
 ### Problem Statement
 
 Education is an important part of national society and plays a vital role in the growth and development of any country. Even more relevant as the country has one of the highest failure rates in Europe, the improvement of educational level is of great importance because of the progress of information technology, which has led to the exponential growth of commercial and organizational databases All of this data contains valuable information, such as trends and patterns, that can be used to improve decision making and optimize success education data mining is the application of data mining this is an emerging field of interdisciplinary research, the development of processing methods to explore the origins of data in the context of education Educational data mining is an emerging trend that aims to automatically explore unique data types from large repositories of education-related data, on the other hand, there is a wide range of skills among different educational practitioners, and the risk of neglecting details Therefore, the alternative is to use automated tools to analyze raw data and extract interesting high-level information for decision makers.
@@ -26,11 +26,13 @@ Education is an important part of national society and plays a vital role in the
 Education field for application of business intelligence provides the fertile soil, student performance simulation tool for educators and students is very important, it can help students and educators to a better understanding of this phenomenon and to help find problems so as to improve the existing situation Now now has existed for many similar theme research and has a higher accuracy For this project there are three different data mining objectives (binary classification five level classification and regression) and four data mining methods (decision tree random forest neural network and support vector machine) aimed at predicting student achievement and, if possible, identifying key variables that influence educational success/failure In the end, the prediction models developed this time should be no less accurate than the existing research and we should complete all relevant work by 13 weeks before the semester. In addition, the best models will be interpreted to identify the most relevant features.
 
 ### Research Questions
+
 1. What are the factors that highly impact to the student performance?
 2. How to design prediction models to predict student performance?
 3. Which model is the best to predict student performance?
 
 ### Research Objectives
+
 1. To identify the factors that highly correlated with the student performance
 2. To create the regression and classification models to predict student performance
 3. To evaluate the performance of the models
@@ -82,6 +84,7 @@ In this project, we are interested in the student performance in the Portuguese 
 | G3         | final grade (numeric: from 0 to 20, output target)           |
 
 ### References
+
 1. Cortez, P., & Silva, A. M. G. (2008). Using data mining to predict secondary school student performance. In A. Brito and J. Teixeira Eds., Proceedings of 5th FUture BUsiness TEChnology Conference (FUBUTEC 2008) pp. 5-12, Porto, Portugal, April, 2008, EUROSIS, ISBN 978-9077381-39-7.
 2. Eurostat. (2007). Early school-leavers. http://epp.eurostat.ec.europa.eu/.
 
@@ -369,7 +372,9 @@ ggplot(df, aes(x = result)) +
 ```
 
 #### Bivariate
+
 General Function for Bar Graph Plotting
+
 ```{r}
 # bar graph for bivariate analysis
 Unstacked_bi_bar_graph <- function(`x.axis` = "", Result = ""){
@@ -561,6 +566,7 @@ ggplot(df, aes(y = G2, x = result)) +
 #### Heat Map
 
 #### 1. change processed dataset to matrix as 'heat_map_data'
+
 ```{r}
 heat_map_data <- df %>% select(-1)
 heat_map_data <- data.matrix(heat_map_data)
