@@ -1,5 +1,5 @@
 ---
-title: "Report"
+title: "Prediction of Student Performance in Secondary Education"
 output: html_document
 ---
 
@@ -13,17 +13,15 @@ In this group assignment for WQD7004: Programming for Data Science, the scope is
  
 For context, the research conducted by Cortez and Silva (2008) was to assess the educational level of the Portuguese population from two different schools. This was presented as a concern as statistics have shown that Portugal has one of the highest failure rates in Europe despite their continuous improvements in the last decade. In 2006, the early school leaving rate in Portugal was 40% for those aged 18-24 years old, while the European Union average was only 15% (Eurostat, 2007). The two subjects most important are Mathematics and Portuguese as they are core classes that provide students with the fundamental information for success in other school subjects, such as Chemistry and History.
  
-Modeling student performance has consequently always been an important tool for both educators, students, and researchers alike. It can help to further research in the domain of factors that affect student achievement. Thus, the researchers addressed the prediction of secondary student grades by using past school performance, demographic, social, and other school related data. They then tested out three different data mining goals (binary classification, five level classification, and regression) and four data mining methods (decision trees, random forests, neural networks, and support vector machines).
+Modeling student performance has consequently always been an important tool for both educators, students, and researchers alike. It can help to further research in the domain of factors that affect student achievement. Thus, the researchers from previous study addressed the prediction of secondary student grades by using past school performance, demographic, social, and other school related data. They then tested out three different data mining goals (binary classification, five level classification, and regression) and four data mining methods (decision trees, random forests, neural networks, and support vector machines).
  
-In concluding the study, the past researchers have noted that the best predictive accuracy of the final grade can be achieved if past performance grades are evaluated and that predictive performance decreases when each subsequent past performance is not used. However, the researchers have also postulated that the effects of other variables, such as number of school absences, parent’s job and education, and alcohol consumption, also influence the prediction of a student’s final grade, just not as much as past performance.
+In concluding the previous study, the past researchers have noted that the best predictive accuracy of the final grade can be achieved if past performance grades are evaluated and that predictive performance decreases when each subsequent past performance is not used. However, the researchers have also postulated that the effects of other variables, such as number of school absences, parent’s job and education, and alcohol consumption, also influence the prediction of a student’s final grade, just not as much as past performance.
 
-For this group assignment, the goal is to replicate the methodology in performing this predictive modeling study with specific alterations. The main deviation would be to only use the Portuguese language dataset, ignoring the Mathematics dataset given the present resource limitations of this group assignment.
+For this group assignment, the goal is to improve the performance of the prediction. We focused only on the Portuguese language dataset as the number of record is higher compared to the Mathematics dataset. 
 
 ### Problem Statement
 
-Education is an important part of national society and plays a vital role in the growth and development of any country. Even more relevant as the country has one of the highest failure rates in Europe, the improvement of educational level is of great importance because of the progress of information technology, which has led to the exponential growth of commercial and organizational databases All of this data contains valuable information, such as trends and patterns, that can be used to improve decision making and optimize success education data mining is the application of data mining this is an emerging field of interdisciplinary research, the development of processing methods to explore the origins of data in the context of education Educational data mining is an emerging trend that aims to automatically explore unique data types from large repositories of education-related data, on the other hand, there is a wide range of skills among different educational practitioners, and the risk of neglecting details Therefore, the alternative is to use automated tools to analyze raw data and extract interesting high-level information for decision makers.
-
-Education field for application of business intelligence provides the fertile soil, student performance simulation tool for educators and students is very important, it can help students and educators to a better understanding of this phenomenon and to help find problems so as to improve the existing situation Now now has existed for many similar theme research and has a higher accuracy For this project there are three different data mining objectives (binary classification five level classification and regression) and four data mining methods (decision tree random forest neural network and support vector machine) aimed at predicting student achievement and, if possible, identifying key variables that influence educational success/failure In the end, the prediction models developed this time should be no less accurate than the existing research and we should complete all relevant work by 13 weeks before the semester. In addition, the best models will be interpreted to identify the most relevant features.
+Education plays a vital role in the growth and development of a country. Therefore, it is crucial to predict student performance so that education practitioners can formulate plans to improve the education system. Furthermore, it is also essential to identify the factors that affects the student performance in education. Hence, we aimed to explore the correlation between student grades, demographic, social and school related features, and the student's final grade. We also develop the regression and classification models to predict student performance.
 
 ### Research Questions
 
@@ -151,224 +149,324 @@ summary(df)
 #### Univariate
 
 ```{r}
-ggplot(df, aes(x = school)) + 
-  geom_bar(fill='blue') +
-  labs(x = "School",
-       y = "No. of students",
-       title = "1. Student's school")
+ggplot(df, aes(x = school)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "School",
+    y = "No. of students",
+    title = "1. Student's school"
+  )
 
-ggplot(df, aes(x = sex)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Sex",
-       y = "No. of students",
-       title = "2. Student's sex")
+ggplot(df, aes(x = sex)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Sex",
+    y = "No. of students",
+    title = "2. Student's sex"
+  )
 
-ggplot(df, aes(x = age)) + 
-  geom_bar(fill='green', 
-                 color = "black") +
-  labs(x = "Age",
-       y = "Frequency",
-       title = "3. Student's age")
+ggplot(df, aes(x = age)) +
+  geom_bar(
+    fill = "green",
+    color = "black"
+  ) +
+  labs(
+    x = "Age",
+    y = "Frequency",
+    title = "3. Student's age"
+  )
 
-ggplot(df, aes(x = address)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Address",
-       y = "Frequency",
-       title = "4. Student's home address type")
+ggplot(df, aes(x = address)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Address",
+    y = "Frequency",
+    title = "4. Student's home address type"
+  )
 
-ggplot(df, aes(x = famsize)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Family size",
-       y = "Frequency",
-       title = "5. Family size ")
+ggplot(df, aes(x = famsize)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Family size",
+    y = "Frequency",
+    title = "5. Family size "
+  )
 
-ggplot(df, aes(x = Pstatus)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Parent's Status",
-       y = "Frequency",
-       title = "6. Parent's cohabitation status ")
+ggplot(df, aes(x = Pstatus)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Parent's Status",
+    y = "Frequency",
+    title = "6. Parent's cohabitation status "
+  )
 
-ggplot(df, aes(x = Medu)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Medu",
-       y = "Frequency",
-       title = "7. Mother's education level")
+ggplot(df, aes(x = Medu)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Medu",
+    y = "Frequency",
+    title = "7. Mother's education level"
+  )
 
-ggplot(df, aes(x = Fedu)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Fedu",
-       y = "Frequency",
-       title = "8. Father's education level")
+ggplot(df, aes(x = Fedu)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Fedu",
+    y = "Frequency",
+    title = "8. Father's education level"
+  )
 
-ggplot(df, aes(x = Mjob)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Mjob",
-       y = "Frequency",
-       title = "9. Mother's job")
+ggplot(df, aes(x = Mjob)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Mjob",
+    y = "Frequency",
+    title = "9. Mother's job"
+  )
 
-ggplot(df, aes(x = Fjob)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Fjob",
-       y = "Frequency",
-       title = "10. Father's job")
+ggplot(df, aes(x = Fjob)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Fjob",
+    y = "Frequency",
+    title = "10. Father's job"
+  )
 
-ggplot(df, aes(x = reason)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Reason",
-       y = "Frequency",
-       title = "11. Reason for selecting school")
+ggplot(df, aes(x = reason)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Reason",
+    y = "Frequency",
+    title = "11. Reason for selecting school"
+  )
 
-ggplot(df, aes(x = guardian)) + 
-  geom_bar(fill='purple') +
-  labs(x = "Guardian",
-       y = "Frequency",
-       title = "12. Student's guardian")
+ggplot(df, aes(x = guardian)) +
+  geom_bar(fill = "purple") +
+  labs(
+    x = "Guardian",
+    y = "Frequency",
+    title = "12. Student's guardian"
+  )
 
-ggplot(df, aes(x = traveltime)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Traveltime",
-       y = "Frequency",
-       title = "13. Home to school travel time")
+ggplot(df, aes(x = traveltime)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Traveltime",
+    y = "Frequency",
+    title = "13. Home to school travel time"
+  )
 
-ggplot(df, aes(x = studytime)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Studytime",
-       y = "Frequency",
-       title = "14. Weekly study time")
+ggplot(df, aes(x = studytime)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Studytime",
+    y = "Frequency",
+    title = "14. Weekly study time"
+  )
 
 ggplot(df, aes(x = failures)) +
-  geom_bar(fill = "green", 
-                 color = "black") + 
-  labs(title="15. Number of past class failures")
+  geom_bar(
+    fill = "green",
+    color = "black"
+  ) +
+  labs(title = "15. Number of past class failures")
 
-ggplot(df, aes(x = schoolsup)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Schoolsup",
-       y = "Frequency",
-       title = "16. Extra educational support")
+ggplot(df, aes(x = schoolsup)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Schoolsup",
+    y = "Frequency",
+    title = "16. Extra educational support"
+  )
 
-ggplot(df, aes(x = famsup)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Famsup",
-       y = "Frequency",
-       title = "17. Family educational support")
+ggplot(df, aes(x = famsup)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Famsup",
+    y = "Frequency",
+    title = "17. Family educational support"
+  )
 
-ggplot(df, aes(x = paid)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Paid",
-       y = "Frequency",
-       title = "18. Extra paid Portuguese classes ")
+ggplot(df, aes(x = paid)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Paid",
+    y = "Frequency",
+    title = "18. Extra paid Portuguese classes "
+  )
 
-ggplot(df, aes(x = activities)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Activities",
-       y = "Frequency",
-       title = "19. Extra-curricular activities")
+ggplot(df, aes(x = activities)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Activities",
+    y = "Frequency",
+    title = "19. Extra-curricular activities"
+  )
 
-ggplot(df, aes(x = nursery)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Nursery",
-       y = "Frequency",
-       title = "20. Attended nursery school")
+ggplot(df, aes(x = nursery)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Nursery",
+    y = "Frequency",
+    title = "20. Attended nursery school"
+  )
 
-ggplot(df, aes(x = higher)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Higher",
-       y = "Frequency",
-       title = "21. Wants to take higher education")
+ggplot(df, aes(x = higher)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Higher",
+    y = "Frequency",
+    title = "21. Wants to take higher education"
+  )
 
-ggplot(df, aes(x = internet)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Internet",
-       y = "Frequency",
-       title = "22. Internet access at home")
+ggplot(df, aes(x = internet)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Internet",
+    y = "Frequency",
+    title = "22. Internet access at home"
+  )
 
-ggplot(df, aes(x = romantic)) + 
-  geom_bar(fill='blue') +
-  labs(x = "Romantic",
-       y = "Frequency",
-       title = "23. In a romantic relationship")
+ggplot(df, aes(x = romantic)) +
+  geom_bar(fill = "blue") +
+  labs(
+    x = "Romantic",
+    y = "Frequency",
+    title = "23. In a romantic relationship"
+  )
 
-ggplot(df, aes(x = famrel)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Famrel",
-       y = "Frequency",
-       title = "24. Quality of family relationship")
+ggplot(df, aes(x = famrel)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Famrel",
+    y = "Frequency",
+    title = "24. Quality of family relationship"
+  )
 
-ggplot(df, aes(x = freetime)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Freetime",
-       y = "Frequency",
-       title = "25. Free time after school")
+ggplot(df, aes(x = freetime)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Freetime",
+    y = "Frequency",
+    title = "25. Free time after school"
+  )
 
-ggplot(df, aes(x = goout)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Goout",
-       y = "Frequency",
-       title = "26. Going out with friends")
+ggplot(df, aes(x = goout)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Goout",
+    y = "Frequency",
+    title = "26. Going out with friends"
+  )
 
-ggplot(df, aes(x = Dalc)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Dalc",
-       y = "Frequency",
-       title = "27. Workday alcohol consumption")
+ggplot(df, aes(x = Dalc)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Dalc",
+    y = "Frequency",
+    title = "27. Workday alcohol consumption"
+  )
 
-ggplot(df, aes(x = Walc)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "Walc",
-       y = "Frequency",
-       title = "28. Weekend alcohol consumption")
+ggplot(df, aes(x = Walc)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "Walc",
+    y = "Frequency",
+    title = "28. Weekend alcohol consumption"
+  )
 
-ggplot(df, aes(x = health)) + 
-  geom_bar(fill='white', 
-                 color = "black") +
-  labs(x = "health",
-       y = "Frequency",
-       title = "29. Current health status")
+ggplot(df, aes(x = health)) +
+  geom_bar(
+    fill = "white",
+    color = "black"
+  ) +
+  labs(
+    x = "health",
+    y = "Frequency",
+    title = "29. Current health status"
+  )
 
-ggplot(df, aes(x = absences)) + 
-  geom_bar(fill='green', 
-                 color = "black")+
-  labs(x = "Absences",
-       y = "Frequency",
-       title = "30. Number of school absences")
+ggplot(df, aes(x = absences)) +
+  geom_bar(
+    fill = "green",
+    color = "black"
+  ) +
+  labs(
+    x = "Absences",
+    y = "Frequency",
+    title = "30. Number of school absences"
+  )
 
-ggplot(df, aes(x = G1)) + 
-  geom_bar(fill='pink', 
-                 color = "black") +
-  labs(x = "G1",
-       y = "Frequency",
-       title = "31. First period grade")
+ggplot(df, aes(x = G1)) +
+  geom_bar(
+    fill = "pink",
+    color = "black"
+  ) +
+  labs(
+    x = "G1",
+    y = "Frequency",
+    title = "31. First period grade"
+  )
 
-ggplot(df, aes(x = G2)) + 
-  geom_bar(fill='pink', 
-                 color = "black") +
-  labs(x = "G2",
-       y = "Frequency",
-       title = "32. Second period grade")
+ggplot(df, aes(x = G2)) +
+  geom_bar(
+    fill = "pink",
+    color = "black"
+  ) +
+  labs(
+    x = "G2",
+    y = "Frequency",
+    title = "32. Second period grade"
+  )
 
-ggplot(df, aes(x = G3)) + 
-  geom_bar(fill='orange', 
-                 color = "black") +
-  labs(x = "G3",
-       y = "Frequency",
-       title = "33. Final grade-output target")
+ggplot(df, aes(x = G3)) +
+  geom_bar(
+    fill = "orange",
+    color = "black"
+  ) +
+  labs(
+    x = "G3",
+    y = "Frequency",
+    title = "33. Final grade-output target"
+  )
 
-ggplot(df, aes(x = result)) + 
-  geom_bar(fill='blue', 
-                 color = "black") +
-  labs(x = "Result",
-       y = "Frequency",
-       title = "34. Final grade-result")
+ggplot(df, aes(x = result)) +
+  geom_bar(
+    fill = "blue",
+    color = "black"
+  ) +
+  labs(
+    x = "Result",
+    y = "Frequency",
+    title = "34. Final grade-result"
+  )
 ```
 
 #### Bivariate
@@ -377,195 +475,200 @@ General Function for Bar Graph Plotting
 
 ```{r}
 # bar graph for bivariate analysis
-Unstacked_bi_bar_graph <- function(`x.axis` = "", Result = ""){
-  # Result represents dependent variable / usually being drawn in y-axis 
-  # x-axis represent independent variable 
+Unstacked_bi_bar_graph <- function(`x.axis` = "", Result = "") {
+  # Result represents dependent variable / usually being drawn in y-axis
+  # x-axis represent independent variable
   # dodge is used to un-stake the bar graph
-  
+
   # 1. counts (or sums of weights)
   bar <- ggplot(df, aes(`x.axis`))
-  
+
   # 2. Number of tuples in each class
-  graph_output <- bar + geom_bar(aes(fill = `Result`), position = 'dodge') + 
-    labs(y = 'Frequency') 
-  
-  # 3. get data from the graph 
+  graph_output <- bar + geom_bar(aes(fill = `Result`), position = "dodge") +
+    labs(y = "Frequency")
+
+  # 3. get data from the graph
   graph_label <- layer_data(graph_output)
-  
+
   # 4. Annotate value at respective bar
-  graph_output <- graph_output + annotate(geom = "text", label = graph_label$count, 
-                                          x = graph_label$x, y = 15)
-  
+  graph_output <- graph_output + annotate(
+    geom = "text", label = graph_label$count,
+    x = graph_label$x, y = 15
+  )
+
   return(graph_output)
 }
 ```
 
 
 ```{r}
-bar.bivar = Unstacked_bi_bar_graph(df$school, df$result)
-bar.bivar = bar.bivar + ggtitle(label = '1. School vs Final Grade Result') +
-  labs(x = "Student's School") 
+bar.bivar <- Unstacked_bi_bar_graph(df$school, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "1. School vs Final Grade Result") +
+  labs(x = "Student's School")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$sex, df$result)
-bar.bivar = bar.bivar + ggtitle(label = '2. Gender vs Final Grade Result') +
-  labs(x = "Student's Sex") 
+bar.bivar <- Unstacked_bi_bar_graph(df$sex, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "2. Gender vs Final Grade Result") +
+  labs(x = "Student's Sex")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$age, df$result)
-bar.bivar = bar.bivar + ggtitle(label = '3. Age vs Final Grade Result') +
-  labs(x = "Student's Age") 
+bar.bivar <- Unstacked_bi_bar_graph(df$age, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "3. Age vs Final Grade Result") +
+  labs(x = "Student's Age")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$address, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "4. Student's Home Address Type vs Final Grade Result") +
-  labs(x = "Address Type") 
+bar.bivar <- Unstacked_bi_bar_graph(df$address, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "4. Student's Home Address Type vs Final Grade Result") +
+  labs(x = "Address Type")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$famsize, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "5. Student's Family Size vs Final Grade Result") +
-  labs(x = "Family Size") 
+bar.bivar <- Unstacked_bi_bar_graph(df$famsize, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "5. Student's Family Size vs Final Grade Result") +
+  labs(x = "Family Size")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Pstatus, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "6. Parent's Cohabitation Status vs Final Grade Result") +
-  labs(x = "Parent's Cohabitation Status") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Pstatus, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "6. Parent's Cohabitation Status vs Final Grade Result") +
+  labs(x = "Parent's Cohabitation Status")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Medu, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "7. Mother's Education vs Final Grade Result") +
-  labs(x = "Mother's Education Level") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Medu, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "7. Mother's Education vs Final Grade Result") +
+  labs(x = "Mother's Education Level")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Fedu, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "8. Father's Education vs Final Grade Result") +
-  labs(x = "Father's Education Level") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Fedu, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "8. Father's Education vs Final Grade Result") +
+  labs(x = "Father's Education Level")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Mjob, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "9. Mother's Job vs Final Grade Result") +
-  labs(x = "Mother's Job") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Mjob, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "9. Mother's Job vs Final Grade Result") +
+  labs(x = "Mother's Job")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Fjob, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "10. Father's Job vs Final Grade Result") +
-  labs(x = "Father's Job") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Fjob, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "10. Father's Job vs Final Grade Result") +
+  labs(x = "Father's Job")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$reason, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "11. Reason to Choose Selected School vs Final Grade Result") + labs(x = "Reason Types") 
+bar.bivar <- Unstacked_bi_bar_graph(df$reason, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "11. Reason to Choose Selected School vs Final Grade Result") + labs(x = "Reason Types")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$guardian, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "12. Student's Guardian vs Final Grade Result") +
-  labs(x = "Guardian") 
+bar.bivar <- Unstacked_bi_bar_graph(df$guardian, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "12. Student's Guardian vs Final Grade Result") +
+  labs(x = "Guardian")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$traveltime, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "13. Home to School Travel Time vs Final Grade Result") +
-  labs(x = "Travel Time") 
+bar.bivar <- Unstacked_bi_bar_graph(df$traveltime, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "13. Home to School Travel Time vs Final Grade Result") +
+  labs(x = "Travel Time")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$studytime, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "14. Weekly Study Time vs Final Grade Result") +
-  labs(x = "Weekly Study Time") 
+bar.bivar <- Unstacked_bi_bar_graph(df$studytime, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "14. Weekly Study Time vs Final Grade Result") +
+  labs(x = "Weekly Study Time")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$failures, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "15. Number of Past Class Failures vs Final Grade Result") +
-  labs(x = "Number of Past Class Failures") 
+bar.bivar <- Unstacked_bi_bar_graph(df$failures, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "15. Number of Past Class Failures vs Final Grade Result") +
+  labs(x = "Number of Past Class Failures")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$schoolsup, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "16. Extra Educational Support vs Final Grade Result") +
-  labs(x = "Extra Educational Support") 
+bar.bivar <- Unstacked_bi_bar_graph(df$schoolsup, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "16. Extra Educational Support vs Final Grade Result") +
+  labs(x = "Extra Educational Support")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$famsup, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "17. Family Educational Support vs Final Grade Result") +
-  labs(x = "Family Educational Support") 
+bar.bivar <- Unstacked_bi_bar_graph(df$famsup, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "17. Family Educational Support vs Final Grade Result") +
+  labs(x = "Family Educational Support")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$paid, df$result)
-bar.bivar = bar.bivar + 
-  ggtitle(label = "18. Extra Paid Classes for Portuguese Subject vs Final Grade Result") + 
-  labs(x = "Joined Extra Paid Classes?") 
+bar.bivar <- Unstacked_bi_bar_graph(df$paid, df$result)
+bar.bivar <- bar.bivar +
+  ggtitle(label = "18. Extra Paid Classes for Portuguese Subject vs Final Grade Result") +
+  labs(x = "Joined Extra Paid Classes?")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$activities, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "19. Extra-Curricular Activities vs Final Grade Result") +
-  labs(x = "Joined Extra-Curricular Activities?") 
+bar.bivar <- Unstacked_bi_bar_graph(df$activities, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "19. Extra-Curricular Activities vs Final Grade Result") +
+  labs(x = "Joined Extra-Curricular Activities?")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$activities, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "20. Extra-Curricular Activities vs Final Grade Result") +
-  labs(x = "Joined Extra-Curricular Activities?") 
+bar.bivar <- Unstacked_bi_bar_graph(df$activities, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "20. Extra-Curricular Activities vs Final Grade Result") +
+  labs(x = "Joined Extra-Curricular Activities?")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$internet, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "21. Internet Access at Home vs Final Grade Result") +
-  labs(x = "Internet Access at Home") 
+bar.bivar <- Unstacked_bi_bar_graph(df$internet, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "21. Internet Access at Home vs Final Grade Result") +
+  labs(x = "Internet Access at Home")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$romantic, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "22. With a Romantic Relationship vs Final Grade Result") +
-  labs(x = "With a Romantic Relationship?") 
+bar.bivar <- Unstacked_bi_bar_graph(df$romantic, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "22. With a Romantic Relationship vs Final Grade Result") +
+  labs(x = "With a Romantic Relationship?")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$famrel, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "23. Quality of Family Relationships vs Final Grade Result") + labs(x = "Quality of Family Relationships") 
+bar.bivar <- Unstacked_bi_bar_graph(df$famrel, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "23. Quality of Family Relationships vs Final Grade Result") + labs(x = "Quality of Family Relationships")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$freetime, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "24. Free Time After School vs Final Grade Result") +
-  labs(x = "Free Time After School") 
+bar.bivar <- Unstacked_bi_bar_graph(df$freetime, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "24. Free Time After School vs Final Grade Result") +
+  labs(x = "Free Time After School")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$goout, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "25. Going Out with Friends vs Final Grade Result") +
-  labs(x = "Going Out with Friends") 
+bar.bivar <- Unstacked_bi_bar_graph(df$goout, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "25. Going Out with Friends vs Final Grade Result") +
+  labs(x = "Going Out with Friends")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Dalc, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "26. Workday Alcohol Consumption vs Final Grade Result") +
-  labs(x = "Workday Alcohol Consumption") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Dalc, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "26. Workday Alcohol Consumption vs Final Grade Result") +
+  labs(x = "Workday Alcohol Consumption")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$Walc, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "27. Weekend Alcohol Consumption vs Final Grade Result") +
-  labs(x = "Weekend Alcohol Consumption") 
+bar.bivar <- Unstacked_bi_bar_graph(df$Walc, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "27. Weekend Alcohol Consumption vs Final Grade Result") +
+  labs(x = "Weekend Alcohol Consumption")
 bar.bivar
 
-bar.bivar = Unstacked_bi_bar_graph(df$health, df$result)
-bar.bivar = bar.bivar + ggtitle(label = "28. Current Health Status vs Final Grade Result") +
-  labs(x = "Current Health Status") 
+bar.bivar <- Unstacked_bi_bar_graph(df$health, df$result)
+bar.bivar <- bar.bivar + ggtitle(label = "28. Current Health Status vs Final Grade Result") +
+  labs(x = "Current Health Status")
 bar.bivar
 
 ggplot(df, aes(y = absences, x = result)) +
-  geom_boxplot() + 
-  ggtitle(label = "29. Number of School Absences vs Final Grade Result") + 
-  labs(y = "Number of School Absences", x = "Result") + 
-  scale_y_continuous(breaks=seq(0,36,by=2))
+  geom_boxplot() +
+  ggtitle(label = "29. Number of School Absences vs Final Grade Result") +
+  labs(y = "Number of School Absences", x = "Result") +
+  scale_y_continuous(breaks = seq(0, 36, by = 2))
 
 ggplot(df, aes(y = G1, x = result)) +
-  geom_boxplot() + 
-  labs(title = "30. First Period Grade vs Final Grade Result",
-       y = "First Period Grade", 
-       x = 'Result') + 
-  scale_y_continuous(breaks=seq(0,22,by=2))
+  geom_boxplot() +
+  labs(
+    title = "30. First Period Grade vs Final Grade Result",
+    y = "First Period Grade",
+    x = "Result"
+  ) +
+  scale_y_continuous(breaks = seq(0, 22, by = 2))
 
 ggplot(df, aes(y = G2, x = result)) +
-  geom_boxplot() + 
-  labs(title = "31. Second Period Grade vs Final Grade Result",
-       y = "Second Period Grade", 
-       x = 'Result') +
-  scale_y_continuous(breaks=seq(0,22,by=2))
-
+  geom_boxplot() +
+  labs(
+    title = "31. Second Period Grade vs Final Grade Result",
+    y = "Second Period Grade",
+    x = "Result"
+  ) +
+  scale_y_continuous(breaks = seq(0, 22, by = 2))
 ```
 
-#### Heat Map
+### Correlation Analysis
 
-#### 1. change processed dataset to matrix as 'heat_map_data'
+Change processed dataset to matrix as 'heat_map_data'.
 
 ```{r}
 heat_map_data <- df %>% select(-1)
@@ -573,40 +676,41 @@ heat_map_data <- data.matrix(heat_map_data)
 str(heat_map_data)
 ```
 
-####2.caculate the correlation value for each attribute
+Calculate the correlation value for each attribute.
 
 ```{r}
-heat_map_data <- round(cor(heat_map_data, method = "pearson"),2)
+heat_map_data <- round(cor(heat_map_data, method = "pearson"), 2)
 head(heat_map_data)
 ```
 
-####3.change the matrix student_pro from  short data to long data
+Change the matrix student_pro from short data to long data.
 
 ```{r}
 heat_map_data <- melt(heat_map_data)
 head(heat_map_data)
 ```
 
-####4. draw the Heat map
+Plot the heat map.
 
 ```{r}
-heatmap <- ggplot(data = heat_map_data, aes(x=X1, y=X2, fill=value)) +
+heatmap <- ggplot(data = heat_map_data, aes(x = X1, y = X2, fill = value)) +
   geom_tile(color = "white") +
-  scale_fill_gradient(low="red", high="darkblue")+
+  scale_fill_gradient(low = "red", high = "darkblue") +
   theme(
- axis.text.x=element_text(angle=90, size=8),
- axis.title.x=element_text(angle=0, color='red'),
- axis.title.y=element_text(angle=360, color='blue')
- )+coord_equal()
+    axis.text.x = element_text(angle = 90, size = 8),
+    axis.title.x = element_text(angle = 0, color = "red"),
+    axis.title.y = element_text(angle = 360, color = "blue")
+  ) +
+  coord_equal()
 heatmap
 ```
 
-####5. only show the absolute correlation value of G3 with Descending order
+Only show the absolute correlation value of G3 with Descending order.
 
 ```{r}
-G3 <- subset(heat_map_data,X1=="G3")
+G3 <- subset(heat_map_data, X1 == "G3")
 G3[3] <- abs(G3[3])
-G3 <- G3[order(G3[,3],decreasing = TRUE),]
+G3 <- G3[order(G3[, 3], decreasing = TRUE), ]
 G3
 ```
 
@@ -709,9 +813,9 @@ fit_control <- trainControl(
 Helper function for regression models
 
 ```{r}
-train_evaluate_reg <- function(method = "", data = train_set_reg, tuneGrid = NULL, tuneLength = NULL, name="") {
+train_evaluate_reg <- function(method = "", data = train_set_reg, tuneGrid = NULL, tuneLength = NULL, name = "") {
   set.seed(42)
-  
+
   fit <- train(
     G3 ~ .,
     data = data,
@@ -725,13 +829,13 @@ train_evaluate_reg <- function(method = "", data = train_set_reg, tuneGrid = NUL
 
   pred <- predict(fit, test_set_reg)
   result <- postResample(pred = pred, obs = test_set_reg$G3)
-  
-  metrics = data.frame(
-        Model = name,
-        RMSE = result[["RMSE"]],
-        Rsquared = result[["Rsquared"]],
-        MAE = result[["MAE"]]
-      )
+
+  metrics <- data.frame(
+    Model = name,
+    RMSE = result[["RMSE"]],
+    Rsquared = result[["Rsquared"]],
+    MAE = result[["MAE"]]
+  )
 
   return(
     list(
@@ -743,10 +847,10 @@ train_evaluate_reg <- function(method = "", data = train_set_reg, tuneGrid = NUL
 ```
 
 ```{r}
-get_best_result = function(caret_fit) {
-  best = which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
-  best_result = caret_fit$results[best, ]
-  rownames(best_result) = NULL
+get_best_result <- function(caret_fit) {
+  best <- which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
+  best_result <- caret_fit$results[best, ]
+  rownames(best_result) <- NULL
   best_result
 }
 ```
@@ -765,8 +869,7 @@ CART
 Training model with auto tuning:
 
 ```{r}
-dt_reg <- train_evaluate_reg("rpart", name = "DT", tuneLength = 10)
-
+dt_reg <- train_evaluate_reg("rpart", name = "Decision Tree", tuneLength = 10)
 ```
 
 Best parameters from tuning:
@@ -805,8 +908,7 @@ Random Forest
 Training model with auto tuning:
 
 ```{r}
-rf_reg <- train_evaluate_reg("ranger", name = "RF", tuneLength = 10)
-
+rf_reg <- train_evaluate_reg("ranger", name = "Random Forest", tuneLength = 10)
 ```
 
 Best parameters from tuning:
@@ -833,12 +935,12 @@ Training model with manual tuning:
 
 ```{r}
 tuneGrid_rf_reg <- expand.grid(
-  splitrule = c("variance","extratrees"),
-  mtry = seq(48,72,by=2),
-  min.node.size = seq(1,10)
+  splitrule = c("variance", "extratrees"),
+  mtry = seq(48, 72, by = 2),
+  min.node.size = seq(1, 10)
 )
 
-rf_reg_manual_tune <- train_evaluate_reg("ranger", name = "RF", tuneGrid = tuneGrid_rf_reg)
+rf_reg_manual_tune <- train_evaluate_reg("ranger", name = "Random Forest", tuneGrid = tuneGrid_rf_reg)
 ```
 
 Best parameters from tuning:
@@ -882,8 +984,7 @@ Training model with auto tuning:
 - We have tried with tuneLength of 10, unfortunately it took too much of time to finish, thus we have decided to go with tuneLength of 5 in SVM.
 
 ```{r}
-svm_reg <- train_evaluate_reg("svmPoly", name = "SVM", tuneLength = 5)
-
+svm_reg <- train_evaluate_reg("svmPoly", name = "Support Vector Machine", tuneLength = 5)
 ```
 
 Best parameters from tuning:
@@ -921,7 +1022,7 @@ svm_reg$metrics
 Training model with auto tuning:
 
 ```{r}
-xgb_reg <- train_evaluate_reg("xgbLinear", name = "XGB", tuneLength = 3)
+xgb_reg <- train_evaluate_reg("xgbLinear", name = "XGBoost", tuneLength = 3)
 ```
 
 Best parameters from tuning:
@@ -946,7 +1047,7 @@ tuneGrid_xgb_reg <- expand.grid(
   nrounds = seq(10, 70, 10)
 )
 
-xgb_reg_manual_tune <- train_evaluate_reg("xgbLinear", name = "XGB", tuneGrid = tuneGrid_xgb_reg)
+xgb_reg_manual_tune <- train_evaluate_reg("xgbLinear", name = "XGBoost", tuneGrid = tuneGrid_xgb_reg)
 ```
 
 Best parameters from tuning:
@@ -981,7 +1082,6 @@ Training model with auto tuning:
 
 ```{r}
 lr_reg <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneLength = 10)
-
 ```
 
 Best parameters from tuning:
@@ -1006,7 +1106,7 @@ Training model with manual tuning:
 ```{r}
 tuneGrid_lr_reg <- expand.grid(
   alpha = c(1),
-  lambda = seq(0.00,0.30,by=0.05)
+  lambda = seq(0.00, 0.30, by = 0.05)
 )
 
 lr_reg_manual_tune <- train_evaluate_reg("glmnet", name = "Linear Regression", tuneGrid = tuneGrid_lr_reg)
@@ -1038,9 +1138,9 @@ Define a helper function to train model.
 
 ```{r}
 train_model_clf <- function(method = "",
-                        data = train_set_clf,
-                        tuneGrid = NULL,
-                        tuneLength = 3) {
+                            data = train_set_clf,
+                            tuneGrid = NULL,
+                            tuneLength = 3) {
   set.seed(42)
 
   fit <- train(
@@ -1054,7 +1154,7 @@ train_model_clf <- function(method = "",
   )
 
   print(fit)
-  
+
   return(fit)
 }
 ```
@@ -1062,23 +1162,28 @@ train_model_clf <- function(method = "",
 Define a helper function to evaluate model.
 
 ```{r}
-evaluate_model_clf <- function(model = NULL, alias = "", family = "") {
+evaluate_model_clf <- function(model = NULL, name = "") {
   pred <- predict(model, test_set_clf)
 
-  cm <- confusionMatrix(pred, test_set_clf$result, mode = "prec_recall")
-  print(cm)
+  cm_fail <- confusionMatrix(pred, test_set_clf$result, mode = "prec_recall")
+  print(cm_fail)
 
-  precision_score <- precision(pred, test_set_clf$result)
-  recall_score <- recall(pred, test_set_clf$result)
-  f1_score <- F_meas(pred, test_set_clf$result)
+  cm_pass <- confusionMatrix(
+    pred,
+    test_set_clf$result,
+    mode = "prec_recall",
+    positive = "pass"
+  )
 
   return(data.frame(
-    Model = alias,
-    Family = ifelse(family == "", alias, family),
-    Accuracy = round(cm$overall[["Accuracy"]], 3),
-    Precision = round(precision_score, 3),
-    Recall = round(recall_score, 3),
-    F1 = round(f1_score, 3)
+    Model = name,
+    Accuracy = round(cm_fail$overall[["Accuracy"]], 3),
+    Precision.Fail = round(cm_fail$byClass[["Precision"]], 3),
+    Recall.Fail = round(cm_fail$byClass[["Recall"]], 3),
+    F1.Fail = round(cm_fail$byClass[["F1"]], 3),
+    Precision.Pass = round(cm_pass$byClass[["Precision"]], 3),
+    Recall.Pass = round(cm_pass$byClass[["Recall"]], 3),
+    F1.Pass = round(cm_pass$byClass[["F1"]], 3)
   ))
 }
 ```
@@ -1105,7 +1210,7 @@ plot(dt_clf)
 No further tuning required.
 
 ```{r}
-dt_metrics_clf <- evaluate_model_clf(dt_clf, "DT")
+dt_metrics_clf <- evaluate_model_clf(dt_clf, "Decision Tree")
 ```
 
 ##### Down-Sampled Train Set
@@ -1121,7 +1226,7 @@ plot(down_dt_clf)
 No further tuning required.
 
 ```{r}
-down_dt_metrics_clf <- evaluate_model_clf(down_dt_clf, "DT")
+down_dt_metrics_clf <- evaluate_model_clf(down_dt_clf, "Decision Tree")
 ```
 
 ##### Up-Sampled Train Set
@@ -1147,7 +1252,7 @@ plot(up_dt_clf)
 Tuning done.
 
 ```{r}
-up_dt_metrics_clf <- evaluate_model_clf(up_dt_clf, "DT")
+up_dt_metrics_clf <- evaluate_model_clf(up_dt_clf, "Decision Tree")
 ```
 
 #### 2. Random Forest
@@ -1184,7 +1289,7 @@ plot(rf_clf)
 Tuning done.
 
 ```{r}
-rf_metrics_clf <- evaluate_model_clf(rf_clf, "RF")
+rf_metrics_clf <- evaluate_model_clf(rf_clf, "Random Forest")
 ```
 
 ##### Down-Sampled Train Set
@@ -1210,7 +1315,7 @@ plot(down_rf_clf)
 Tuning done.
 
 ```{r}
-down_rf_metrics_clf <- evaluate_model_clf(down_rf_clf, "RF")
+down_rf_metrics_clf <- evaluate_model_clf(down_rf_clf, "Random Forest")
 ```
 
 ##### Up-Sampled Train Set
@@ -1236,7 +1341,7 @@ plot(up_rf_clf)
 Tuning done.
 
 ```{r}
-up_rf_metrics_clf <- evaluate_model_clf(up_rf_clf, "RF")
+up_rf_metrics_clf <- evaluate_model_clf(up_rf_clf, "Random Forest")
 ```
 
 #### 3. SVM with Polynomial Kernel
@@ -1278,7 +1383,7 @@ plot(svm_poly_clf)
 Tuning done.
 
 ```{r}
-svm_poly_metrics_clf <- evaluate_model_clf(svm_poly_clf, "SVM - Poly", "SVM")
+svm_poly_metrics_clf <- evaluate_model_clf(svm_poly_clf, "Support Vector Machine")
 ```
 
 ##### Down-Sampled Train Set
@@ -1314,11 +1419,7 @@ plot(down_svm_poly_clf)
 Tuning done.
 
 ```{r}
-down_svm_poly_metrics_clf <- evaluate_model_clf(
-  down_svm_poly_clf, 
-  "SVM - Poly", 
-  "SVM"
-)
+down_svm_poly_metrics_clf <- evaluate_model_clf(down_svm_poly_clf, "Support Vector Machine")
 ```
 
 ##### Up-Sampled Train Set
@@ -1354,10 +1455,7 @@ plot(up_svm_poly_clf)
 Tuning done.
 
 ```{r}
-up_svm_poly_metrics_clf <- evaluate_model_clf(
-  up_svm_poly_clf, 
-  "SVM - Poly", "SVM"
-)
+up_svm_poly_metrics_clf <- evaluate_model_clf(up_svm_poly_clf, "Support Vector Machine")
 ```
 
 #### 4. K-Nearest Neighbors
@@ -1380,7 +1478,7 @@ plot(knn_clf)
 Perform hyperparameter tuning using `tuneGrid`.
 
 ```{r}
-knn_clf <- train_model_clf("knn", tuneGrid = expand.grid(k = c(3, 5, 7, 11) ))
+knn_clf <- train_model_clf("knn", tuneGrid = expand.grid(k = c(3, 5, 7, 11)))
 ```
 
 ```{r}
@@ -1390,7 +1488,7 @@ plot(knn_clf)
 No further tuning necessary. 
 
 ```{r}
-knn_metrics_clf <- evaluate_model_clf(knn_clf, "KNN")
+knn_metrics_clf <- evaluate_model_clf(knn_clf, "K-Nearest Neighbors")
 ```
 
 ##### Down-Sampled Train Set
@@ -1407,9 +1505,9 @@ Perform hyperparameter tuning using `tuneGrid`.
 
 ```{r}
 down_knn_clf <- train_model_clf(
-  "knn", 
-  train_set_clf_down, 
-  tuneGrid = expand.grid(k = c(9, 11, 13,15) )
+  "knn",
+  train_set_clf_down,
+  tuneGrid = expand.grid(k = c(9, 11, 13, 15))
 )
 ```
 
@@ -1420,7 +1518,7 @@ plot(down_knn_clf)
 No further tuning required.
 
 ```{r}
-down_knn_metrics_clf <- evaluate_model_clf(down_knn_clf, "KNN")
+down_knn_metrics_clf <- evaluate_model_clf(down_knn_clf, "K-Nearest Neighbors")
 ```
 
 ##### Up-Sampled Train Set
@@ -1437,9 +1535,9 @@ Perform hyperparameter tuning using `tuneGrid`.
 
 ```{r}
 up_knn_clf <- train_model_clf(
-  "knn", 
-  train_set_clf_up, 
-  tuneGrid = expand.grid(k = c(1,3,5) )
+  "knn",
+  train_set_clf_up,
+  tuneGrid = expand.grid(k = c(1, 3, 5))
 )
 ```
 
@@ -1450,7 +1548,7 @@ plot(up_knn_clf)
 Tuning done.
 
 ```{r}
-up_knn_metrics_clf <- evaluate_model_clf(up_knn_clf, "KNN")
+up_knn_metrics_clf <- evaluate_model_clf(up_knn_clf, "K-Nearest Neighbors")
 ```
 
 #### 5. Logistic Regression
@@ -1549,30 +1647,28 @@ up_lr_metrics_clf <- evaluate_model_clf(up_lr_clf, "Logistic Regression")
 
 ```{r}
 df_eval_reg <- rbind(
-  dt_reg$metrics, 
-  rf_reg_manual_tune$metrics, 
+  dt_reg$metrics,
+  rf_reg_manual_tune$metrics,
   svm_reg$metrics,
   xgb_reg_manual_tune$metrics,
   lr_reg_manual_tune$metrics
 )
 
-df_eval_reg <- df_eval_reg[order(df_eval_reg$RMSE),]
+df_eval_reg <- df_eval_reg[order(df_eval_reg$RMSE), ]
 row.names(df_eval_reg) <- NULL
 df_eval_reg
-
 ```
 
 ```{r}
-df_eval_reg["RMSE"] = round(df_eval_reg["RMSE"],4)
+df_eval_reg["RMSE"] <- round(df_eval_reg["RMSE"], 4)
 df_eval_reg %>%
   ggplot(aes(x = reorder(Model, RMSE), y = RMSE, fill = Model)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label = RMSE), vjust=-0.5) +
+  geom_text(aes(label = RMSE), vjust = -0.5) +
   ggtitle("RMSE by Model") +
   xlab("Model") +
-  ylim(0,1.5) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
+  ylim(0, 1.5) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
 #### Classification
@@ -1581,52 +1677,44 @@ Define a function to plot accuracy.
 
 ```{r}
 show_accuracy <- function(df) {
-  df_accuracy <- df %>%
-    group_by(Family) %>%
-    slice(which.max(Accuracy)) %>%
-    arrange(desc(Accuracy)) %>%
-    select(-1)
-
+  df_accuracy <- df %>% arrange(desc(Accuracy))
   print(df_accuracy)
-  
+
   plot_accuracy <- df_accuracy %>%
-    ggplot(aes(x = reorder(Family, -Accuracy), y = Accuracy, fill = Family)) +
+    ggplot(aes(x = reorder(Model, -Accuracy), y = Accuracy, fill = Model)) +
     geom_bar(stat = "identity") +
-    geom_text(aes(label = Accuracy), vjust=-0.5) +
+    geom_text(aes(label = Accuracy), vjust = -0.5) +
     ggtitle("Accuracy by Model") +
     xlab("Model") +
     ylim(0, 1) +
     labs(fill = "Model") +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-  
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
   print(plot_accuracy)
 }
 ```
 
-Define a function to plot F1 score.
+Define a function to plot recall for fail class.
 
 ```{r}
-show_f1 <- function(df) {
-  df_f1 <- df %>%
-    group_by(Family) %>%
-    slice(which.max(F1)) %>%
-    arrange(desc(F1)) %>%
-    select(-1)
+show_recall_fail <- function(df) {
+  df_recall_fail <- df %>% arrange(desc(Recall.Fail))
+  print(df_recall_fail)
 
-  print(df_f1)
-  
-  plot_f1 <- df_f1 %>%
-    ggplot(aes(x = reorder(Family, -F1), y = F1, fill = Family)) +
+  plot_recall_fail <- df_recall_fail %>%
+    ggplot(
+      aes(x = reorder(Model, -Recall.Fail), y = Recall.Fail, fill = Model)
+    ) +
     geom_bar(stat = "identity") +
-    geom_text(aes(label = F1), vjust=-0.5) +
-    ggtitle("F1 Score by Model") +
+    geom_text(aes(label = Recall.Fail), vjust = -0.5) +
+    ggtitle("Recall (Fail Class) by Model") +
     xlab("Model") +
-    ylab("F1 Score") +
+    ylab("Recall") +
     ylim(0, 1) +
     labs(fill = "Model") +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-  
-  print(plot_f1)
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+  print(plot_recall_fail)
 }
 ```
 
@@ -1650,10 +1738,10 @@ df_eval_clf
 show_accuracy(df_eval_clf)
 ```
 
-##### By F1 Score
+##### By Recall (Fail Class)
 
 ```{r}
-show_f1(df_eval_clf)
+show_recall_fail(df_eval_clf)
 ```
 
 #### 2. Down-Sampled Train Set
@@ -1676,10 +1764,10 @@ down_df_eval_clf
 show_accuracy(down_df_eval_clf)
 ```
 
-##### By F1 Score
+##### By Recall (Fail Class)
 
 ```{r}
-show_f1(down_df_eval_clf)
+show_recall_fail(down_df_eval_clf)
 ```
 
 #### 3. Up-Sampled Train Set
@@ -1702,10 +1790,10 @@ up_df_eval_clf
 show_accuracy(up_df_eval_clf)
 ```
 
-##### By F1 Score
+##### By Recall (Fail Class)
 
 ```{r}
-show_f1(up_df_eval_clf)
+show_recall_fail(up_df_eval_clf)
 ```
 
 ### Conclusion
@@ -1714,8 +1802,12 @@ In this study, we develop and evaluate the performance of different regression m
 
 From the EDA result, we discovered that the attributes G1 and G2 are highly correlated to the target attribute G3. It shown that students that achieved higher G1 and G2 results are most likely to achieve higher G3 result.
 
-We aim to achieve better prediction result compared to previous study by Cortez and Silva (2008) where the study achieved RMSE of 1.32 and accuracy of 93% from their best regression model and binary classification model respectively. The research outcome shown that our best models outperformed the result from previous study with RMSE of 1.11 from regression model using random forest and accuracy of 93.8% from binary classification model using decision tree.
+We aim to achieve better prediction result compared to previous study by Cortez and Silva (2008) where the study achieved RMSE of 1.32 and accuracy of 93% from their best regression model and binary classification model respectively. The research outcome shown that our best models slightly outperformed the result from previous study with RMSE of 1.11 from regression model using Random Forest and accuracy of 93.8% from binary classification model using Decision Tree.
 
-In addition, we noticed the issue of imbalanced data with 440 pass label and 80 fail label in training dataset to address classification problem. Thus we have also trained the binary classification models using down-sampling and up-sampling data. We have compared the result of classification models using original sample data, down-sampling data, and up-sampling data. The comparison shown that the models using original dataset outperformed the other two datasets.
+In addition, we noticed the issue of imbalanced data with 440 pass label and 80 fail label in training dataset. Thus we have also trained the binary classification models using down-sampling and up-sampling data. We have compared the result of classification models using original sample data, down-sampled data, and up-sampled data.
+
+Due to the imbalanced classes in the original sample data, accuracy is not the best metric to evaluate the model performance. Furthermore, we would like to emphasize our prediction in the fail class. Hence, we decided to use recall as the main metric. 
+
+For classification using the original data, Random Forest, Support Vector Machine and Logistic Regression were performing equally well in terms of recall. In comparison to the models from down-sampled and up-sampled data, Logistic Regression and Support Vector Machine from down-sampled data produced the best results with 90% recall.
 
 In future work, G1 and G2 attributes can be removed from the features so that we can further study the impact of other attributes to student performance to address a more specific problem. For instance, future work can be conducted to study whether family background affects student's academic result by predicting student performance with their family ecological factors.
